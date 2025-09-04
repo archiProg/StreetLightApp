@@ -1,0 +1,508 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="StreetLightApp.Pages.TabbedPageKits.HomePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:StreetLightApp.Views"
+    Title="Home"
+    BackgroundColor="#FFFFFF"
+    NavigationPage.HasNavigationBar="False">
+    <Grid RowDefinitions="Auto,Auto,*" RowSpacing="8">
+        <!--  Top Bar  -->
+        <Border
+            Grid.Row="0"
+            Margin="8,8,8,0"
+            BackgroundColor="#F1F5F9"
+            HeightRequest="56"
+            Stroke="Transparent"
+            StrokeShape="RoundRectangle 8"
+            StrokeThickness="0">
+            <Grid ColumnDefinitions="*,Auto">
+                <StackLayout
+                    Grid.Column="0"
+                    Margin="16,0,0,0"
+                    VerticalOptions="Center">
+                    <Label
+                        x:Name="profileNameLbl"
+                        FontFamily="PoppinsMedium"
+                        FontSize="16"
+                        Text="Profile name"
+                        TextColor="Black" />
+                    <Label
+                        x:Name="profileUsernameLbl"
+                        FontFamily="PoppinsRegular"
+                        FontSize="12"
+                        Text="Username"
+                        TextColor="#7C90A8" />
+                </StackLayout>
+                <Border
+                    Grid.Column="1"
+                    Margin="0,0,8,0"
+                    BackgroundColor="White"
+                    HeightRequest="42"
+                    Stroke="Transparent"
+                    StrokeShape="RoundRectangle 8"
+                    StrokeThickness="0"
+                    WidthRequest="42">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                    </Border.GestureRecognizers>
+                    <Image
+                        x:Name="avatarProfile"
+                        Aspect="AspectFill"
+                        Source="useravatar.png" />
+
+                </Border>
+            </Grid>
+
+        </Border>
+        <!--  Important Notification  -->
+        <Border
+            Grid.Row="1"
+            Margin="8,0,8,0"
+            BackgroundColor="#FFEFC5"
+            HeightRequest="24"
+            Stroke="Transparent"
+            StrokeShape="RoundRectangle 4"
+            StrokeThickness="0">
+            <Grid ColumnDefinitions="*,Auto">
+                <StackLayout Padding="4,0,0,4" Orientation="Horizontal">
+                    <Label
+                        FontFamily="PoppinsBold"
+                        FontSize="14"
+                        Text="Important!"
+                        TextColor="Black" />
+                    <Label
+                        FontFamily="PoppinsRegular"
+                        FontSize="14"
+                        Text="Server update on 01.00AM - 25..."
+                        TextColor="Black" />
+                </StackLayout>
+                <StackLayout
+                    Grid.Column="1"
+                    Margin="0,0,8,0"
+                    Opacity=".5"
+                    Orientation="Horizontal"
+                    Spacing="2">
+                    <BoxView
+                        BackgroundColor="#0F172A"
+                        CornerRadius="3"
+                        HeightRequest="6"
+                        WidthRequest="6" />
+                    <BoxView
+                        BackgroundColor="#0F172A"
+                        CornerRadius="3"
+                        HeightRequest="6"
+                        WidthRequest="6" />
+                    <BoxView
+                        BackgroundColor="#0F172A"
+                        CornerRadius="3"
+                        HeightRequest="6"
+                        WidthRequest="6" />
+                </StackLayout>
+            </Grid>
+        </Border>
+        <!--  Main Content  -->
+        <ScrollView Grid.Row="2">
+            <StackLayout Margin="0,8,0,34" Spacing="8">
+                <Grid Margin="8,0,8,0" ColumnDefinitions="*,Auto">
+                    <Label
+                        FontFamily="PoppinsSemiBold"
+                        FontSize="16"
+                        Text="Overall"
+                        TextColor="Black"
+                        VerticalOptions="Center" />
+                    <ImageButton
+                        Grid.Column="1"
+                        Padding="12"
+                        BackgroundColor="White"
+                        CornerRadius="24"
+                        HeightRequest="48"
+                        HorizontalOptions="End"
+                        Source="bell_64.png"
+                        VerticalOptions="Center"
+                        WidthRequest="48" />
+                </Grid>
+                <Grid
+                    Margin="8,0,8,0"
+                    ColumnDefinitions="*,*,*"
+                    ColumnSpacing="4"
+                    RowDefinitions="Auto,Auto"
+                    RowSpacing="4">
+                    <!--  StreetLightApp Online  -->
+                    <Border
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Margin="0,0,0,0"
+                        BackgroundColor="#500995DE"
+                        HorizontalOptions="Fill"
+                        Stroke="Transparent"
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="0">
+                        <Grid>
+                            <Grid Padding="8,8,8,0" RowDefinitions="Auto,*">
+                                <Grid ColumnDefinitions="Auto, *" ColumnSpacing="4">
+                                    <BoxView
+                                        BackgroundColor="#0995DE"
+                                        CornerRadius="2"
+                                        HeightRequest="24"
+                                        WidthRequest="24" />
+                                    <Label
+                                        Grid.Column="1"
+                                        FontFamily="PoppinsBold"
+                                        FontSize="12"
+                                        HorizontalOptions="Fill"
+                                        LineBreakMode="WordWrap"
+                                        MaxLines="2"
+                                        Text="StreetLightApp Online"
+                                        TextColor="#0995DE"
+                                        VerticalOptions="Start" />
+                                </Grid>
+                                <StackLayout
+                                    Grid.Row="1"
+                                    HorizontalOptions="End"
+                                    Orientation="Horizontal"
+                                    Spacing="4"
+                                    VerticalOptions="End">
+                                    <Label
+                                        FontFamily="PoppinsRegular"
+                                        FontSize="18"
+                                        Text="1964"
+                                        TextColor="Black"
+                                        VerticalOptions="Center" />
+                                    <Label
+                                        FontFamily="PoppinsRegular"
+                                        FontSize="12"
+                                        Text="of 2000"
+                                        TextColor="Black"
+                                        VerticalOptions="Center" />
+                                </StackLayout>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    <!--  StreetLightApp Offline  -->
+                    <Border
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Margin="0,0,0,0"
+                        BackgroundColor="#50FF556E"
+                        HorizontalOptions="Fill"
+                        Stroke="Transparent"
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="0">
+                        <Grid>
+                            <Grid Padding="8,8,8,0" RowDefinitions="Auto,*">
+                                <Grid ColumnDefinitions="Auto, *" ColumnSpacing="4">
+                                    <BoxView
+                                        BackgroundColor="#FF556E"
+                                        CornerRadius="2"
+                                        HeightRequest="24"
+                                        WidthRequest="24" />
+                                    <Label
+                                        Grid.Column="1"
+                                        FontFamily="PoppinsBold"
+                                        FontSize="12"
+                                        HorizontalOptions="Fill"
+                                        LineBreakMode="WordWrap"
+                                        MaxLines="2"
+                                        Text="StreetLightApp Offline"
+                                        TextColor="#FF556E"
+                                        VerticalOptions="Start" />
+                                </Grid>
+                                <StackLayout
+                                    Grid.Row="1"
+                                    HorizontalOptions="End"
+                                    Orientation="Horizontal"
+                                    Spacing="4"
+                                    VerticalOptions="End">
+                                    <Label
+                                        FontFamily="PoppinsRegular"
+                                        FontSize="18"
+                                        Text="1964"
+                                        TextColor="Black"
+                                        VerticalOptions="Center" />
+                                    <Label
+                                        FontFamily="PoppinsRegular"
+                                        FontSize="12"
+                                        Text="of 2000"
+                                        TextColor="Black"
+                                        VerticalOptions="Center" />
+                                </StackLayout>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    <!--  Gateway Offline  -->
+                    <Border
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        Margin="0,0,0,0"
+                        BackgroundColor="#50FF519F"
+                        HorizontalOptions="Fill"
+                        Stroke="Transparent"
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="0">
+                        <Grid>
+                            <Grid Padding="8,8,8,0" RowDefinitions="Auto,*">
+                                <Grid ColumnDefinitions="Auto, *" ColumnSpacing="4">
+                                    <BoxView
+                                        BackgroundColor="#FF519F"
+                                        CornerRadius="2"
+                                        HeightRequest="24"
+                                        WidthRequest="24" />
+                                    <Label
+                                        Grid.Column="1"
+                                        FontFamily="PoppinsBold"
+                                        FontSize="12"
+                                        HorizontalOptions="Fill"
+                                        LineBreakMode="WordWrap"
+                                        MaxLines="2"
+                                        Text="Gateway Offline"
+                                        TextColor="#FF519F"
+                                        VerticalOptions="Start" />
+                                </Grid>
+                                <StackLayout
+                                    Grid.Row="1"
+                                    HorizontalOptions="End"
+                                    Orientation="Horizontal"
+                                    Spacing="4"
+                                    VerticalOptions="End">
+                                    <Label
+                                        FontFamily="PoppinsRegular"
+                                        FontSize="18"
+                                        Text="1964"
+                                        TextColor="Black"
+                                        VerticalOptions="Center" />
+                                    <Label
+                                        FontFamily="PoppinsRegular"
+                                        FontSize="12"
+                                        Text="of 2000"
+                                        TextColor="Black"
+                                        VerticalOptions="Center" />
+                                </StackLayout>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    <!--  Need To Check  -->
+                    <Border
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Margin="0,0,0,0"
+                        BackgroundColor="#507551FF"
+                        HorizontalOptions="Fill"
+                        Stroke="Transparent"
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="0">
+                        <Grid>
+                            <Grid Padding="8,8,8,0" RowDefinitions="Auto,*">
+                                <Grid ColumnDefinitions="Auto, *" ColumnSpacing="4">
+                                    <BoxView
+                                        BackgroundColor="#7551FF"
+                                        CornerRadius="2"
+                                        HeightRequest="24"
+                                        WidthRequest="24" />
+                                    <Label
+                                        Grid.Column="1"
+                                        FontFamily="PoppinsBold"
+                                        FontSize="12"
+                                        HorizontalOptions="Fill"
+                                        LineBreakMode="WordWrap"
+                                        MaxLines="2"
+                                        Text="Need To Check"
+                                        TextColor="#7551FF"
+                                        VerticalOptions="Start" />
+                                </Grid>
+                                <StackLayout
+                                    Grid.Row="1"
+                                    HorizontalOptions="End"
+                                    Orientation="Horizontal"
+                                    Spacing="4"
+                                    VerticalOptions="End">
+                                    <Label
+                                        FontFamily="PoppinsRegular"
+                                        FontSize="18"
+                                        Text="1964"
+                                        TextColor="Black"
+                                        VerticalOptions="Center" />
+                                    <Label
+                                        FontFamily="PoppinsRegular"
+                                        FontSize="12"
+                                        Text="of 2000"
+                                        TextColor="Black"
+                                        VerticalOptions="Center" />
+                                </StackLayout>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    <!--  In Repair  -->
+                    <Border
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Margin="0,0,0,0"
+                        BackgroundColor="#50ED9B46"
+                        HorizontalOptions="Fill"
+                        Stroke="Transparent"
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="0">
+                        <Grid>
+                            <Grid Padding="8,8,8,0" RowDefinitions="Auto,*">
+                                <Grid ColumnDefinitions="Auto, *" ColumnSpacing="4">
+                                    <BoxView
+                                        BackgroundColor="#ED9B46"
+                                        CornerRadius="2"
+                                        HeightRequest="24"
+                                        WidthRequest="24" />
+                                    <Label
+                                        Grid.Column="1"
+                                        FontFamily="PoppinsBold"
+                                        FontSize="12"
+                                        HorizontalOptions="Fill"
+                                        LineBreakMode="WordWrap"
+                                        MaxLines="2"
+                                        Text="In Repair"
+                                        TextColor="#ED9B46"
+                                        VerticalOptions="Start" />
+                                </Grid>
+                                <StackLayout
+                                    Grid.Row="1"
+                                    HorizontalOptions="End"
+                                    Orientation="Horizontal"
+                                    Spacing="4"
+                                    VerticalOptions="End">
+                                    <Label
+                                        FontFamily="PoppinsRegular"
+                                        FontSize="18"
+                                        Text="1964"
+                                        TextColor="Black"
+                                        VerticalOptions="Center" />
+                                    <Label
+                                        FontFamily="PoppinsRegular"
+                                        FontSize="12"
+                                        Text="of 2000"
+                                        TextColor="Black"
+                                        VerticalOptions="Center" />
+                                </StackLayout>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    <!--  Battery Never Full  -->
+                    <Border
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        Margin="0,0,0,0"
+                        BackgroundColor="#50FF7435"
+                        Stroke="Transparent"
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="0">
+                        <Grid Padding="8,8,8,0" RowDefinitions="Auto,*">
+                            <Grid ColumnDefinitions="Auto, *" ColumnSpacing="4">
+                                <BoxView
+                                    BackgroundColor="#FF7435"
+                                    CornerRadius="2"
+                                    HeightRequest="24"
+                                    WidthRequest="24" />
+                                <Label
+                                    Grid.Column="1"
+                                    FontFamily="PoppinsBold"
+                                    FontSize="12"
+                                    HorizontalOptions="Fill"
+                                    LineBreakMode="WordWrap"
+                                    MaxLines="2"
+                                    Text="Battery Never Full"
+                                    TextColor="#FF7435"
+                                    VerticalOptions="Start" />
+                            </Grid>
+                            <StackLayout
+                                Grid.Row="1"
+                                HorizontalOptions="End"
+                                Orientation="Horizontal"
+                                Spacing="4"
+                                VerticalOptions="End">
+                                <Label
+                                    FontFamily="PoppinsRegular"
+                                    FontSize="18"
+                                    Text="999+"
+                                    TextColor="Black"
+                                    VerticalOptions="Center" />
+                            </StackLayout>
+                        </Grid>
+                    </Border>
+                </Grid>
+                <!--  Content Section  -->
+                <Label
+                    Margin="8,8,0,0"
+                    FontFamily="PoppinsSemiBold"
+                    FontSize="16"
+                    Text="Admin Tools"
+                    TextColor="Black"
+                    VerticalOptions="Center" />
+
+                <Grid
+                    Margin="8,0,8,0"
+                    ColumnDefinitions="*,*"
+                    ColumnSpacing="8">
+                    <local:MenuItem
+                        Title="Site manager"
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        BadgeType="None"
+                        Clicked="MenuItem_Clicked"
+                        Description="Site information" />
+
+                    <local:MenuItem
+                        Title="Member and Role"
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        BadgeType="None"
+                        Description="Member and role permission" />
+
+                </Grid>
+                <!--  Manager Tools  -->
+                <Label
+                    Margin="8,8,0,0"
+                    FontFamily="PoppinsSemiBold"
+                    FontSize="16"
+                    Text="Manager Tools"
+                    TextColor="Black"
+                    VerticalOptions="Center" />
+                <Grid
+                    Margin="8,0,8,0"
+                    ColumnDefinitions="*,*"
+                    ColumnSpacing="8"
+                    RowDefinitions="Auto,Auto"
+                    RowSpacing="8">
+
+                    <local:MenuItem
+                        Title="Zone manager"
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        BadgeType="None"
+                        Description="Zone management" />
+
+                    <local:MenuItem
+                        Title="Warehouse"
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        BadgeType="None"
+                        Description="Product management" />
+
+                    <local:MenuItem
+                        Title="Task Assignment"
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        BadgeType="None"
+                        Description="Assign task to technician" />
+
+                    <local:MenuItem
+                        Title="Technician"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        BadgeType="None"
+                        Description="Technician and permission" />
+
+                </Grid>
+
+
+            </StackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="StreetLightApp.Views.MenuItem"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <Border
+        BackgroundColor="#F1F5F9"
+        HeightRequest="64"
+        HorizontalOptions="Fill"
+        Stroke="Transparent"
+        StrokeThickness="0">
+        <Border.GestureRecognizers>
+            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+        </Border.GestureRecognizers>
+        <Grid HorizontalOptions="Fill">
+            <StackLayout Margin="0,8,0,0">
+                <Label
+                    x:Name="titleLbl"
+                    Margin="8,0,0,0"
+                    FontFamily="PoppinsSemiBold"
+                    FontSize="16"
+                    Text="Title"
+                    TextColor="Black" />
+                <Label
+                    x:Name="descriptionLbl"
+                    Margin="8,0,0,0"
+                    FontFamily="PoppinsRegular"
+                    FontSize="12"
+                    Text="Description"
+                    TextColor="#596577" />
+            </StackLayout>
+            <Border
+                x:Name="badgeNumberPanel"
+                Margin="0,8,4,0"
+                Padding="4,0,4,0"
+                BackgroundColor="#D9E1E8"
+                HeightRequest="18"
+                HorizontalOptions="End"
+                IsVisible="False"
+                Stroke="Transparent"
+                StrokeShape="RoundRectangle 4"
+                StrokeThickness="0"
+                VerticalOptions="Start">
+                <Label
+                    x:Name="badgeLbl"
+                    FontFamily="PoppinsRegular"
+                    FontSize="12"
+                    Text="99+"
+                    TextColor="#596577" />
+            </Border>
+            <Border
+                x:Name="badgeDot"
+                Margin="0,8,8,0"
+                BackgroundColor="#FDBA74"
+                HeightRequest="6"
+                HorizontalOptions="End"
+                Stroke="Transparent"
+                StrokeShape="RoundRectangle 3"
+                StrokeThickness="0"
+                VerticalOptions="Start"
+                WidthRequest="6" />
+        </Grid>
+    </Border>
+</ContentView>

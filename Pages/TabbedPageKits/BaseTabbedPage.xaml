@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage
+    x:Class="StreetLightApp.Pages.TabbedPageKits.BaseTabbedPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:StreetLightApp.Pages.TabbedPageKits"
+    CurrentPageChanged="TabbedPage_CurrentPageChanged"
+    NavigationPage.HasNavigationBar="False"
+    PagesChanged="TabbedPage_PagesChanged"
+    SelectedTabColor="#0F172A"
+    UnselectedTabColor="#94A3B8">
+    <local:HomePage
+        Title="Home"
+        IconImageSource="home_64.png"
+        NavigatedFrom="HomePage_NavigatedFrom"
+        NavigatedTo="homePage_NavigatedTo" />
+    <local:DevicePage
+        Title="Devices"
+        IconImageSource="list_48_noactive.png"
+        NavigatedFrom="DevicePage_NavigatedFrom"
+        NavigatedTo="DevicePage_NavigatedTo" />
+    <local:MapPage Title="Map" IconImageSource="{OnPlatform Default=google_64.png, iOS=google_64.png}" />
+    <local:ReportPage Title="Report" IconImageSource="{OnPlatform Default=calendarview_64.png, iOS=calendarview_64.png}" />
+    <local:SettingPage Title="Profile" IconImageSource="{OnPlatform Default=setting_64.png, iOS=setting_64.png}" />
+</TabbedPage>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mopups:PopupPage
+    x:Class="StreetLightApp.Popups.DimmerPopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:StreetLightApp.Views"
+    xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups"
+    xmlns:mopupsanim="clr-namespace:Mopups.Animations;assembly=Mopups"
+    Title="DimmerPopup"
+    BackgroundClicked="PopupPage_BackgroundClicked"
+    BackgroundColor="#80000000"
+    CloseWhenBackgroundIsClicked="True"
+    NavigationPage.HasNavigationBar="False">
+    <mopups:PopupPage.Animation>
+        <mopupsanim:ScaleAnimation
+            DurationIn="200"
+            DurationOut="200"
+            EasingIn="CubicIn"
+            EasingOut="CubicOut"
+            HasBackgroundAnimation="False"
+            PositionIn="Bottom"
+            PositionOut="Bottom"
+            ScaleIn="1"
+            ScaleOut="0.8" />
+    </mopups:PopupPage.Animation>
+    <Border
+        Margin="{OnPlatform Default='8,0,8,0',
+                            iOS='8,0,8,34'}"
+        BackgroundColor="#FFFFFF"
+        Stroke="Transparent"
+        StrokeShape="RoundRectangle 32"
+        StrokeThickness="2"
+        VerticalOptions="End">
+        <StackLayout>
+            <Border
+                Margin="0,16,16,0"
+                BackgroundColor="#DDDDDD"
+                HeightRequest="32"
+                HorizontalOptions="End"
+                Stroke="Transparent"
+                StrokeShape="RoundRectangle 16"
+                WidthRequest="32">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                </Border.GestureRecognizers>
+                <Grid x:Name="closeBtn">
+                    <Label
+                        FontFamily="PoppinsRegular"
+                        FontSize="18"
+                        HorizontalOptions="Center"
+                        IsVisible="False"
+                        Text="x"
+                        VerticalOptions="Center" />
+                    <Border
+                        BackgroundColor="#555555"
+                        HeightRequest="16"
+                        HorizontalOptions="Center"
+                        Stroke="Transparent"
+                        StrokeShape="RoundRectangle 2"
+                        VerticalOptions="Center"
+                        WidthRequest="4" />
+                    <Border
+                        BackgroundColor="#555555"
+                        HeightRequest="4"
+                        HorizontalOptions="Center"
+                        Stroke="Transparent"
+                        StrokeShape="RoundRectangle 2"
+                        VerticalOptions="Center"
+                        WidthRequest="16" />
+                </Grid>
+            </Border>
+            <Grid RowDefinitions="Auto,*" VerticalOptions="Fill">
+                <Label
+                    Margin="24,0,0,0"
+                    FontFamily="PoppinsSemiBold"
+                    FontSize="18"
+                    Text="Dimmer" />
+                <StackLayout>
+                    <StackLayout BackgroundColor="White">
+                        <Label
+                            x:Name="brightnessLbl"
+                            FontSize="56"
+                            HorizontalOptions="Center"
+                            Text="0%"
+                            TextColor="Black" />
+
+                        <local:SmithSlider
+                            BackColor="#555555"
+                            Corner="24"
+                            DebugLabelColor="Aqua"
+                            HeightRequest="100"
+                            MaxValue="32"
+                            MinValue="16"
+                            ShowDebugLabel="False"
+                            SliderValueChanged="SmithSlider_SliderValueChanged"
+                            SliderValueComplete="SmithSlider_SliderValueComplete"
+                            StepTick="2"
+                            ThumbColor="Brown"
+                            ThumbImageSource="thumb.png"
+                            Value="25">
+                            <local:SmithSlider.ForeColor>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                    <GradientStop Offset="0.0" Color="#8db9ca" />
+                                    <GradientStop Offset="1.0" Color="#c5cfda" />
+                                </LinearGradientBrush>
+                            </local:SmithSlider.ForeColor>
+                            <!--<local:SmithSlider.BackColor>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                    <GradientStop Offset="0.0" Color="#99a8b1" />
+                                    <GradientStop Offset="1.0" Color="#b2bdc5" />
+                                </LinearGradientBrush>
+                            </local:SmithSlider.BackColor>-->
+                        </local:SmithSlider>
+
+                        <Label Text="Test" TextColor="White" />
+                    </StackLayout>
+                    <Grid
+                        Grid.Row="1"
+                        Margin="16,0,16,16"
+                        ColumnDefinitions="*,*"
+                        ColumnSpacing="8"
+                        VerticalOptions="End">
+                        <Button
+                            Grid.Column="0"
+                            BackgroundColor="#DDDDDD"
+                            Clicked="Button_Clicked"
+                            CornerRadius="20"
+                            FontFamily="PoppinsRegular"
+                            FontSize="16"
+                            HeightRequest="64"
+                            Text="Cancel"
+                            TextColor="Black" />
+                        <Button
+                            Grid.Column="1"
+                            BackgroundColor="#3B82F6"
+                            Clicked="Button_Clicked_1"
+                            CornerRadius="20"
+                            FontFamily="PoppinsRegular"
+                            FontSize="16"
+                            HeightRequest="64"
+                            Text="Submit"
+                            TextColor="White" />
+                    </Grid>
+                </StackLayout>
+            </Grid>
+        </StackLayout>
+    </Border>
+</mopups:PopupPage>

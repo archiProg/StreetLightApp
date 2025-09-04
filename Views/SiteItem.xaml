@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="StreetLightApp.Views.SiteItem"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <Border
+        Padding="5,0,0,0"
+        BackgroundColor="White"
+        HeightRequest="64"
+        Stroke="Transparent"
+        StrokeShape="RoundRectangle 8"
+        StrokeThickness="0">
+        <Border.GestureRecognizers>
+            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+        </Border.GestureRecognizers>
+        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+            <Border
+                HeightRequest="56"
+                Stroke="Transparent"
+                StrokeShape="RoundRectangle 4,0,4,0"
+                StrokeThickness="0"
+                BackgroundColor="#F2F2F2"
+                WidthRequest="56">
+                <Image
+                    x:Name="siteimg"
+                    Aspect="AspectFill"
+                    Source="female5_avatar.png" />
+            </Border>
+
+            <StackLayout Grid.Column="1" VerticalOptions="Center">
+                <Label
+                    x:Name="titleLbl"
+                    FontFamily="PoppinsMedium"
+                    FontSize="16"
+                    Text="Site name"
+                    TextColor="#182032" />
+                <Label
+                    x:Name="descriptionLbl"
+                    FontFamily="PoppinsRegular"
+                    FontSize="12"
+                    Text="detail"
+                    TextColor="#7C90A8" />
+            </StackLayout>
+        </Grid>
+    </Border>
+</ContentView>

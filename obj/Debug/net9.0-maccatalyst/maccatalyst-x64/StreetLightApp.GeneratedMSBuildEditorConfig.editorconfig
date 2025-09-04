@@ -1,0 +1,151 @@
+is_global = true
+build_property.EnableAotAnalyzer = 
+build_property.EnableSingleFileAnalyzer = 
+build_property.EnableTrimAnalyzer = false
+build_property.IncludeAllContentForSelfExtract = 
+build_property.TargetFramework = net9.0-maccatalyst
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = false
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = StreetLightApp
+build_property.ProjectDir = C:\Users\Baramee\source\repos\StreetLightApp\StreetLightApp\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.EffectiveAnalysisLevelStyle = 9.0
+build_property.EnableCodeStyleSeverity = 
+
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/App.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.App.xaml
+build_metadata.AdditionalFiles.TargetPath = App.xaml
+build_metadata.AdditionalFiles.RelativePath = App.xaml
+
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/AppShell.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.AppShell.xaml
+build_metadata.AdditionalFiles.TargetPath = AppShell.xaml
+build_metadata.AdditionalFiles.RelativePath = AppShell.xaml
+
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/MainPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.MainPage.xaml
+build_metadata.AdditionalFiles.TargetPath = MainPage.xaml
+build_metadata.AdditionalFiles.RelativePath = MainPage.xaml
+
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Pages/LoginPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.LoginPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\LoginPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\LoginPage.xaml
+
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Pages/MaintenancePage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.MaintenancePage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\MaintenancePage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\MaintenancePage.xaml
+
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Pages/StartUpPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.StartUpPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\StartUpPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\StartUpPage.xaml
+
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Pages/TabbedPageKits/BaseTabbedPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.TabbedPageKits.BaseTabbedPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\TabbedPageKits\BaseTabbedPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\TabbedPageKits\BaseTabbedPage.xaml
+
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Pages/TabbedPageKits/DevicePage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.TabbedPageKits.DevicePage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\TabbedPageKits\DevicePage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\TabbedPageKits\DevicePage.xaml
+
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Pages/TabbedPageKits/DeviceSitePage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.TabbedPageKits.DeviceSitePage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\TabbedPageKits\DeviceSitePage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\TabbedPageKits\DeviceSitePage.xaml
+
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Pages/TabbedPageKits/HomePage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.TabbedPageKits.HomePage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\TabbedPageKits\HomePage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\TabbedPageKits\HomePage.xaml
+
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Pages/TabbedPageKits/MapPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.TabbedPageKits.MapPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\TabbedPageKits\MapPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\TabbedPageKits\MapPage.xaml
+
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Pages/TabbedPageKits/ReportPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.TabbedPageKits.ReportPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\TabbedPageKits\ReportPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\TabbedPageKits\ReportPage.xaml
+
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Pages/TabbedPageKits/SettingPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.TabbedPageKits.SettingPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\TabbedPageKits\SettingPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\TabbedPageKits\SettingPage.xaml
+
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Popups/DimmerPopup.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Popups.DimmerPopup.xaml
+build_metadata.AdditionalFiles.TargetPath = Popups\DimmerPopup.xaml
+build_metadata.AdditionalFiles.RelativePath = Popups\DimmerPopup.xaml
+
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Resources/Styles/Colors.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Resources.Styles.Colors.xaml
+build_metadata.AdditionalFiles.TargetPath = Resources\Styles\Colors.xaml
+build_metadata.AdditionalFiles.RelativePath = Resources\Styles\Colors.xaml
+
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Resources/Styles/Styles.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Resources.Styles.Styles.xaml
+build_metadata.AdditionalFiles.TargetPath = Resources\Styles\Styles.xaml
+build_metadata.AdditionalFiles.RelativePath = Resources\Styles\Styles.xaml
+
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Views/DeviceItems.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Views.DeviceItems.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\DeviceItems.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\DeviceItems.xaml
+
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Views/LightButton.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Views.LightButton.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\LightButton.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\LightButton.xaml
+
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Views/MenuActiveButton.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Views.MenuActiveButton.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\MenuActiveButton.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\MenuActiveButton.xaml
+
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Views/MenuItem.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Views.MenuItem.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\MenuItem.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\MenuItem.xaml
+
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Views/SiteItem.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Views.SiteItem.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\SiteItem.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\SiteItem.xaml
+
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Views/SmithSlider.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Views.SmithSlider.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\SmithSlider.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\SmithSlider.xaml

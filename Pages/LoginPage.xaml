@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="StreetLightApp.Pages.LoginPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:StreetLightApp.Controls"
+    xmlns:local="clr-namespace:StreetLightApp"
+    Title="LoginPage"
+    NavigationPage.HasNavigationBar="False">
+    <Grid>
+        <ScrollView>
+            <StackLayout Orientation="Vertical" Spacing="0">
+                <StackLayout Orientation="Vertical" Spacing="0">
+                    <StackLayout
+                        Margin="{OnPlatform Android='0,54,0,0',
+                                            iOS=0}"
+                        Padding="0,0,16,0"
+                        HeightRequest="42">
+                        <Label
+                            FontFamily="PoppinsMedium"
+                            FontSize="16"
+                            HorizontalOptions="End"
+                            Text="Language"
+                            TextColor="#0F172A"
+                            VerticalOptions="CenterAndExpand" />
+                    </StackLayout>
+                    <Label
+                        Margin="0,24,0,0"
+                        FontFamily="PoppinsSemiBold"
+                        FontSize="24"
+                        HorizontalOptions="Center"
+                        Text="Solar Centralize"
+                        TextColor="#0F172A" />
+                    <Label
+                        Margin="0,8,0,0"
+                        FontFamily="PoppinsRegular"
+                        FontSize="14"
+                        HorizontalOptions="Center"
+                        Text="Log in with your email to manage your lights."
+                        TextColor="#7C90A8" />
+                    <Label
+                        Margin="16,24,0,0"
+                        FontFamily="PoppinsMedium"
+                        FontSize="16"
+                        HorizontalOptions="Start"
+                        Text="ACCOUNT INFORMATION"
+                        TextColor="#0F172A" />
+                    <controls:CustomEntry
+                        x:Name="usernameTxt"
+                        Margin="16,8,16,0"
+                        BackgroundColors="#F1F5F9"
+                        BorderColor="Transparent"
+                        BorderWidth="16"
+                        CornerRadius="2"
+                        FontFamily="PoppinsRegular"
+                        FontSize="18"
+                        HeightRequest="56"
+                        HorizontalOptions="Fill"
+                        Keyboard="Email"
+                        MaxLength="60"
+                        Placeholder="Email"
+                        ReturnType="Next"
+                        Text="m4galolx@gmail.com" />
+                    <controls:CustomEntry
+                        x:Name="passTxt"
+                        Margin="16,8,16,0"
+                        BackgroundColors="#F1F5F9"
+                        BorderColor="Transparent"
+                        BorderWidth="16"
+                        CornerRadius="2"
+                        FontFamily="PoppinsRegular"
+                        FontSize="18"
+                        HeightRequest="56"
+                        HorizontalOptions="Fill"
+                        IsPassword="True"
+                        Keyboard="Password"
+                        MaxLength="20"
+                        Placeholder="Password"
+                        ReturnType="Done"
+                        Text="123456789" />
+                    <Label
+                        Margin="16,16,0,0"
+                        FontFamily="PoppinsMedium"
+                        FontSize="16"
+                        Text="Forget your password?"
+                        TextColor="#0EA5E9" />
+                    <Button
+                        Margin="16,16,16,0"
+                        BackgroundColor="#3B82F6"
+                        Clicked="Button_Clicked"
+                        CornerRadius="2"
+                        FontFamily="PoppinsSemiBold"
+                        FontSize="16"
+                        HeightRequest="56"
+                        Text="Login">
+                        <Button.Shadow>
+                            <Shadow
+                                Brush="#4161A5"
+                                Opacity=".2"
+                                Radius="6"
+                                Offset="1,1" />
+                        </Button.Shadow>
+                    </Button>
+                    <StackLayout
+                        Margin="0,24,0,0"
+                        HorizontalOptions="Center"
+                        Orientation="Horizontal"
+                        Spacing="4">
+                        <Label
+                            FontFamily="PoppinsSemiBold"
+                            FontSize="16"
+                            Text="Don't have an account?"
+                            TextColor="#0F172A" />
+                        <Label
+                            x:Name="signupBtn"
+                            FontFamily="PoppinsSemiBold"
+                            FontSize="16"
+                            Text="Sign up"
+                            TextColor="#3B82F6">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </StackLayout>
+                    <Label
+                        Margin="0,36,0,0"
+                        FontFamily="PoppinsMedium"
+                        FontSize="16"
+                        HorizontalOptions="Center"
+                        Text="Or"
+                        TextColor="#0F172A" />
+                    <Grid Margin="16,16,16,0" HeightRequest="56">
+                        <Button
+                            x:Name="googleAccountBtn"
+                            BackgroundColor="White"
+                            BorderColor="#DEDEDE"
+                            BorderWidth="0.5"
+                            Clicked="googleAccountBtn_Clicked"
+                            CornerRadius="2"
+                            HeightRequest="56" />
+                        <StackLayout
+                            HorizontalOptions="Center"
+                            InputTransparent="True"
+                            Orientation="Horizontal"
+                            Spacing="8"
+                            VerticalOptions="Center">
+                            <Image
+                                Aspect="AspectFit"
+                                HeightRequest="24"
+                                Source="google_64"
+                                VerticalOptions="CenterAndExpand"
+                                WidthRequest="24" />
+                            <Label
+                                FontFamily="PoppinsSemiBold"
+                                FontSize="16"
+                                Text="Continue with Google Account"
+                                TextColor="#0F172A"
+                                VerticalOptions="CenterAndExpand" />
+                        </StackLayout>
+                    </Grid>
+                </StackLayout>
+            </StackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

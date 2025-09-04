@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="StreetLightApp.Views.DeviceItems"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <Border
+        BackgroundColor="#FFFFFF"
+        Stroke="Transparent"
+        StrokeShape="RoundRectangle 12"
+        StrokeThickness="0">
+        <Grid ColumnDefinitions="Auto,*,Auto">
+            <CheckBox
+                Margin="0"
+                CheckedChanged="CheckBoxSelect_CheckedChanged"
+                VerticalOptions="Center"
+                Color="#53A7DF" />
+            <StackLayout Grid.Column="1">
+
+                <HorizontalStackLayout>
+                    <Label
+                        x:Name="LbDeviceName"
+                        Margin="0,8,0,0"
+                        FontFamily="PoppinsMedium"
+                        FontSize="16"
+                        Text="" />
+                    <StackLayout
+                        Margin="0,0,0,8"
+                        Orientation="Horizontal"
+                        Spacing="0">
+                        <Label
+                            FontFamily="PoppinsRegular"
+                            FontSize="14"
+                            Text="OFF"
+                            TextColor="#EF8484"
+                            VerticalOptions="Center" />
+                        <ImageButton
+                            Padding="4"
+                            BackgroundColor="#F8C64B"
+                            CornerRadius="12"
+                            HeightRequest="24"
+                            HorizontalOptions="Start"
+                            MinimumHeightRequest="24"
+                            MinimumWidthRequest="24"
+                            Source="bell_64_w.png"
+                            VerticalOptions="Center"
+                            WidthRequest="24" />
+                        <Label
+                            FontFamily="PoppinsRegular"
+                            FontSize="14"
+                            Text="100"
+                            TextColor="#F8C64B"
+                            VerticalOptions="Center" />
+                    </StackLayout>
+                </HorizontalStackLayout>
+                <StackLayout Orientation="Horizontal" Spacing="4">
+                    <Label
+                        FontFamily="PoppinsRegular"
+                        FontSize="12"
+                        Text="CN:TH20250001"
+                        TextColor="#627296"
+                        TextDecorations="Underline"
+                        VerticalOptions="Center" />
+                    <BoxView
+                        BackgroundColor="#C4C4C4"
+                        CornerRadius="2"
+                        HeightRequest="4"
+                        VerticalOptions="Center"
+                        WidthRequest="4" />
+                    <Label
+                        FontFamily="PoppinsRegular"
+                        FontSize="14"
+                        Text="Group Ladprao Road"
+                        TextColor="#627296"
+                        TextDecorations="Underline"
+                        VerticalOptions="Center" />
+                </StackLayout>
+            </StackLayout>
+            <Button
+                Grid.Column="2"
+                Margin="0,0,8,0"
+                BackgroundColor="Transparent"
+                Text="&gt;"
+                TextColor="Black"
+                VerticalOptions="Center" />
+        </Grid>
+
+    </Border>
+</ContentView>
