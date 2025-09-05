@@ -64,27 +64,15 @@ public partial class StartUpPage : ContentPage
                         }
                         else if (res.Reason == LoginResultReason.CannotConnectToServer)
                         {
-                            Application.Current.MainPage = new NavigationPage(new MaintenancePage())
-                            {
-                                //BarBackgroundColor = Colors.Blue,  // Set background color
-                                BarTextColor = Color.FromArgb("#182032")       // Set title and back button color
-                            };
+                            Application.Current.MainPage = new MaintenancePage();
                         }
                         else if (res.Reason == LoginResultReason.UsernameOrPasswordWrong)
                         {
-                            Application.Current.MainPage = new NavigationPage(new LoginPage())
-                            {
-                                //BarBackgroundColor = Colors.Blue,  // Set background color
-                                BarTextColor = Color.FromArgb("#182032")       // Set title and back button color
-                            };
+                             Application.Current.MainPage = new LoginPage();
                         }
                         else
                         {
-                            Application.Current.MainPage = new NavigationPage(new LoginPage())
-                            {
-                                //BarBackgroundColor = Colors.Blue,  // Set background color
-                                BarTextColor = Color.FromArgb("#182032")       // Set title and back button color
-                            };
+                            Application.Current.MainPage = new LoginPage() ;
                         }
 
 
@@ -95,11 +83,7 @@ public partial class StartUpPage : ContentPage
 
                     Dispatcher.Dispatch(async () =>
                     {
-                        Application.Current.MainPage = new NavigationPage(new LoginPage())
-                        {
-                            //BarBackgroundColor = Colors.Blue,  // Set background color
-                            BarTextColor = Color.FromArgb("#182032")       // Set title and back button color
-                        };
+                        await Navigation.PushAsync(new LoginPage());
                     });
                 }
             }

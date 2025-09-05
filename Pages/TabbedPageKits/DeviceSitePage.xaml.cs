@@ -36,13 +36,12 @@ public partial class DeviceSitePage : ContentPage
     {
         if (_isLoading) return;
         _isLoading = true;
-
+        SelectAllCheckBox.IsEnabled = false;
         LoadingIndicator.IsVisible = true;
         LoadingIndicator.IsRunning = true;
 
         new Thread(() =>
         {
-            SelectAllCheckBox.IsEnabled = false;
 
             int remaining = _allDevices.Count - _loadedCount;
             int toLoad = Math.Min(PageSize, remaining);
@@ -77,10 +76,12 @@ public partial class DeviceSitePage : ContentPage
                LoadingIndicator.IsVisible = false;
 
                _isLoading = false;
+               SelectAllCheckBox.IsEnabled = true;
            });
-            SelectAllCheckBox.IsEnabled = true;
+
 
         }).Start();
+
     }
     private void OnDeviceScroll(object sender, ScrolledEventArgs e)
     {
@@ -199,7 +200,17 @@ public partial class DeviceSitePage : ContentPage
 
     private void OnClearlChecked(object sender, EventArgs e)
     {
-
+        IsSelectAll = false;
+        ControlMenu.IsVisible = false;
+        SelectDevices.Clear();
+        SelectAllCheckBox.IsChecked = false;
+        foreach (var child in DeviceStack.Children)
+        {
+            if (child is Views.DeviceItems deviceItem)
+            {
+                deviceItem.SetChecked(false);
+            }
+        }
     }
 
     private void OnSearchButtonClicked(object sender, EventArgs e)
@@ -207,7 +218,6 @@ public partial class DeviceSitePage : ContentPage
         string keyword = DeviceSearchTxt.Text?.Trim().ToLower() ?? string.Empty;
         _loadedCount = 0;
         DeviceStack.Children.Clear();
-
         List<DeviceNode> filtered;
         if (string.IsNullOrEmpty(keyword))
         {
@@ -250,6 +260,16 @@ public partial class DeviceSitePage : ContentPage
             await Navigation.PushAsync(new ManageDevicePage(CurrentSite, SelectDevices));
 
         }
+
+    }
+
+    private void mySlider_HandlerChanged(object sender, EventArgs e)
+    {
+  
+    }
+
+    private void mySlider_DragCompleted(object sender, EventArgs e)
+    {
 
     }
 }

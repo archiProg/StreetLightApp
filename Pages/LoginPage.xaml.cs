@@ -33,7 +33,12 @@ public partial class LoginPage : ContentPage
 
             if (res.Success == true)
             {
-                Application.Current.MainPage = new NavigationPage(new BaseTabbedPage());
+                var page = new NavigationPage(new BaseTabbedPage())
+                {
+                    BarTextColor = Colors.Black,
+                };
+
+                Application.Current.MainPage = new NavigationPage(page);
             }
             else
             {
@@ -81,7 +86,6 @@ public partial class LoginPage : ContentPage
             {
                 Success = true,
                 Reason = LoginResultReason.Success,
-
             };
         }
         else if (response.HttpStatusCode == System.Net.HttpStatusCode.Unauthorized)

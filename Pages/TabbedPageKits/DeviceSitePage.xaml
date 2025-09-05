@@ -236,11 +236,13 @@
                     <Slider
                         x:Name="mySlider"
                         Grid.Column="1"
+                        DragCompleted="mySlider_DragCompleted"
                         Maximum="100"
                         MaximumTrackColor="#CCD8E5"
                         Minimum="0"
                         MinimumTrackColor="#2A4C6D"
-                        ThumbColor="#2A4C6D" />
+                        ThumbColor="#2A4C6D"
+                        ValueChanged="mySlider_HandlerChanged" />
                     <Switch Grid.Column="2" />
                 </Grid>
             </StackLayout>
