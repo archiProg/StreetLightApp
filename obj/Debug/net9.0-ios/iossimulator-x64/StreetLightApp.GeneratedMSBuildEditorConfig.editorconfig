@@ -48,6 +48,12 @@ build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.Maint
 build_metadata.AdditionalFiles.TargetPath = Pages\MaintenancePage.xaml
 build_metadata.AdditionalFiles.RelativePath = Pages\MaintenancePage.xaml
 
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Pages/ManageDevicePage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.ManageDevicePage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\ManageDevicePage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\ManageDevicePage.xaml
+
 [C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Pages/StartUpPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.StartUpPage.xaml

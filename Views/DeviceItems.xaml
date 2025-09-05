@@ -10,46 +10,83 @@
         StrokeThickness="0">
         <Grid ColumnDefinitions="Auto,*,Auto">
             <CheckBox
+                x:Name="DeviceCheckBox" 
                 Margin="0"
                 CheckedChanged="CheckBoxSelect_CheckedChanged"
+                IsVisible="False"
                 VerticalOptions="Center"
                 Color="#53A7DF" />
+            <BoxView
+                x:Name="GatewayUnCheckBox"
+                BackgroundColor="Transparent"
+                IsVisible="False"
+                WidthRequest="16" />
             <StackLayout Grid.Column="1">
-
                 <HorizontalStackLayout>
                     <Label
                         x:Name="LbDeviceName"
-                        Margin="0,8,0,0"
+                        Margin="0,8,8,0"
                         FontFamily="PoppinsMedium"
                         FontSize="16"
+                        LineBreakMode="TailTruncation"
+                        MaxLines="1"
+                        MaximumWidthRequest="75"
                         Text="" />
+                    <Image
+                        x:Name="ImgIconGateway"
+                        IsVisible="False"
+                        Source="icon_gateway.png" />
                     <StackLayout
-                        Margin="0,0,0,8"
+                        x:Name="StatusSiteStackLayout"
+                        Margin="0,8,0,0"
                         Orientation="Horizontal"
-                        Spacing="0">
+                        Spacing="4">
                         <Label
                             FontFamily="PoppinsRegular"
                             FontSize="14"
                             Text="OFF"
                             TextColor="#EF8484"
                             VerticalOptions="Center" />
-                        <ImageButton
-                            Padding="4"
-                            BackgroundColor="#F8C64B"
-                            CornerRadius="12"
-                            HeightRequest="24"
-                            HorizontalOptions="Start"
-                            MinimumHeightRequest="24"
-                            MinimumWidthRequest="24"
-                            Source="bell_64_w.png"
-                            VerticalOptions="Center"
-                            WidthRequest="24" />
+                        <HorizontalStackLayout Spacing="2">
+                            <Image Source="sun_icon.png" />
+
+                            <Label
+                                x:Name="DimmerValue"
+                                FontFamily="PoppinsRegular"
+                                FontSize="14"
+                                Text="100%"
+                                TextColor="#F8C64B"
+                                VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout Spacing="2">
+                            <Image Source="battery_icon.png" />
+                            <Label
+                                x:Name="BattValue"
+                                FontFamily="PoppinsRegular"
+                                FontSize="14"
+                                Text="100%"
+                                TextColor="#67A671"
+                                VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout Spacing="2">
+                            <Image Source="thunder_icon.png" />
+                            <Label
+                                x:Name="BattVolt"
+                                FontFamily="PoppinsRegular"
+                                FontSize="14"
+                                Text="13.24V"
+                                TextColor="#FFC500"
+                                VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+
+
                         <Label
                             FontFamily="PoppinsRegular"
                             FontSize="14"
-                            Text="100"
-                            TextColor="#F8C64B"
+                            Text="28.74Ah"
+                            TextColor="#67A671"
                             VerticalOptions="Center" />
+
                     </StackLayout>
                 </HorizontalStackLayout>
                 <StackLayout Orientation="Horizontal" Spacing="4">
@@ -76,9 +113,12 @@
                 </StackLayout>
             </StackLayout>
             <Button
+                x:Name="BtnShowDetail"
                 Grid.Column="2"
                 Margin="0,0,8,0"
                 BackgroundColor="Transparent"
+                Clicked="BtnShowDetail_Clicked"
+                IsVisible="False"
                 Text="&gt;"
                 TextColor="Black"
                 VerticalOptions="Center" />

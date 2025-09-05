@@ -1,8 +1,12 @@
-﻿using Microsoft.Extensions.Logging;
+﻿#if ANDROID
+using Android.Content.Res;
+#endif
+using CommunityToolkit.Maui;
+using Microsoft.Extensions.Logging;
+using Microsoft.Maui.Handlers;
+using Mopups.Hosting;
 using Mopups.Interfaces;
 using Mopups.Services;
-using CommunityToolkit.Maui;
-using Mopups.Hosting;
 
 namespace StreetLightApp
 {
@@ -27,9 +31,25 @@ namespace StreetLightApp
                     fonts.AddFont("Poppins-Bold.ttf", "PoppinsBold");
 
                 });
+            Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping(nameof(Entry), (handler, view) =>
+            {
+#if ANDROID
+                handler.PlatformView.BackgroundTintList = ColorStateList.ValueOf(Android.Graphics.Color.Transparent);
 
+#endif
+            });
+            PickerHandler.Mapper.AppendToMapping(nameof(Picker), (handler, view) =>
+            {
+#if ANDROID
+            if (handler.PlatformView != null)
+            {
+                // Remove underline / tint
+                handler.PlatformView.BackgroundTintList = ColorStateList.ValueOf(Android.Graphics.Color.Transparent);
+            }
+#endif
+            });
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
             builder.Services.AddSingleton<IPopupNavigation>(MopupService.Instance);
 
