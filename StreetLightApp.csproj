@@ -113,6 +113,9 @@
 	  <MauiXaml Update="Views\DeviceItems.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\DimmerItem.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\LightButton.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

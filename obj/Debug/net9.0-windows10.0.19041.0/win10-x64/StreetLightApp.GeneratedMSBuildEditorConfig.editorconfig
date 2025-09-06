@@ -130,6 +130,12 @@ build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Views.Devic
 build_metadata.AdditionalFiles.TargetPath = Views\DeviceItems.xaml
 build_metadata.AdditionalFiles.RelativePath = Views\DeviceItems.xaml
 
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Views/DimmerItem.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Views.DimmerItem.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\DimmerItem.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\DimmerItem.xaml
+
 [C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Views/LightButton.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Views.LightButton.xaml

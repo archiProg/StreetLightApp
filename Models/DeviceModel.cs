@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,8 +24,8 @@ namespace StreetLightApp.Models
         public double? @long { get; set; }
         public int? group_id { get; set; }
         public string group_name { get; set; }
-        public string description { get; set; }
-        public List<Control> controls { get; set; }
+        public string description { get; set; } 
+        public ObservableCollection<Control> controls { get; set; }
         public List<Config> config { get; set; }
     }
 

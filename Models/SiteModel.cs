@@ -13,5 +13,5 @@ namespace StreetLightApp.Models
         public string site_label { get; set; }
         public string site_role { get; set; }
     }
-
+ 
 }

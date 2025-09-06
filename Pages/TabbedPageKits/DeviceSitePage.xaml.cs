@@ -1,4 +1,4 @@
-using Microsoft.Maui.Controls;
+﻿using Microsoft.Maui.Controls;
 using Newtonsoft.Json;
 using RestSharp;
 using StreetLightApp.Models;
@@ -26,10 +26,16 @@ public partial class DeviceSitePage : ContentPage
     public DeviceSitePage(Site _site)
     {
         InitializeComponent();
+        Provider.FocusSite.Clear();
         Title = _site.site_name;
         CurrentSite = _site;
         GetAllDevice();
 
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
     }
 
     private async void LoadMoreItems()
@@ -60,6 +66,9 @@ public partial class DeviceSitePage : ContentPage
                     if (dev.type != "gateway")
                     {
                         deviceItem.SetChecked(IsSelectAll);
+                    }
+                    if (dev.type == "gateway") {
+                        Console.WriteLine($"Gateway:::::::::::{dev.gateway_name}");
                     }
                     newItems.Add(deviceItem);
                 }
@@ -92,6 +101,14 @@ public partial class DeviceSitePage : ContentPage
             LoadMoreItems();
         }
     }
+
+
+    private async void GenItems() { 
+    
+    
+    
+    }
+
 
     private void DeviceItem_CheckedChanged(object sender, CheckedChangedEventArgs e)
     {
@@ -142,22 +159,169 @@ public partial class DeviceSitePage : ContentPage
         {
             Console.WriteLine($"GetAllDevice:::{response.Message}");
             var deviceList = JsonConvert.DeserializeObject<List<DeviceNode>>(response?.Message?.ToString());
-
             if (deviceList != null)
             {
-                _allDevices = deviceList;
-                totalDevices = deviceList.FindAll(x => x.type != "gateway").Count;
-                SelectAllDevices = deviceList.FindAll(x => x.type != "gateway");
-                _loadedCount = 0;
-                DeviceStack.Children.Clear();
-                LoadMoreItems();
+
+                foreach (var device in deviceList)
+                {
+                    if (device.type == "gateway")
+                    {
+                        Console.WriteLine($"gateway::::::::::::::::::::::::::::::: {device.gateway_name}");
+                        var gateway = new FocusGatewayModel
+                        {
+                            gateway_id = device.gateway_id,
+                            GatewayName = device.gateway_name,
+                            Status = 1,
+                            contract_id = device.contract_id,
+                            contract_number = device.contract_number,
+                            gateway_lat = device.gateway_lat,
+                            gateway_long = device.gateway_long,
+                        };
+                        if (!Provider.FocusSite.Any(g => g.gateway_id == device.gateway_id))
+                        {
+                            Provider.FocusSite.Add(gateway);
+                            Console.WriteLine($"GW:::::::::::{gateway.GatewayName}");
+                        }
+                    }
+                    else
+                    {
+                        var gateway = Provider.FocusSite.FirstOrDefault(g => g.gateway_id == device.gateway_id);
+                        if (gateway == null)
+                        {
+                            Console.WriteLine($"Gateway not found for device {device.device_name}");
+                            continue;
+                        }
+                        Console.WriteLine($"Devices:::::::::::::::::::device.device_style  {device.device_style}:::::::::::::::::::::::");
+                        switch (device.device_style)
+                        {
+                            case 1://Air condition
+                                foreach (var control in device.controls)
+                                {
+                                    switch (control.control_id)
+                                    {
+                                        case 0://Online
+
+                                            break;
+                                        case 1://Status
+
+                                            break;
+                                    }
+                                }
+                                break;
+                            case 2://Curtain
+                                foreach (var control in device.controls)
+                                {
+
+                                    switch (control.control_id)
+                                    {
+                                        case 0://Online
+
+                                            break;
+                                        case 1://Status 1
+
+                                            break;
+                                        case 2://Status 2
+
+                                            break;
+                                    }
+                                }
+                                break;
+                            case 3://Dimmer
+                                Console.WriteLine("case 3://Dimmer::::::::::::::::::::::::::::::::::");
+                                Dimmer dimmer = new Dimmer
+                                {
+                                    Name = device.device_name,
+                                    DeviceID = device.device_id == null ? 0 : (int)device.device_id,
+                                    MemberID = device.gateway_id,
+                                };
+                                Console.WriteLine($"dimmer:::::{dimmer.Name} | {dimmer.DeviceID} | {dimmer.MemberID}::::::::::::::::::::::::::");
+                                foreach (var control in device.controls)
+                                {
+
+                                    switch (control.control_id)
+                                    {
+                                        case 0://Online
+                                            dimmer.Online = (int)control.last_value;
+                                            dimmer.SetOnline((int)control.last_value);
+                                            break;
+                                        case 1://Brightness %
+                                            dimmer.Dimvalue = (int)control.last_value;
+                                            dimmer.SetDim((int)control.last_value);
+                                            break;
+                                        case 2://Status 
+                                            dimmer.Status = (int)control.last_value;
+                                            dimmer.SetStatus((int)control.last_value);
+                                            break;
+                                        case 10://percentage batt
+                                            dimmer.Percentage = (int)control.last_value;
+                                            dimmer.SetPercentage((int)control.last_value);
+                                            break;
+                                        case 11://temp ℃
+                                            dimmer.Temp = control.last_value;
+                                            dimmer.SetTemp(control.last_value);
+                                            break;
+                                        case 12://Status charge
+                                            dimmer.Charge = (int)control.last_value;
+                                            dimmer.SetCharge((int)control.last_value);
+                                            break;
+                                        case 13:// Input powerVolt  V xxx
+                                            dimmer.PowerVolt = control.last_value;
+                                            dimmer.SetPowerVolt(control.last_value);
+                                            break;
+                                        case 14://Input powerCurrent mA
+                                            dimmer.PowerCurrent = control.last_value;
+                                            dimmer.SetPowerCurrent(control.last_value);
+                                            break;
+                                        case 15://powerOutVolt V xxx
+                                            dimmer.PowerOutVolt = control.last_value;
+                                            dimmer.SetPowerOutVolt(control.last_value);
+                                            break;
+                                        case 16://powerOutCurrent mA
+                                            dimmer.PowerOutCurrent = control.last_value;
+                                            dimmer.SetPowerOutCurrent(control.last_value);
+                                            break;
+                                        case 17://batt_volt V
+                                            dimmer.BattVolt = control.last_value;
+                                            dimmer.SetBattVolt(control.last_value);
+                                            break;
+                                        case 18://capacity Ah
+                                            dimmer.Capacity = control.last_value;
+                                            dimmer.SetCapacity(control.last_value);
+                                            break;
+                                        case 19://batt_health %
+                                            dimmer.BattHealth = (int)control.last_value;
+                                            dimmer.SetBattHealth((int)control.last_value);
+                                            break;
+                                        case 20://cycle_count 
+                                            dimmer.CycleCount = (int)control.last_value;
+                                            dimmer.SetCycleCount((int)control.last_value);
+                                            break;
+                                    }
+
+                                }
+                                gateway.Dimmers.Add(dimmer);
+                                Console.WriteLine($"dimmer.DeviceID:::::::::::::::::::::::::::{dimmer.DeviceID}");
+                                gateway.DEVICE_TYPE.Add(new Dictionary<int, int> { { dimmer.DeviceID, 3 } });
+                                break;
+
+                        }
+                    }
+
+                    _allDevices = deviceList;
+                    totalDevices = deviceList.FindAll(x => x.type != "gateway").Count;
+                    SelectAllDevices = deviceList.FindAll(x => x.type != "gateway");
+                    _loadedCount = 0;
+                    DeviceStack.Children.Clear();
+                    LoadMoreItems();
+                    //GenItems();
+                }
+                TotalDevices.Text = $"({totalDevices.ToString()})";
+                TotalSelects.Text = $"(Up to {totalDevices} Items)";
             }
-            TotalDevices.Text = $"({totalDevices.ToString()})";
-            TotalSelects.Text = $"(Up to {totalDevices} Items)";
-        }
-        else
-        {
-            await DisplayAlert("Error", $"Failed to get device list: {response.Message}", "OK");
+            else
+            {
+                await DisplayAlert("Error", $"Failed to get device list: {response.Message}", "OK");
+            }
         }
     }
 
@@ -221,7 +385,7 @@ public partial class DeviceSitePage : ContentPage
         List<DeviceNode> filtered;
         if (string.IsNullOrEmpty(keyword))
         {
-            filtered = _allDevices;
+            filtered = _allDevices.ToList();
         }
         else
         {
@@ -265,7 +429,7 @@ public partial class DeviceSitePage : ContentPage
 
     private void mySlider_HandlerChanged(object sender, EventArgs e)
     {
-  
+
     }
 
     private void mySlider_DragCompleted(object sender, EventArgs e)
