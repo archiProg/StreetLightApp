@@ -1,11 +1,119 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="StreetLightApp.Views.DimmerItem">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+<ContentView
+    x:Class="StreetLightApp.Views.DimmerItem"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <Border
+        BackgroundColor="#FFFFFF"
+        Stroke="Transparent"
+        StrokeShape="RoundRectangle 12"
+        StrokeThickness="0">
+        <Grid ColumnDefinitions="Auto,*,Auto">
+            <CheckBox
+                x:Name="DeviceCheckBox"
+                Margin="0"
+                CheckedChanged="CheckBoxSelect_CheckedChanged"
+                VerticalOptions="Center"
+                Color="#53A7DF" />
+            <BoxView
+                x:Name="GatewayUnCheckBox"
+                BackgroundColor="Transparent"
+                IsVisible="False"
+                WidthRequest="16" />
+            <StackLayout Grid.Column="1">
+                <HorizontalStackLayout>
+                    <Label
+                        x:Name="LbDeviceName"
+                        Margin="0,8,8,0"
+                        FontFamily="PoppinsMedium"
+                        FontSize="16"
+                        LineBreakMode="TailTruncation"
+                        MaxLines="1"
+                        MaximumWidthRequest="75"
+                        Text="" />
+                    <Image
+                        x:Name="ImgIconGateway"
+                        IsVisible="False"
+                        Source="icon_gateway.png" />
+                    <StackLayout
+                        x:Name="StatusSiteStackLayout"
+                        Margin="0,8,0,0"
+                        Orientation="Horizontal"
+                        Spacing="4">
+                        <Label
+                            x:Name="Statustxt"
+                            FontFamily="PoppinsRegular"
+                            FontSize="14"
+                            Text="OFF"
+                            TextColor="#EF8484"
+                            VerticalOptions="Center" />
+                        <HorizontalStackLayout Spacing="2">
+                            <Image Source="sun_icon.png" />
+
+                            <Label
+                                x:Name="DimmerValueTxt"
+                                FontFamily="PoppinsRegular"
+                                FontSize="14"
+                                Text="100%"
+                                TextColor="#F8C64B"
+                                VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout Spacing="2">
+                            <Image Source="battery_icon.png" />
+                            <Label
+                                x:Name="PercentageTxt"
+                                FontFamily="PoppinsRegular"
+                                FontSize="14"
+                                Text="100%"
+                                TextColor="#67A671"
+                                VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout Spacing="2">
+                            <Image Source="thunder_icon.png" />
+                            <Label
+                                x:Name="BattVoltxt"
+                                FontFamily="PoppinsRegular"
+                                FontSize="14"
+                                Text="13.24V"
+                                TextColor="#FFC500"
+                                VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+
+
+                        <Label
+                            x:Name="CapacityTxt"
+                            FontFamily="PoppinsRegular"
+                            FontSize="14"
+                            Text="28.74Ah"
+                            TextColor="#67A671"
+                            VerticalOptions="Center" />
+
+                    </StackLayout>
+                </HorizontalStackLayout>
+                <StackLayout Orientation="Horizontal" Spacing="4">
+                    <Label
+                        FontFamily="PoppinsRegular"
+                        FontSize="12"
+                        Text="CN:TH20250001"
+                        TextColor="#627296"
+                        TextDecorations="Underline"
+                        VerticalOptions="Center" />
+                    <BoxView
+                        BackgroundColor="#C4C4C4"
+                        CornerRadius="2"
+                        HeightRequest="4"
+                        VerticalOptions="Center"
+                        WidthRequest="4" />
+                    <Label
+                        FontFamily="PoppinsRegular"
+                        FontSize="14"
+                        Text="Group Ladprao Road"
+                        TextColor="#627296"
+                        TextDecorations="Underline"
+                        VerticalOptions="Center" />
+                </StackLayout>
+            </StackLayout>
+        </Grid>
+
+    </Border>
 </ContentView>

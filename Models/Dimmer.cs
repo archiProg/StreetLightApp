@@ -1,25 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 
 namespace StreetLightApp.Models
 {
-    public class Dimmer
+    public class Dimmer : MyDevice
     {
-        public int MemberID { get; set; }
-        public int DeviceID { get; set; }
         public int Online { get; set; }
-        public string Name { get; set; }
         public int Dimvalue { get; set; }
         public int Status { get; set; }
-        public int Room { get; set; }
-        public int TabIndex { get; set; }
-        public int RoomID { get; set; }
         public string img_power_on_Icon { get; set; } = "";
         public string img_power_off_Icon { get; set; } = "";
-        public Point Location { get; set; } = new Point(0, 0);
-         public int Percentage { get; internal set; }
+        public int Percentage { get; internal set; }
         public double Temp { get; internal set; }
         public int Charge { get; internal set; }
         public double PowerVolt { get; internal set; }
@@ -36,14 +30,14 @@ namespace StreetLightApp.Models
         public event EventHandler<int> StatusHandler;
 
         public event EventHandler<int> PercentageHandler;
-        public event EventHandler<int> TempHandler;
+        public event EventHandler<double> TempHandler;
         public event EventHandler<int> ChargeHandler;
-        public event EventHandler<int> PowerVoltHandler;
-        public event EventHandler<int> PowerCurrentHandler;
-        public event EventHandler<int> PowerOutVoltHandler;
-        public event EventHandler<int> PowerOutCurrentHandler;
-        public event EventHandler<int> BattVoltHandler;
-        public event EventHandler<int> CapacityHandler;
+        public event EventHandler<double> PowerVoltHandler;
+        public event EventHandler<double> PowerCurrentHandler;
+        public event EventHandler<double> PowerOutVoltHandler;
+        public event EventHandler<double> PowerOutCurrentHandler;
+        public event EventHandler<double> BattVoltHandler;
+        public event EventHandler<double> CapacityHandler;
         public event EventHandler<int> BattHealthHandler;
         public event EventHandler<int> CycleCountHandler;
 
@@ -90,7 +84,7 @@ namespace StreetLightApp.Models
         {
             try
             {
-                 OnOnline(Online);
+                OnOnline(Online);
             }
             catch (Exception ex)
             {
@@ -108,14 +102,31 @@ namespace StreetLightApp.Models
             OnOnlineHandler();
         }
 
-        public Dimmer()
+        public Dimmer(MyDevice _myDevice)
         {
-
+            site_id = _myDevice.site_id;
+            contract_id = _myDevice.contract_id;
+            contract_number = _myDevice.contract_number;
+            gateway_id = _myDevice.gateway_id;
+            gateway_name = _myDevice.gateway_name;
+            gateway_lat = _myDevice.gateway_lat;
+            gateway_long = _myDevice.gateway_long;
+            type = _myDevice.type;
+            device_id = _myDevice.device_id;
+            device_name = _myDevice.device_name;
+            device_style = _myDevice.device_style;
+            lat = _myDevice.lat;
+            @long = _myDevice.@long;
+            group_id = _myDevice.group_id;
+            group_name = _myDevice.group_name;
+            description = _myDevice.description;
         }
-    
+
+         public List<Config> config { get; set; }
+
         public void SetName(string name)
         {
-            Name = name;
+            device_name = name;
 
         }
         public void SetDim(int dim)
@@ -123,7 +134,7 @@ namespace StreetLightApp.Models
             Dimvalue = dim;
             OnDimChangeHandler();
         }
-       
+
         internal void SetPercentage(int last_value)
         {
             Percentage = last_value;

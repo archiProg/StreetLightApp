@@ -26,7 +26,7 @@ namespace StreetLightApp.Services
 
         public static List<Site> SiteList = new List<Site>();
 
-        public static List<FocusGatewayModel> FocusSite = new List<FocusGatewayModel>();
+        public static List<MyDevice> SiteDevices = new List<MyDevice>();
 
 
         public async static void Initialize()
@@ -115,44 +115,87 @@ namespace StreetLightApp.Services
 
         static void WsUpdateDevices(UpdateStatusDataParam updateStatusData)
         {
-            var gateway = FocusSite.FirstOrDefault(g => g.gateway_id == updateStatusData.Member);
-
-            if (gateway != null)
+            var device = SiteDevices.FirstOrDefault(g => g.gateway_id == updateStatusData.Member && g.device_id == updateStatusData.Device);
+            if (device != null)
             {
-                var deviceType = gateway.DEVICE_TYPE.FirstOrDefault(d => d.ContainsKey(updateStatusData.Device));
-                if (deviceType != null)
+                Console.WriteLine($"device.device_style::::::::::{device.device_style}");
+                switch (device.device_style)
                 {
-                    int type = deviceType[updateStatusData.Device];
-                    switch (type)
-                    {
-                        case 3: // Dimmer
-                            var dimmer = gateway.Dimmers.FirstOrDefault(d => d.DeviceID == updateStatusData.Device);
-                            if (dimmer != null)
-                            {
-                                dimmer.Status = updateStatusData.V;
-                                Console.WriteLine($"Dimmer {dimmer.DeviceID} status updated to {dimmer.Status}");
-                            }
-                            else
-                            {
-                                Console.WriteLine($"Dimmer {updateStatusData.Device} not found in gateway {gateway.gateway_id}");
-                            }
-                            break;
-                        // Handle other device types here
-                        default:
-                            Console.WriteLine($"Unknown device type {type} for device {updateStatusData.Device}");
-                            break;
-                    }
-                }
-                else
-                {
-                    Console.WriteLine($"Device {updateStatusData.Device} not found in gateway {gateway.gateway_id}");
-                }
+                    case 3: // Dimmer
+                        if (device is Dimmer dimmer)
+                        {
 
+                            switch (updateStatusData.Ctrl)
+                             {
+                                case 0: dimmer.SetOnline(updateStatusData.V); break;
+                                case 1: dimmer.SetDim(updateStatusData.V); break;
+                                case 2: dimmer.SetStatus(updateStatusData.V); break;
+                                case 10: dimmer.SetPercentage(updateStatusData.V); break;
+                                case 11: dimmer.SetTemp(updateStatusData.V); break;
+                                case 12: dimmer.SetCharge(updateStatusData.V); break;
+                                case 13: dimmer.SetPowerVolt(updateStatusData.V); break;
+                                case 14: dimmer.SetPowerCurrent(updateStatusData.V); break;
+                                case 15: dimmer.SetPowerOutVolt(updateStatusData.V); break;
+                                case 16: dimmer.SetPowerOutCurrent(updateStatusData.V); break;
+                                case 17: dimmer.SetBattVolt(updateStatusData.V); break;
+                                case 18: dimmer.SetCapacity(updateStatusData.V); break;
+                                case 19: dimmer.SetBattHealth(updateStatusData.V); break;
+                                case 20: dimmer.SetCycleCount(updateStatusData.V); break;
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Device {device.device_id} expected to be Dimmer but is {device.GetType().Name}");
+                        }
+                        break;
+
+                    default:
+                        Console.WriteLine($"Unknown device type {device.device_style} for device {device.device_id}");
+                        break;
+                }
             }
             else
             {
-                Console.WriteLine($"Gateway {updateStatusData.Member} not found.");
+                Console.WriteLine($"Device {updateStatusData.Device} not found in gateway {updateStatusData.Member}");
             }
+
+
+            //if (gateway != null)
+            //{
+            //    var deviceType = gateway.DEVICE_TYPE.FirstOrDefault(d => d.ContainsKey(updateStatusData.Device));
+            //    if (deviceType != null)
+            //    {
+            //        int type = deviceType[updateStatusData.Device];
+            //        switch (type)
+            //        {
+            //            case 3: // Dimmer
+            //                var dimmer = gateway.Dimmers.FirstOrDefault(d => d.DeviceID == updateStatusData.Device);
+            //                if (dimmer != null)
+            //                {
+            //                    dimmer.Status = updateStatusData.V;
+            //                    Console.WriteLine($"Dimmer {dimmer.DeviceID} status updated to {dimmer.Status}");
+            //                }
+            //                else
+            //                {
+            //                    Console.WriteLine($"Dimmer {updateStatusData.Device} not found in gateway {gateway.gateway_id}");
+            //                }
+            //                break;
+            //            // Handle other device types here
+            //            default:
+            //                Console.WriteLine($"Unknown device type {type} for device {updateStatusData.Device}");
+            //                break;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        Console.WriteLine($"Device {updateStatusData.Device} not found in gateway {gateway.gateway_id}");
+            //    }
+
+            //}
+            //else
+            //{
+            //    Console.WriteLine($"Gateway {updateStatusData.Member} not found.");
+            //}
 
 
         }

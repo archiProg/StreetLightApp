@@ -6,9 +6,9 @@ public partial class DeviceItems : ContentView
 {
 
     public event EventHandler<CheckedChangedEventArgs> CheckedChanged;
-    private DeviceNode _dev;
+    private MyDevice _dev;
 
-    public DeviceItems(DeviceNode dev)
+    public DeviceItems(MyDevice dev)
     {
         InitializeComponent();
         _dev = dev;

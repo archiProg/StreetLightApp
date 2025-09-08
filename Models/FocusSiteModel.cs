@@ -16,7 +16,6 @@ namespace StreetLightApp.Models
         public double gateway_lat { get; set; }
         public double gateway_long { get; set; }
 
-        public List<Dictionary<int, int>> DEVICE_TYPE = new();
         public List<Dimmer> Dimmers = new();
     }
 
