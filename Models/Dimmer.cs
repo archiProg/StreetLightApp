@@ -61,6 +61,7 @@ namespace StreetLightApp.Models
         public void SetStatus(int status)
         {
             Status = status;
+            Console.WriteLine($"SetStatus:::::::::::::::::::::::::{status}");
             OnStatusHandler();
         }
 

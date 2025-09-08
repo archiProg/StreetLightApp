@@ -113,7 +113,7 @@ namespace StreetLightApp.Services
         }
 
 
-        static void WsUpdateDevices(UpdateStatusDataParam updateStatusData)
+        static async void WsUpdateDevices(UpdateStatusDataParam updateStatusData)
         {
             var device = SiteDevices.FirstOrDefault(g => g.gateway_id == updateStatusData.Member && g.device_id == updateStatusData.Device);
             if (device != null)
@@ -126,7 +126,7 @@ namespace StreetLightApp.Services
                         {
 
                             switch (updateStatusData.Ctrl)
-                             {
+                            {
                                 case 0: dimmer.SetOnline(updateStatusData.V); break;
                                 case 1: dimmer.SetDim(updateStatusData.V); break;
                                 case 2: dimmer.SetStatus(updateStatusData.V); break;
@@ -158,46 +158,27 @@ namespace StreetLightApp.Services
             {
                 Console.WriteLine($"Device {updateStatusData.Device} not found in gateway {updateStatusData.Member}");
             }
+        }
 
+        public static async Task SendWsAsync(string cmd, object _param)
+        {
+            if (_WssClient != null && _WssClient.Connected)
+            {
+                var payload = new
+                {
+                    cmd = cmd,
+                    param = _param
 
-            //if (gateway != null)
-            //{
-            //    var deviceType = gateway.DEVICE_TYPE.FirstOrDefault(d => d.ContainsKey(updateStatusData.Device));
-            //    if (deviceType != null)
-            //    {
-            //        int type = deviceType[updateStatusData.Device];
-            //        switch (type)
-            //        {
-            //            case 3: // Dimmer
-            //                var dimmer = gateway.Dimmers.FirstOrDefault(d => d.DeviceID == updateStatusData.Device);
-            //                if (dimmer != null)
-            //                {
-            //                    dimmer.Status = updateStatusData.V;
-            //                    Console.WriteLine($"Dimmer {dimmer.DeviceID} status updated to {dimmer.Status}");
-            //                }
-            //                else
-            //                {
-            //                    Console.WriteLine($"Dimmer {updateStatusData.Device} not found in gateway {gateway.gateway_id}");
-            //                }
-            //                break;
-            //            // Handle other device types here
-            //            default:
-            //                Console.WriteLine($"Unknown device type {type} for device {updateStatusData.Device}");
-            //                break;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        Console.WriteLine($"Device {updateStatusData.Device} not found in gateway {gateway.gateway_id}");
-            //    }
+                };
 
-            //}
-            //else
-            //{
-            //    Console.WriteLine($"Gateway {updateStatusData.Member} not found.");
-            //}
-
-
+                string json = JsonSerializer.Serialize(payload);
+                await _WssClient.SendAsync(json);
+                Console.WriteLine($"Send:::::::::::{payload}");
+            }
+            else
+            {
+                Console.WriteLine("WebSocket is not connected.");
+            }
         }
 
         static void WsLogger(string msg)

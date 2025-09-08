@@ -12,8 +12,7 @@ public partial class DeviceSitePage : ContentPage
 
     Site CurrentSite = null;
     private List<MyDevice> _allDevices = new();
-    private List<DeviceNode> SelectDevices = new();
-    private List<DeviceNode> SelectAllDevices = new();
+    private List<MyDevice> SelectDevices = new();
 
     private int _loadedCount = 0;
     private const int PageSize = 20;
@@ -62,7 +61,8 @@ public partial class DeviceSitePage : ContentPage
                 {
                     View deviceItem = null;
 
-                    if (dev.type == "gateway") {
+                    if (dev.type == "gateway")
+                    {
                         deviceItem = new Views.DeviceItems(dev);
                     }
                     else
@@ -73,8 +73,13 @@ public partial class DeviceSitePage : ContentPage
                             case 3: // Dimmer
                                 if (dev is Dimmer dimmer)
                                 {
-                                    deviceItem = new Views.DimmerItem(dimmer);
-                                    ((Views.DimmerItem)deviceItem).CheckedChanged += DeviceItem_CheckedChanged;
+                                    var dimmerItem = new Views.DimmerItem(dimmer);
+
+                                    dimmerItem.SetChecked(IsSelectAll);
+
+                                    dimmerItem.CheckedChanged += DeviceItem_CheckedChanged;
+
+                                    deviceItem = dimmerItem;
                                 }
                                 break;
 
@@ -119,10 +124,10 @@ public partial class DeviceSitePage : ContentPage
         }
     }
 
- 
+
     private void DeviceItem_CheckedChanged(object sender, CheckedChangedEventArgs e)
     {
-        if (sender is DeviceNode item)
+        if (sender is MyDevice item)
         {
             bool isChecked = e.Value;
             if (isChecked)
@@ -130,6 +135,13 @@ public partial class DeviceSitePage : ContentPage
                 if (SelectDevices.Count == 0)
                 {
                     ControlMenu.IsVisible = true;
+                    BVControlMenu.IsVisible = true;
+                    if (item is Dimmer dimmer)
+                    {
+                        lbSlider.Text = $"{(int)dimmer.Dimvalue}%";
+                        mySlider.Value = (int)dimmer.Dimvalue;
+                        sw.IsToggled = (int)dimmer.Status == 1;
+                    }
                 }
                 SelectDevices.Add(item);
                 if (SelectDevices.Count == totalDevices)
@@ -150,6 +162,7 @@ public partial class DeviceSitePage : ContentPage
                 if (SelectDevices.Count == 0)
                 {
                     ControlMenu.IsVisible = false;
+                    BVControlMenu.IsVisible = false;
                 }
             }
 
@@ -205,33 +218,33 @@ public partial class DeviceSitePage : ContentPage
                         {
                             switch (control.control_id)
                             {
-                                case 0: 
+                                case 0:
                                     dimmer.SetOnline((int)control.last_value); break;
-                                case 1: 
+                                case 1:
                                     dimmer.SetDim((int)control.last_value); break;
-                                case 2: 
+                                case 2:
                                     dimmer.SetStatus((int)control.last_value); break;
-                                case 10: 
+                                case 10:
                                     dimmer.SetPercentage((int)control.last_value); break;
-                                case 11: 
+                                case 11:
                                     dimmer.SetTemp(control.last_value); break;
-                                case 12: 
+                                case 12:
                                     dimmer.SetCharge((int)control.last_value); break;
-                                case 13: 
+                                case 13:
                                     dimmer.SetPowerVolt(control.last_value); break;
-                                case 14: 
+                                case 14:
                                     dimmer.SetPowerCurrent(control.last_value); break;
-                                case 15: 
+                                case 15:
                                     dimmer.SetPowerOutVolt(control.last_value); break;
-                                case 16: 
+                                case 16:
                                     dimmer.SetPowerOutCurrent(control.last_value); break;
-                                case 17: 
+                                case 17:
                                     dimmer.SetBattVolt(control.last_value); break;
-                                case 18: 
+                                case 18:
                                     dimmer.SetCapacity(control.last_value); break;
-                                case 19: 
+                                case 19:
                                     dimmer.SetBattHealth((int)control.last_value); break;
-                                case 20: 
+                                case 20:
                                     dimmer.SetCycleCount((int)control.last_value); break;
                             }
                         }
@@ -256,19 +269,19 @@ public partial class DeviceSitePage : ContentPage
 
         // update UI
         _allDevices = Provider.SiteDevices;
-        totalDevices = Provider.SiteDevices.Count(d => d.type != "gateway");
+        totalDevices = Provider.SiteDevices.Count();
         DeviceStack.Children.Clear();
         _loadedCount = 0;
         LoadMoreItems();
 
         TotalDevices.Text = $"({totalDevices})";
-        TotalSelects.Text = $"(Up to {totalDevices} Items)";
+        TotalSelects.Text = $"(Up to {Provider.SiteDevices.Count(x => x.type != "gateway")} Items)";
     }
 
- 
- 
- 
- 
+
+
+
+
 
 
     private void OnSelectAllCheckedChanged(object sender, CheckedChangedEventArgs e)
@@ -281,6 +294,7 @@ public partial class DeviceSitePage : ContentPage
         if (isChecked)
         {
             ControlMenu.IsVisible = true;
+            BVControlMenu.IsVisible = true;
             foreach (var child in DeviceStack.Children)
             {
                 if (child is Views.DimmerItem deviceItem)
@@ -292,6 +306,7 @@ public partial class DeviceSitePage : ContentPage
         else
         {
             ControlMenu.IsVisible = false;
+            BVControlMenu.IsVisible = false;
             SelectDevices.Clear();
 
             foreach (var child in DeviceStack.Children)
@@ -303,49 +318,184 @@ public partial class DeviceSitePage : ContentPage
             }
         }
 
-        LbDevicelist.Text = $"Control ({SelectAllDevices.Count} Lamps)";
+        LbDevicelist.Text = $"Control ({_allDevices.Count(x => x.type != "gateway")} Lamps)";
     }
 
 
     private void OnClearlChecked(object sender, EventArgs e)
     {
+
+        DeviceStack.Children.Clear();
+        LoadingIndicator.IsVisible = true;
+        LoadingIndicator.IsRunning = true;
+        SelectAllCheckBox.IsEnabled = false;
+        SelectAllCheckBox.IsChecked = false;
+        DeviceSearchTxt.IsEnabled = false;
+
         IsSelectAll = false;
         ControlMenu.IsVisible = false;
-        SelectDevices.Clear();
-        SelectAllCheckBox.IsChecked = false;
-        foreach (var child in DeviceStack.Children)
+        BVControlMenu.IsVisible = false;
+        DeviceSearchTxt.Text = "";
+        List<MyDevice> filteredDevices;
+
+        new Thread(() =>
         {
-            if (child is Views.DeviceItems deviceItem)
+            List<MyDevice> filteredDevices;
+
+            filteredDevices = _allDevices;
+
+            var newItems = new List<View>();
+
+            foreach (var dev in filteredDevices)
             {
-                deviceItem.SetChecked(false);
+                View deviceItem = null;
+
+                if (dev.type == "gateway")
+                {
+                    deviceItem = new Views.DeviceItems(dev);
+                }
+                else
+                {
+                    switch (dev.device_style)
+                    {
+                        case 3: // Dimmer
+                            if (dev is Dimmer dimmer)
+                            {
+                                deviceItem = new Views.DimmerItem(dimmer);
+                                ((Views.DimmerItem)deviceItem).CheckedChanged += DeviceItem_CheckedChanged;
+                            }
+                            break;
+
+                        default:
+                            deviceItem = new Label
+                            {
+                                Text = $"Device: {dev.device_name} (Type {dev.device_style})",
+                                Margin = new Thickness(5)
+                            };
+                            break;
+                    }
+                }
+
+                if (deviceItem != null)
+                    newItems.Add(deviceItem);
             }
-        }
+
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                foreach (var item in newItems)
+                {
+                    DeviceStack.Children.Add(item);
+                }
+
+                int nonGatewayCount = filteredDevices.Count();
+                TotalDevices.Text = $"({nonGatewayCount})";
+                LbDevicelist.Text = $"Control (0 Lamps)";
+
+                LoadingIndicator.IsRunning = false;
+                LoadingIndicator.IsVisible = false;
+
+                SelectAllCheckBox.IsEnabled = true;
+                DeviceSearchTxt.IsEnabled = true;
+
+                IsSelectAll = false;
+                SelectDevices.Clear();
+
+            });
+
+        }).Start();
     }
 
     private void OnSearchButtonClicked(object sender, EventArgs e)
     {
-        //string keyword = DeviceSearchTxt.Text?.Trim().ToLower() ?? string.Empty;
-        //_loadedCount = 0;
-        //DeviceStack.Children.Clear();
-        //List<DeviceNode> filtered;
-        //if (string.IsNullOrEmpty(keyword))
-        //{
-        //    filtered = _allDevices.ToList();
-        //}
-        //else
-        //{
-        //    filtered = _allDevices
-        //        .Where(d =>
-        //            (!string.IsNullOrEmpty(d.device_name) && d.device_name.ToLower().Contains(keyword))
-        //        )
-        //        .ToList();
-        //}
+        string searchText = DeviceSearchTxt.Text?.Trim().ToLower();
+        DeviceStack.Children.Clear();
+        LoadingIndicator.IsVisible = true;
+        LoadingIndicator.IsRunning = true;
+        SelectAllCheckBox.IsEnabled = false;
+        SelectAllCheckBox.IsChecked = false;
+        DeviceSearchTxt.IsEnabled = false;
 
-        //var originalAllDevices = _allDevices;
-        //_allDevices = filtered;
-        //LoadMoreItems();
-        //_allDevices = originalAllDevices;
+        new Thread(() =>
+        {
+            List<MyDevice> filteredDevices;
+            List<MyDevice> filteredDevices2;
+
+            if (string.IsNullOrEmpty(searchText))
+            {
+                filteredDevices = _allDevices;
+            }
+            else
+            {
+                filteredDevices = _allDevices
+                    .Where(d =>
+                        (!string.IsNullOrEmpty(d.device_name) && d.device_name.Contains(searchText, StringComparison.OrdinalIgnoreCase)) ||
+                        (!string.IsNullOrEmpty(d.gateway_name) && d.gateway_name.Contains(searchText, StringComparison.OrdinalIgnoreCase) && d.type == "gateway")
+                    )
+                    .Distinct()
+                    .ToList();
+            }
+
+
+
+            var newItems = new List<View>();
+
+            foreach (var dev in filteredDevices)
+            {
+                View deviceItem = null;
+
+                if (dev.type == "gateway")
+                {
+                    deviceItem = new Views.DeviceItems(dev);
+                }
+                else
+                {
+                    switch (dev.device_style)
+                    {
+                        case 3: // Dimmer
+                            if (dev is Dimmer dimmer)
+                            {
+                                deviceItem = new Views.DimmerItem(dimmer);
+                                ((Views.DimmerItem)deviceItem).CheckedChanged += DeviceItem_CheckedChanged;
+                            }
+                            break;
+
+                        default:
+                            deviceItem = new Label
+                            {
+                                Text = $"Device: {dev.device_name} (Type {dev.device_style})",
+                                Margin = new Thickness(5)
+                            };
+                            break;
+                    }
+                }
+
+                if (deviceItem != null)
+                    newItems.Add(deviceItem);
+            }
+
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                foreach (var item in newItems)
+                {
+                    DeviceStack.Children.Add(item);
+                }
+
+                int nonGatewayCount = filteredDevices.Count();
+                TotalDevices.Text = $"({nonGatewayCount})";
+                LbDevicelist.Text = $"Control (0 Lamps)";
+
+                LoadingIndicator.IsRunning = false;
+                LoadingIndicator.IsVisible = false;
+
+                SelectAllCheckBox.IsEnabled = true;
+                DeviceSearchTxt.IsEnabled = true;
+
+                IsSelectAll = false;
+                SelectDevices.Clear();
+            });
+        }).Start();
     }
+
 
     private void DeviceSearchTxt_Focused(object sender, FocusEventArgs e)
     {
@@ -361,7 +511,7 @@ public partial class DeviceSitePage : ContentPage
     {
         if (IsSelectAll)
         {
-            await Navigation.PushAsync(new ManageDevicePage(CurrentSite, SelectAllDevices));
+            await Navigation.PushAsync(new ManageDevicePage(CurrentSite, _allDevices));
 
         }
         else
@@ -372,13 +522,53 @@ public partial class DeviceSitePage : ContentPage
 
     }
 
+
+
     private void mySlider_HandlerChanged(object sender, EventArgs e)
     {
-
+        if (sender is Slider slider)
+        {
+            lbSlider.Text = $"{(int)slider.Value}%";
+        }
     }
 
     private void mySlider_DragCompleted(object sender, EventArgs e)
     {
+        if (sender is Slider slider)
+        {
+             Dispatcher.Dispatch(async() => {
+                foreach (var device in SelectDevices)
+                {
+                    await Provider.SendWsAsync(
+                        "3",
+                        new
+                        {
+                            Member = device.gateway_id,
+                            Device = device.device_id,
+                            Ctrl = 1,
+                            V =(int)slider.Value
+                        }
+                    );
+                }
+            });
+        }
+    }
+
+    private async void OnToggled(object sender, ToggledEventArgs e)
+    {
+        foreach (var device in SelectDevices)
+        {
+            await Provider.SendWsAsync(
+                "3",
+                new
+                {
+                    Member = device.gateway_id,
+                    Device = device.device_id,
+                    Ctrl = 2,
+                    V = e.Value ? 1 : 0
+                }
+            );
+        }
 
     }
 }

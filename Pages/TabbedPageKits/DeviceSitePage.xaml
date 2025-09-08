@@ -121,9 +121,6 @@
                     FontSize="16"
                     Text="Select all"
                     VerticalOptions="Center" />
-
-
-
                 <Button
                     x:Name="TotalSelects"
                     Grid.Column="2"
@@ -182,6 +179,11 @@
                     IsRunning="False"
                     IsVisible="False"
                     VerticalOptions="End" />
+                <BoxView
+                    x:Name="BVControlMenu"
+                    Background="White"
+                    HeightRequest="178"
+                    IsVisible="False" />
             </StackLayout>
         </ScrollView>
         <Border
@@ -243,7 +245,10 @@
                         MinimumTrackColor="#2A4C6D"
                         ThumbColor="#2A4C6D"
                         ValueChanged="mySlider_HandlerChanged" />
-                    <Switch Grid.Column="2" />
+                    <Switch
+                        x:Name="sw"
+                        Grid.Column="2"
+                        Toggled="OnToggled" />
                 </Grid>
             </StackLayout>
         </Border>
