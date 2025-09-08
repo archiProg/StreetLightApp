@@ -1,12 +1,28 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="StreetLightApp.Views.MenuActiveButton">
+<ContentView
+    x:Class="StreetLightApp.Views.MenuActiveButton"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
     <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
         <ImageButton Clicked="Button_Clicked" />
-        <StackLayout Spacing="0" Margin="0,8,0,0" InputTransparent="True">
-            <Image x:Name="iconImage" Source="home_64_noactive" Aspect="AspectFit" WidthRequest="24" HeightRequest="24" HorizontalOptions="Center"/>
-            <Label x:Name="titleLbl" Text="Button" FontSize="10" FontFamily="PoppinsRegular" TextColor="#94A3B8" HorizontalOptions="Center"/>
+        <StackLayout
+            Margin="0,8,0,0"
+            InputTransparent="True"
+            Spacing="0">
+            <Image
+                x:Name="iconImage"
+                Aspect="AspectFit"
+                HeightRequest="24"
+                HorizontalOptions="Center"
+                Source="home_64_noactive"
+                WidthRequest="24" />
+            <Label
+                x:Name="titleLbl"
+                FontFamily="PoppinsRegular"
+                FontSize="10"
+                HorizontalOptions="Center"
+                Text="Button"
+                TextColor="#94A3B8" />
         </StackLayout>
     </Grid>
 </ContentView>

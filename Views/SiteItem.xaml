@@ -11,15 +11,15 @@
         StrokeShape="RoundRectangle 8"
         StrokeThickness="0">
         <Border.GestureRecognizers>
-            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
         </Border.GestureRecognizers>
         <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
             <Border
+                BackgroundColor="#F2F2F2"
                 HeightRequest="56"
                 Stroke="Transparent"
                 StrokeShape="RoundRectangle 4,0,4,0"
                 StrokeThickness="0"
-                BackgroundColor="#F2F2F2"
                 WidthRequest="56">
                 <Image
                     x:Name="siteimg"

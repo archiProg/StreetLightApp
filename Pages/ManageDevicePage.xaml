@@ -1,12 +1,57 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="StreetLightApp.Pages.ManageDevicePage"
-             Title="ManageDevicePage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+<ContentPage
+    x:Class="StreetLightApp.Pages.ManageDevicePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="ManageDevicePage">
+    <StackLayout>
+        <Grid
+            ColumnDefinitions="*,Auto"
+            ColumnSpacing="16"
+            HorizontalOptions="Fill">
+
+            <Grid
+                Grid.Column="0"
+                ColumnDefinitions="*,Auto,Auto"
+                ColumnSpacing="4">
+                <Label
+                    x:Name="titleLbl"
+                    HorizontalOptions="Start"
+                    HorizontalTextAlignment="Start"
+                    LineBreakMode="TailTruncation"
+                    Text="Device"
+                    TextDecorations="Underline"
+                    VerticalOptions="Center" />
+                <Label
+                    x:Name="itemCountLbl"
+                    Grid.Column="1"
+                    FontFamily="PoppinsSemiBold"
+                    VerticalOptions="Center" />
+                <Button
+                    Grid.Column="2"
+                    Padding="0"
+                    BackgroundColor="#D5E5FF"
+                    CornerRadius="12"
+                    HeightRequest="24"
+                    MinimumHeightRequest="24"
+                    MinimumWidthRequest="24"
+                    Text="i"
+                    TextColor="#FFFFFF"
+                    WidthRequest="24" />
+            </Grid>
+            <StackLayout
+                Grid.Column="1"
+                Orientation="Horizontal"
+                Spacing="4">
+                <Label
+                    x:Name="statusLbl"
+                    FontFamily="PoppinsSemiBold"
+                    Text="OFF"
+                    TextColor="#EF8484"
+                    VerticalOptions="Center" />
+                <Switch x:Name="statusSwitch" VerticalOptions="Center" Toggled="statusSwitch_Toggled" />
+            </StackLayout>
+        </Grid>
+    </StackLayout>
+
 </ContentPage>

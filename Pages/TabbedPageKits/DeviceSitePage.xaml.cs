@@ -280,10 +280,6 @@ public partial class DeviceSitePage : ContentPage
 
 
 
-
-
-
-
     private void OnSelectAllCheckedChanged(object sender, CheckedChangedEventArgs e)
     {
         if (_isUpdatingSelectAll) return;
@@ -324,7 +320,6 @@ public partial class DeviceSitePage : ContentPage
 
     private void OnClearlChecked(object sender, EventArgs e)
     {
-
         DeviceStack.Children.Clear();
         LoadingIndicator.IsVisible = true;
         LoadingIndicator.IsRunning = true;
@@ -365,7 +360,6 @@ public partial class DeviceSitePage : ContentPage
                                 ((Views.DimmerItem)deviceItem).CheckedChanged += DeviceItem_CheckedChanged;
                             }
                             break;
-
                         default:
                             deviceItem = new Label
                             {

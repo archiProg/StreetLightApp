@@ -1,36 +1,69 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="StreetLightApp.Views.LightButton">
-    <Border 
-        BackgroundColor="#FFFFFF" 
-        HeightRequest="64" 
-        StrokeThickness="0" 
+<ContentView
+    x:Class="StreetLightApp.Views.LightButton"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <Border
+        BackgroundColor="#FFFFFF"
+        HeightRequest="64"
         Stroke="Transparent"
-        StrokeShape="RoundRectangle 18">
+        StrokeShape="RoundRectangle 18"
+        StrokeThickness="0">
         <Border.GestureRecognizers>
-            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
         </Border.GestureRecognizers>
         <StackLayout Margin="12,8,0,0" InputTransparent="True">
-            <Label x:Name="titleLbl" Text="Light 1" FontFamily="PoppinsSemiBold"/>
+            <Label
+                x:Name="titleLbl"
+                FontFamily="PoppinsSemiBold"
+                Text="Light 1" />
             <StackLayout Orientation="Horizontal" Spacing="8">
-                <Label x:Name="statusLbl" Text="OFF" TextColor="Red" VerticalOptions="Center"/>
+                <Label
+                    x:Name="statusLbl"
+                    Text="OFF"
+                    TextColor="Red"
+                    VerticalOptions="Center" />
                 <StackLayout Orientation="Horizontal" Spacing="2">
-                    <Label x:Name="bright" Text="Brightness" TextColor="#FFC85F" FontSize="12" FontFamily="FreeSolid" VerticalOptions="Center"/>
-                    <Label x:Name="brightLbl" Text="100%" VerticalOptions="Center"/>
+                    <Label
+                        x:Name="bright"
+                        FontFamily="FreeSolid"
+                        FontSize="12"
+                        Text="Brightness"
+                        TextColor="#FFC85F"
+                        VerticalOptions="Center" />
+                    <Label
+                        x:Name="brightLbl"
+                        Text="100%"
+                        VerticalOptions="Center" />
                 </StackLayout>
                 <StackLayout Orientation="Horizontal" Spacing="2">
-                    <Label x:Name="batt" Text="Batt" TextColor="#009123" FontSize="12" FontFamily="FreeSolid" VerticalOptions="Center"/>
-                    <Label x:Name="battLbl" Text="82%" VerticalOptions="Center"/>
+                    <Label
+                        x:Name="batt"
+                        FontFamily="FreeSolid"
+                        FontSize="12"
+                        Text="Batt"
+                        TextColor="#009123"
+                        VerticalOptions="Center" />
+                    <Label
+                        x:Name="battLbl"
+                        Text="82%"
+                        VerticalOptions="Center" />
                 </StackLayout>
                 <Border
-                    BackgroundColor="#EEEEEE" 
-                    WidthRequest="24" 
-                    HeightRequest="24" 
-                    StrokeThickness="0" 
+                    BackgroundColor="#EEEEEE"
+                    HeightRequest="24"
                     Stroke="Transparent"
-                    StrokeShape="RoundRectangle 12">
-                    <Label x:Name="power" Text="{StaticResource 0}" TextColor="#000B34" FontSize="12" FontFamily="FreeSolid" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    StrokeShape="RoundRectangle 12"
+                    StrokeThickness="0"
+                    WidthRequest="24">
+                    <Label
+                        x:Name="power"
+                        FontFamily="FreeSolid"
+                        FontSize="12"
+                        HorizontalOptions="Center"
+                        Text="{StaticResource 0}"
+                        TextColor="#000B34"
+                        VerticalOptions="Center" />
                 </Border>
             </StackLayout>
         </StackLayout>

@@ -10,7 +10,7 @@
         StrokeThickness="0">
         <Grid ColumnDefinitions="Auto,*,Auto">
             <CheckBox
-                x:Name="DeviceCheckBox" 
+                x:Name="DeviceCheckBox"
                 Margin="0"
                 CheckedChanged="CheckBoxSelect_CheckedChanged"
                 IsVisible="False"
