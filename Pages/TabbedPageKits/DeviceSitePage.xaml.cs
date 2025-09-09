@@ -18,6 +18,7 @@ public partial class DeviceSitePage : ContentPage
     private const int PageSize = 20;
     private bool _isLoading = false;
     int totalDevices = 0;
+    int totalItems = 0;
 
     private bool _isUpdatingSelectAll = false;
     private bool IsSelectAll = false;
@@ -29,7 +30,31 @@ public partial class DeviceSitePage : ContentPage
         Title = _site.site_name;
         CurrentSite = _site;
         GetAllDevice();
+        Provider.UpdateStatusDataHandle += Provider_UpdateStatusDataHandle;
+    }
 
+    private void Provider_UpdateStatusDataHandle(object? sender, UpdateStatusDataParam e)
+    {
+        Dispatcher.Dispatch(() => {
+            if (SelectDevices.Count == 1)
+            {
+                if (SelectDevices[0].device_id == e.Device)
+                {
+                    if (e.Ctrl == 1)
+                    {
+                        lbSlider.Text = $"{e.V}%";
+                        mySlider.Value = e.V;
+                    }
+                    else if (e.Ctrl == 2)
+                    {
+
+                        sw.IsToggled = e.V == 1;
+
+                    }
+
+                }
+            }
+        });
     }
 
     protected override void OnDisappearing()
@@ -143,22 +168,46 @@ public partial class DeviceSitePage : ContentPage
                         sw.IsToggled = (int)dimmer.Status == 1;
                     }
                 }
+                else
+                {
+
+                    lbSlider.Text = $"50%";
+                    mySlider.Value = 50;
+                    sw.IsToggled = false;
+
+                }
                 SelectDevices.Add(item);
-                if (SelectDevices.Count == totalDevices)
+                if (SelectDevices.Count == totalItems)
                 {
                     SelectAllCheckBox.IsChecked = true;
                 }
             }
             else
             {
-                if (SelectDevices.Count == totalDevices)
+                if (SelectDevices.Count == totalItems)
                 {
                     _isUpdatingSelectAll = true;
                     SelectAllCheckBox.IsChecked = false;
                     _isUpdatingSelectAll = false;
                     IsSelectAll = false;
                 }
+                else if (IsSelectAll) {
+                    _isUpdatingSelectAll = true;
+                    SelectAllCheckBox.IsChecked = false;
+                    _isUpdatingSelectAll = false;
+                    IsSelectAll = false;
+                    SelectDevices = _allDevices.FindAll(x => x.type != "gateway");
+                }
                 SelectDevices.Remove(item);
+                if (SelectDevices.Count == 1)
+                {
+                    if (item is Dimmer dimmer)
+                    {
+                        lbSlider.Text = $"{(int)dimmer.Dimvalue}%";
+                        mySlider.Value = (int)dimmer.Dimvalue;
+                        sw.IsToggled = (int)dimmer.Status == 1;
+                    }
+                }
                 if (SelectDevices.Count == 0)
                 {
                     ControlMenu.IsVisible = false;
@@ -270,6 +319,7 @@ public partial class DeviceSitePage : ContentPage
         // update UI
         _allDevices = Provider.SiteDevices;
         totalDevices = Provider.SiteDevices.Count();
+        totalItems = Provider.SiteDevices.Count(x => x.type != "gateway");
         DeviceStack.Children.Clear();
         _loadedCount = 0;
         LoadMoreItems();
@@ -503,17 +553,7 @@ public partial class DeviceSitePage : ContentPage
 
     private async void OnManageClicked(object sender, EventArgs e)
     {
-        if (IsSelectAll)
-        {
-            await Navigation.PushAsync(new ManageDevicePage(CurrentSite, _allDevices));
-
-        }
-        else
-        {
-            await Navigation.PushAsync(new ManageDevicePage(CurrentSite, SelectDevices));
-
-        }
-
+        await Navigation.PushAsync(new ManageDevicePage(CurrentSite, SelectDevices));
     }
 
 
@@ -530,7 +570,8 @@ public partial class DeviceSitePage : ContentPage
     {
         if (sender is Slider slider)
         {
-             Dispatcher.Dispatch(async() => {
+            Dispatcher.Dispatch(async () =>
+            {
                 foreach (var device in SelectDevices)
                 {
                     await Provider.SendWsAsync(
@@ -540,7 +581,7 @@ public partial class DeviceSitePage : ContentPage
                             Member = device.gateway_id,
                             Device = device.device_id,
                             Ctrl = 1,
-                            V =(int)slider.Value
+                            V = (int)slider.Value
                         }
                     );
                 }

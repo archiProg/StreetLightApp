@@ -13,10 +13,12 @@ namespace StreetLightApp.Services
 {
     public static class Provider
     {
-        public static string APIHost = "http://100.76.74.10:5000";
+        //public static string APIHost = "http://100.76.74.10:5000";
+        public static string APIHost = "http://192.168.1.66:5000";
         public static string ProfileName = "User";
         public static string Username = "@Username";
-        public static string HostImage = "http://100.76.74.10:5000/images/profile/";
+        //public static string HostImage = "http://100.76.74.10:5000/images/profile/";
+        public static string HostImage = "http://192.168.1.66:5000/images/profile/";
         public static string UserImage = "";
         public static string UserEmail = "";
         public static string UserToken = "";
@@ -28,10 +30,12 @@ namespace StreetLightApp.Services
 
         public static List<MyDevice> SiteDevices = new List<MyDevice>();
 
+        public static event EventHandler<UpdateStatusDataParam> UpdateStatusDataHandle;
 
         public async static void Initialize()
         {
-            await ConnectWssServer("ws://100.76.74.10:8000/echo");
+            //await ConnectWssServer("ws://100.76.74.10:8000/echo");
+            await ConnectWssServer("ws://192.168.1.66:8000/echo");
         }
 
         public static async Task ConnectWssServer(string _ServerIp)
@@ -102,6 +106,7 @@ namespace StreetLightApp.Services
                         var updateStatusData = baseMessage.Param.Deserialize<UpdateStatusDataParam>();
 
                         WsUpdateDevices(updateStatusData);
+                        UpdateStatusDataHandle?.Invoke(null, updateStatusData);
                         break;
                 }
 

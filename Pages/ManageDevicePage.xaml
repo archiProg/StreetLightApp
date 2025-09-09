@@ -4,7 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="ManageDevicePage">
-    <StackLayout>
+    <StackLayout Margin="16,0">
         <Grid
             ColumnDefinitions="*,Auto"
             ColumnSpacing="16"
@@ -42,16 +42,48 @@
             <StackLayout
                 Grid.Column="1"
                 Orientation="Horizontal"
-                Spacing="4">
+                Spacing="4"
+                WidthRequest="75">
                 <Label
                     x:Name="statusLbl"
                     FontFamily="PoppinsSemiBold"
                     Text="OFF"
                     TextColor="#EF8484"
                     VerticalOptions="Center" />
-                <Switch x:Name="statusSwitch" VerticalOptions="Center" Toggled="statusSwitch_Toggled" />
+                <Switch
+                    x:Name="statusSwitch"
+                    Toggled="statusSwitch_Toggled"
+                    VerticalOptions="Center" />
             </StackLayout>
         </Grid>
+        <StackLayout>
+            <Label FontFamily="PoppinsSemiBold" Text="Brightness" />
+            <Grid ColumnDefinitions="Auto,*">
+                <Border
+                    Grid.Column="0"
+                    Padding="4"
+                    BackgroundColor="#F6FCFF"
+                    HorizontalOptions="Center"
+                    Stroke="#F6FCFF"
+                    StrokeShape="RoundRectangle 12"
+                    VerticalOptions="Center">
+                    <HorizontalStackLayout Spacing="4">
+                        <Image Source="sun_icon.png" />
+                        <Label x:Name="lbSlider" Text="50%" />
+                    </HorizontalStackLayout>
+                </Border>
+                <Slider
+                    x:Name="mySlider"
+                    Grid.Column="1"
+                    DragCompleted="mySlider_DragCompleted"
+                    Maximum="100"
+                    MaximumTrackColor="#CCD8E5"
+                    Minimum="0"
+                    MinimumTrackColor="#2A4C6D"
+                    ThumbColor="#2A4C6D"
+                    ValueChanged="mySlider_HandlerChanged" />
+            </Grid>
+        </StackLayout>
     </StackLayout>
 
 </ContentPage>

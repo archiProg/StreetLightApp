@@ -29,7 +29,7 @@
                                 Grid.Column="1"
                                 BackgroundColor="#F1F5F9"
                                 Focused="DeviceSearchTxt_Focused"
-                                Placeholder="Contact number, Group, Name, ID"
+                                Placeholder="Name, ID"
                                 PlaceholderColor="#596577"
                                 Unfocused="DeviceSearchTxt_Unfocused" />
                         </Grid>
