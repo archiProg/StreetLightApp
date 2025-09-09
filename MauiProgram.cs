@@ -48,6 +48,15 @@ namespace StreetLightApp
             }
 #endif
             });
+            TimePickerHandler.Mapper.AppendToMapping(nameof(TimePicker), (handler, view) =>
+           {
+#if ANDROID
+            if (handler.PlatformView != null)
+            {
+                handler.PlatformView.BackgroundTintList = ColorStateList.ValueOf(Android.Graphics.Color.Transparent);
+            }
+#endif
+           });
 #if DEBUG
             builder.Logging.AddDebug();
 #endif

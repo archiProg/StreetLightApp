@@ -26,7 +26,6 @@ public partial class DeviceSitePage : ContentPage
     public DeviceSitePage(Site _site)
     {
         InitializeComponent();
-        Provider.SiteDevices.Clear();
         Title = _site.site_name;
         CurrentSite = _site;
         GetAllDevice();

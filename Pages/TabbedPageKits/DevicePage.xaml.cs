@@ -27,4 +27,10 @@ public partial class DevicePage : ContentPage
             }
         }
     }
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        Provider.SiteDevices.Clear();
+
+    }
 }

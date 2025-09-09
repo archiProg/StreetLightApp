@@ -4,86 +4,360 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="ManageDevicePage">
-    <StackLayout Margin="16,0">
-        <Grid
-            ColumnDefinitions="*,Auto"
-            ColumnSpacing="16"
-            HorizontalOptions="Fill">
-
+    <ScrollView>
+        <StackLayout Margin="16,0">
             <Grid
-                Grid.Column="0"
-                ColumnDefinitions="*,Auto,Auto"
-                ColumnSpacing="4">
-                <Label
-                    x:Name="titleLbl"
-                    HorizontalOptions="Start"
-                    HorizontalTextAlignment="Start"
-                    LineBreakMode="TailTruncation"
-                    Text="Device"
-                    TextDecorations="Underline"
-                    VerticalOptions="Center" />
-                <Label
-                    x:Name="itemCountLbl"
-                    Grid.Column="1"
-                    FontFamily="PoppinsSemiBold"
-                    VerticalOptions="Center" />
-                <Button
-                    Grid.Column="2"
-                    Padding="0"
-                    BackgroundColor="#D5E5FF"
-                    CornerRadius="12"
-                    HeightRequest="24"
-                    MinimumHeightRequest="24"
-                    MinimumWidthRequest="24"
-                    Text="i"
-                    TextColor="#FFFFFF"
-                    WidthRequest="24" />
-            </Grid>
-            <StackLayout
-                Grid.Column="1"
-                Orientation="Horizontal"
-                Spacing="4"
-                WidthRequest="75">
-                <Label
-                    x:Name="statusLbl"
-                    FontFamily="PoppinsSemiBold"
-                    Text="OFF"
-                    TextColor="#EF8484"
-                    VerticalOptions="Center" />
-                <Switch
-                    x:Name="statusSwitch"
-                    Toggled="statusSwitch_Toggled"
-                    VerticalOptions="Center" />
-            </StackLayout>
-        </Grid>
-        <StackLayout>
-            <Label FontFamily="PoppinsSemiBold" Text="Brightness" />
-            <Grid ColumnDefinitions="Auto,*">
-                <Border
-                    Grid.Column="0"
-                    Padding="4"
-                    BackgroundColor="#F6FCFF"
-                    HorizontalOptions="Center"
-                    Stroke="#F6FCFF"
-                    StrokeShape="RoundRectangle 12"
-                    VerticalOptions="Center">
-                    <HorizontalStackLayout Spacing="4">
-                        <Image Source="sun_icon.png" />
-                        <Label x:Name="lbSlider" Text="50%" />
-                    </HorizontalStackLayout>
-                </Border>
-                <Slider
-                    x:Name="mySlider"
-                    Grid.Column="1"
-                    DragCompleted="mySlider_DragCompleted"
-                    Maximum="100"
-                    MaximumTrackColor="#CCD8E5"
-                    Minimum="0"
-                    MinimumTrackColor="#2A4C6D"
-                    ThumbColor="#2A4C6D"
-                    ValueChanged="mySlider_HandlerChanged" />
-            </Grid>
-        </StackLayout>
-    </StackLayout>
+                ColumnDefinitions="*,Auto"
+                ColumnSpacing="16"
+                HorizontalOptions="Fill">
 
+                <Grid
+                    Grid.Column="0"
+                    ColumnDefinitions="*,Auto,Auto"
+                    ColumnSpacing="4">
+                    <Label
+                        x:Name="titleLbl"
+                        HorizontalOptions="Start"
+                        HorizontalTextAlignment="Start"
+                        LineBreakMode="TailTruncation"
+                        Text="Device"
+                        TextDecorations="Underline"
+                        VerticalOptions="Center" />
+                    <Label
+                        x:Name="itemCountLbl"
+                        Grid.Column="1"
+                        FontFamily="PoppinsSemiBold"
+                        VerticalOptions="Center" />
+                    <Button
+                        Grid.Column="2"
+                        Padding="0"
+                        BackgroundColor="#D5E5FF"
+                        CornerRadius="12"
+                        HeightRequest="24"
+                        MinimumHeightRequest="24"
+                        MinimumWidthRequest="24"
+                        Text="i"
+                        TextColor="#FFFFFF"
+                        WidthRequest="24" />
+                </Grid>
+                <StackLayout
+                    Grid.Column="1"
+                    Orientation="Horizontal"
+                    Spacing="4"
+                    WidthRequest="75">
+                    <Label
+                        x:Name="statusLbl"
+                        FontFamily="PoppinsSemiBold"
+                        Text="OFF"
+                        TextColor="#EF8484"
+                        VerticalOptions="Center" />
+                    <Switch
+                        x:Name="statusSwitch"
+                        Toggled="statusSwitch_Toggled"
+                        VerticalOptions="Center" />
+                </StackLayout>
+            </Grid>
+            <StackLayout>
+                <Label FontFamily="PoppinsSemiBold" Text="Brightness" />
+                <Grid ColumnDefinitions="Auto,*">
+                    <Border
+                        Grid.Column="0"
+                        Padding="4"
+                        BackgroundColor="#F6FCFF"
+                        HorizontalOptions="Center"
+                        Stroke="#F6FCFF"
+                        StrokeShape="RoundRectangle 12"
+                        VerticalOptions="Center">
+                        <HorizontalStackLayout Spacing="4">
+                            <Image Source="sun_icon.png" />
+                            <Label x:Name="lbSlider" Text="50%" />
+                        </HorizontalStackLayout>
+                    </Border>
+                    <Slider
+                        x:Name="mySlider"
+                        Grid.Column="1"
+                        DragCompleted="mySlider_DragCompleted"
+                        Maximum="100"
+                        MaximumTrackColor="#CCD8E5"
+                        Minimum="0"
+                        MinimumTrackColor="#2A4C6D"
+                        ThumbColor="#2A4C6D"
+                        ValueChanged="mySlider_HandlerChanged" />
+                </Grid>
+            </StackLayout>
+            <StackLayout
+                x:Name="DetailOneDevice"
+                Padding="0,16"
+                IsVisible="false">
+                <Label FontFamily="PoppinsSemiBold" Text="Device Status" />
+                <StackLayout Padding="8" Spacing="16">
+                    <Grid ColumnDefinitions="*,*">
+                        <StackLayout Grid.Column="0" Spacing="4">
+                            <Label
+                                FontFamily="PoppinsMedium"
+                                Text="Power satatus"
+                                TextColor="#859FB0" />
+                            <Label
+                                x:Name="LbPowerSatatusValue"
+                                FontFamily="PoppinsMedium"
+                                Text="OFF" />
+                        </StackLayout>
+                        <StackLayout Grid.Column="1" Spacing="4">
+                            <Label
+                                FontFamily="PoppinsMedium"
+                                Text="Brightness"
+                                TextColor="#859FB0" />
+                            <Label
+                                x:Name="LbBrightnessValue"
+                                FontFamily="PoppinsMedium"
+                                Text="100%" />
+                        </StackLayout>
+                    </Grid>
+                    <Grid ColumnDefinitions="*,*">
+                        <StackLayout Grid.Column="0" Spacing="4">
+                            <Label
+                                FontFamily="PoppinsMedium"
+                                Text="Temperature"
+                                TextColor="#859FB0" />
+                            <Label
+                                x:Name="LbTemperatureValue"
+                                FontFamily="PoppinsMedium"
+                                Text="100.0°C" />
+                        </StackLayout>
+                        <StackLayout Grid.Column="1" Spacing="4">
+                            <Label
+                                FontFamily="PoppinsMedium"
+                                Text="Battery Level"
+                                TextColor="#859FB0" />
+                            <HorizontalStackLayout Spacing="8">
+                                <Label
+                                    x:Name="LbBatteryLevelValue"
+                                    FontFamily="PoppinsMedium"
+                                    Text="100%" />
+                                <Label
+                                    x:Name="ShowStatusChargring"
+                                    FontFamily="PoppinsMedium"
+                                    IsVisible="false"
+                                    Text="Chargring"
+                                    TextColor="#F0B405" />
+                            </HorizontalStackLayout>
+                        </StackLayout>
+                    </Grid>
+                    <Grid ColumnDefinitions="*,*">
+                        <StackLayout Grid.Column="0" Spacing="4">
+                            <Label
+                                FontFamily="PoppinsMedium"
+                                Text="Battery IN"
+                                TextColor="#859FB0" />
+                            <Label
+                                x:Name="LbBatteryInValue"
+                                FontFamily="PoppinsMedium"
+                                Text="3.02 mA" />
+                        </StackLayout>
+                        <StackLayout Grid.Column="1" Spacing="4">
+                            <Label
+                                FontFamily="PoppinsMedium"
+                                Text="Battery OUT"
+                                TextColor="#859FB0" />
+                            <Label
+                                x:Name="LbBatteryCurrentOutValue"
+                                FontFamily="PoppinsMedium"
+                                Text="0.00 mA" />
+                        </StackLayout>
+                    </Grid>
+                    <Grid ColumnDefinitions="*,*">
+                        <StackLayout Grid.Column="0" Spacing="4">
+                            <Label
+                                FontFamily="PoppinsMedium"
+                                Text="Battery Output"
+                                TextColor="#859FB0" />
+                            <Label
+                                x:Name="LbBatteryVoltOutValue"
+                                FontFamily="PoppinsMedium"
+                                Text="13.24V" />
+                        </StackLayout>
+                        <StackLayout Grid.Column="1" Spacing="4">
+                            <Label
+                                FontFamily="PoppinsMedium"
+                                Text="Battery Capacity"
+                                TextColor="#859FB0" />
+                            <Label
+                                x:Name="LbCapacityValue"
+                                FontFamily="PoppinsMedium"
+                                Text="28.74Ah" />
+                        </StackLayout>
+                    </Grid>
+                    <Grid ColumnDefinitions="*,*">
+                        <StackLayout Grid.Column="0" Spacing="4">
+                            <Label
+                                FontFamily="PoppinsMedium"
+                                Text="Battery Health"
+                                TextColor="#859FB0" />
+                            <Label
+                                x:Name="LbBatteryHealthValue"
+                                FontFamily="PoppinsMedium"
+                                Text="100%" />
+                        </StackLayout>
+                        <StackLayout Grid.Column="1" Spacing="4">
+                            <Label
+                                FontFamily="PoppinsMedium"
+                                Text="Cycle"
+                                TextColor="#859FB0" />
+                            <Label
+                                x:Name="LbCycleValue"
+                                FontFamily="PoppinsMedium"
+                                Text="74" />
+                        </StackLayout>
+                    </Grid>
+                </StackLayout>
+            </StackLayout>
+            <StackLayout
+                x:Name="DetailMultiDevice"
+                Padding="0,16"
+                IsVisible="false">
+                <Label Text="Selected items have mismatched settings." TextColor="#FF4747" />
+                <Label Text="Please review carefully." TextColor="#FF4747" />
+            </StackLayout>
+            <Label FontFamily="PoppinsSemiBold" Text="Automation Schedule" />
+            <Border
+                Margin="0,8"
+                Stroke="#EEEEEE"
+                StrokeShape="RoundRectangle 24">
+                <Grid ColumnDefinitions="Auto, *">
+                    <StackLayout Grid.Column="0" Padding="16">
+                        <Button
+                            x:Name="BtnSun"
+                            BackgroundColor="#C5E8FF"
+                            Clicked="BtnSun_Clicked"
+                            CornerRadius="8"
+                            FontFamily="PoppinsMedium"
+                            Text="SUNDAY"
+                            TextColor="Black"
+                            WidthRequest="120" />
+                        <Button
+                            x:Name="BtnMon"
+                            BackgroundColor="Transparent"
+                            Clicked="BtnMon_Clicked"
+                            FontFamily="PoppinsMedium"
+                            Text="MONDAY"
+                            TextColor="#8FA1AD"
+                            WidthRequest="120" />
+                        <Button
+                            x:Name="BtnTue"
+                            BackgroundColor="Transparent"
+                            Clicked="BtnTue_Clicked"
+                            FontFamily="PoppinsMedium"
+                            Text="TUEDAY"
+                            TextColor="#8FA1AD"
+                            WidthRequest="120" />
+                        <Button
+                            x:Name="BtnWed"
+                            BackgroundColor="Transparent"
+                            Clicked="BtnWed_Clicked"
+                            FontFamily="PoppinsMedium"
+                            Text="WEDNESDAY"
+                            TextColor="#8FA1AD"
+                            WidthRequest="120" />
+                        <Button
+                            x:Name="BtnThu"
+                            BackgroundColor="Transparent"
+                            Clicked="BtnThu_Clicked"
+                            FontFamily="PoppinsMedium"
+                            Text="THURSDAY"
+                            TextColor="#8FA1AD"
+                            WidthRequest="120" />
+                        <Button
+                            x:Name="BtnFri"
+                            BackgroundColor="Transparent"
+                            Clicked="BtnFri_Clicked"
+                            FontFamily="PoppinsMedium"
+                            Text="FRIDAY"
+                            TextColor="#8FA1AD"
+                            WidthRequest="120" />
+                        <Button
+                            x:Name="BtnSat"
+                            BackgroundColor="Transparent"
+                            Clicked="BtnSat_Clicked"
+                            FontFamily="PoppinsMedium"
+                            Text="SATURDAY"
+                            TextColor="#8FA1AD"
+                            WidthRequest="120" />
+                    </StackLayout>
+                    <Border
+                        Grid.Column="1"
+                        Stroke="#EEEEEE"
+                        StrokeShape="RoundRectangle 24">
+                        <StackLayout Padding="8">
+                            <Grid HorizontalOptions="End">
+                                <HorizontalStackLayout Spacing="8">
+                                    <Label
+                                        x:Name="LbNameEnableSw"
+                                        FontFamily="PoppinsRegular"
+                                        Text="Sunday Enable"
+                                        VerticalOptions="Center" />
+                                    <Switch />
+                                </HorizontalStackLayout>
+                            </Grid>
+                            <Label
+                                Padding="8,16,0,8"
+                                FontFamily="PoppinsMedium"
+                                Text="Time Off" />
+                            <Border
+                                Padding="8,0"
+                                BackgroundColor="#F1F1F1"
+                                HorizontalOptions="Start"
+                                Stroke="#F1F1F1"
+                                StrokeShape="RoundRectangle 8"
+                                WidthRequest="125">
+                                <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
+                                    <TimePicker
+                                        x:Name="TimePickerOff"
+                                        Grid.Column="0"
+                                        BackgroundColor="Transparent"
+                                        TextColor="Black"
+                                        Time="04:15:26" />
+
+                                    <Image
+                                        Grid.Column="1"
+                                        HeightRequest="20"
+                                        Source="clock_icon.png"
+                                        WidthRequest="20" />
+                                </Grid>
+                            </Border>
+
+                            <Label
+                                Padding="8,16,0,8"
+                                FontFamily="PoppinsMedium"
+                                Text="Time On" />
+                            <Border
+                                Padding="8,0"
+                                BackgroundColor="#F1F1F1"
+                                HorizontalOptions="Start"
+                                Stroke="#F1F1F1"
+                                StrokeShape="RoundRectangle 8"
+                                WidthRequest="125">
+                                <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
+                                    <TimePicker
+                                        x:Name="TimePickerOn"
+                                        Grid.Column="0"
+                                        BackgroundColor="Transparent"
+                                        TextColor="Black"
+                                        Time="04:15:26" />
+
+                                    <Image
+                                        Grid.Column="1"
+                                        HeightRequest="20"
+                                        Source="clock_icon.png"
+                                        WidthRequest="20" />
+                                </Grid>
+                            </Border>
+
+
+                        </StackLayout>
+                    </Border>
+                </Grid>
+            </Border>
+        </StackLayout>
+
+    </ScrollView>
 </ContentPage>

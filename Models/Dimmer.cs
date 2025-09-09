@@ -192,6 +192,7 @@ namespace StreetLightApp.Models
 
         internal void SetBattHealth(int last_value)
         {
+            Console.WriteLine($"SetBattHealth:::::::::::::{last_value}");
             BattHealth = last_value;
             BattHealthHandler?.Invoke(this, last_value);
         }

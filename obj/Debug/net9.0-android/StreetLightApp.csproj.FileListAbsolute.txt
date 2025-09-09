@@ -1440,3 +1440,4 @@ C:\Users\Baramee\source\repos\StreetLightApp\StreetLightApp\obj\Debug\net9.0-and
 C:\Users\Baramee\source\repos\StreetLightApp\StreetLightApp\obj\Debug\net9.0-android\android\marshal_methods.arm64-v8a.o
 C:\Users\Baramee\source\repos\StreetLightApp\StreetLightApp\obj\Debug\net9.0-android\android\jni_remap.arm64-v8a.o
 C:\Users\Baramee\source\repos\StreetLightApp\StreetLightApp\obj\Debug\net9.0-android\app_shared_libraries\arm64-v8a\libxamarin-app.so
+C:\Users\Baramee\source\repos\StreetLightApp\StreetLightApp\obj\Debug\net9.0-android\resizetizer\r\drawable\clock_icon.png
