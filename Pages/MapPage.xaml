@@ -4,8 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:maps="http://schemas.microsoft.com/dotnet/2021/maui/maps"
-    Title="Map"
-    NavigationPage.HasNavigationBar="False">
+    Title="Map">
     <Grid BackgroundColor="White" RowDefinitions="Auto,Auto,*">
         <Border Grid.Row="0" Stroke="#F1F5F9" />
         <StackLayout Grid.Row="1">
@@ -45,6 +44,26 @@
                         Text="Search"
                         TextColor="#FFFFFF" />
                 </Grid>
+                <Label Padding="0,8" Text="Site" />
+                <Grid>
+                    <Border
+                        InputTransparent="True"
+                        Stroke="#F1F5F9"
+                        StrokeShape="RoundRectangle 8">
+                        <Grid>
+                            <Image
+                                Margin="0,0,16,0"
+                                HeightRequest="16"
+                                HorizontalOptions="End"
+                                Source="pick_icon.png" />
+                        </Grid>
+                    </Border>
+                    <Picker
+                        x:Name="SitePick"
+                        ItemDisplayBinding="{Binding site_name}"
+                        Opacity="0.5"
+                        SelectedIndexChanged="SitePick_SelectedIndexChanged" />
+                </Grid>
                 <Label Padding="0,8" Text="Contact Number" />
                 <Grid>
                     <Border
@@ -60,18 +79,9 @@
                         </Grid>
                     </Border>
                     <Picker
-                        x:Name="sitePick"
-                        Title="Contact number"
-                        BackgroundColor="#FFFFFF"
+                        x:Name="ContactPick"
                         Opacity="0.5"
-                        TextColor="#B8C9D9">
-                        <Picker.ItemsSource>
-                            <x:Array Type="{x:Type x:String}">
-                                <x:String>All Contact number</x:String>
-                                <x:String>1200</x:String>
-                            </x:Array>
-                        </Picker.ItemsSource>
-                    </Picker>
+                        SelectedIndexChanged="ContactPick_SelectedIndexChanged" />
                 </Grid>
                 <Label Padding="0,8" Text="Group" />
 
@@ -89,18 +99,9 @@
                         </Grid>
                     </Border>
                     <Picker
-                        x:Name="groupPick"
-                        Title="Group"
-                        Grid.Column="1"
-                        BackgroundColor="#FFFFFF"
-                        Opacity="0.5">
-                        <Picker.ItemsSource>
-                            <x:Array Type="{x:Type x:String}">
-                                <x:String>All Group</x:String>
-                                <x:String>1200</x:String>
-                            </x:Array>
-                        </Picker.ItemsSource>
-                    </Picker>
+                        x:Name="GroupPick"
+                        Opacity="0.5"
+                        SelectedIndexChanged="GroupPick_SelectedIndexChanged" />
                 </Grid>
             </StackLayout>
         </StackLayout>

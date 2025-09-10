@@ -60,6 +60,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <AndroidResource Remove="Platforms\Android\Resources\drawable\install_12.png" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Compile Remove="Resources\Fonts\FluentUI.cs" />
 	</ItemGroup>
 
@@ -77,6 +81,9 @@
 	<ItemGroup>
 	  <Compile Update="Pages\TabbedPageKits\MapSitePage.xaml.cs">
 	    <DependentUpon>MapSitePage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Pages\TabbedPageKits\TestMap.xaml.cs">
+	    <DependentUpon>TestMap.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
@@ -114,6 +121,9 @@
 	  <MauiXaml Update="Pages\TabbedPageKits\MapSitePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Pages\TabbedPageKits\TestMap.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Pages\TabbedPageKits\ReportPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -147,6 +157,10 @@
 	  <MauiXaml Update="Views\SmithSlider.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiImage Include="Platforms\Android\Resources\drawable\install_12.png" />
 	</ItemGroup>
 
 </Project>

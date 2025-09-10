@@ -29,7 +29,8 @@ public partial class HomePage : ContentPage
 
         Dispatcher.Dispatch(async () =>
         {
-            await Navigation.PushAsync(new MapSitePage());
+            await Navigation.PushAsync(new TestMap());
+            //await Navigation.PushAsync(new MapSitePage());
         });
     }
 

@@ -29,8 +29,13 @@ namespace StreetLightApp
                     fonts.AddFont("Poppins-Medium.ttf", "PoppinsMedium");
                     fonts.AddFont("Poppins-SemiBold.ttf", "PoppinsSemiBold");
                     fonts.AddFont("Poppins-Bold.ttf", "PoppinsBold");
+                }).UseMauiMaps().ConfigureMauiHandlers(handlers =>
+                {
+#if ANDROID
+            handlers.AddHandler<Microsoft.Maui.Controls.Maps.Map, StreetLightApp.Platforms.Android.Handlers.CustomMapHandler>();
+#endif
+                });
 
-                }).UseMauiMaps();
             Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping(nameof(Entry), (handler, view) =>
             {
 #if ANDROID
@@ -57,6 +62,7 @@ namespace StreetLightApp
             }
 #endif
            });
+
 #if DEBUG
             builder.Logging.AddDebug();
 #endif

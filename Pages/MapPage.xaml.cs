@@ -1,3 +1,4 @@
+﻿using Microsoft.Maui.ApplicationModel.Communication;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Maps;
 using Microsoft.Maui.Maps;
@@ -7,25 +8,105 @@ using StreetLightApp.Services;
 using System.Runtime.CompilerServices;
 
 namespace StreetLightApp.Pages;
-using Map = Microsoft.Maui.Controls.Maps.Map;
 
 public partial class MapPage : ContentPage
 {
     Site CurrentSite = null;
+    int ContactPickIndex = 0;
+    int GroupPickIndex = 0;
+
     public MapPage(Site _site)
     {
         InitializeComponent();
         CurrentSite = _site;
+
+        MyMap2.PropertyChanged += MyMap2_PropertyChanged;
+        SitePick.ItemsSource = Provider.SiteList;
+        var index = Provider.SiteList.FindIndex(x => x.site_id == _site.site_id);
+        if (index >= 0)
+        {
+            SitePick.SelectedIndex = index;
+        }
+        SitePick.SelectedIndexChanged += SitePick_SelectedIndexChanged;
         Dispatcher.Dispatch(async () =>
         {
-            await GetAllDevice();
+            if (!Provider.MapSites.ContainsKey(CurrentSite.site_id))
+            {
+                await GetAllDevice();
+            }
             await ShowDevicesOnMap();
         });
- 
- 
-        MyMap2.PropertyChanged += MyMap2_PropertyChanged;
-     }
 
+        List<string> apiGroups = ["1200", "1300", "1400"];
+        var groups = new List<string> { "All Group" };
+        if (apiGroups != null && apiGroups.Count > 0)
+        {
+            groups.AddRange(apiGroups);
+        }
+        GroupPick.ItemsSource = groups;
+        GroupPick.SelectedIndex = 0;
+
+        List<string> apiContacts = ["1200", "1300", "1400"];
+        var contacts = new List<string> { "All Contacts" };
+        if (apiContacts != null && apiContacts.Count > 0)
+        {
+            contacts.AddRange(apiContacts);
+        }
+        ContactPick.ItemsSource = contacts;
+        ContactPick.SelectedIndex = 0;
+    }
+
+
+    private void SitePick_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        var picker = (Picker)sender;
+        int selectedIndex = picker.SelectedIndex;
+
+        if (picker.SelectedIndex != -1)
+        {
+            var selectedSite = (Site)picker.SelectedItem;
+            CurrentSite = selectedSite;
+        }
+    }
+
+
+    private void ContactPick_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        var picker = (Picker)sender;
+        int selectedIndex = picker.SelectedIndex;
+
+        if (selectedIndex != -1)
+        {
+            if (selectedIndex == 0)
+            {
+                ContactPickIndex = selectedIndex;
+            }
+            else
+            {
+                string selectedGroup = (string)picker.SelectedItem;
+                ContactPickIndex = selectedIndex;
+            }
+        }
+    }
+
+    private void GroupPick_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        var picker = (Picker)sender;
+        int selectedIndex = picker.SelectedIndex;
+
+        if (selectedIndex != -1)
+        {
+            if (selectedIndex == 0)
+            {
+                GroupPickIndex = selectedIndex;
+            }
+            else
+            {
+                string selectedGroup = (string)picker.SelectedItem;
+                GroupPickIndex = selectedIndex;
+            }
+        }
+    }
 
 
     async Task GetAllDevice()
@@ -131,33 +212,44 @@ public partial class MapPage : ContentPage
 
     async Task ShowDevicesOnMap()
     {
-        if (!Provider.MapSites.TryGetValue(CurrentSite.site_id, out var devices))
-            return;
-
         MyMap2.Pins.Clear();
+
+        if (!Provider.MapSites.TryGetValue(CurrentSite.site_id, out var devices))
+        {
+            await DisplayAlert("No Devices", $"No devices found for site: {CurrentSite.site_name}", "OK");
+            return;
+        }
+
 
         double? minLat = null, maxLat = null, minLong = null, maxLong = null;
 
 
         foreach (var device in devices)
         {
-            if (device.lat.HasValue && device.@long.HasValue)
+            if (ContactPickIndex == 0 && GroupPickIndex == 0)
             {
-                var pin = new Pin
+                if (device.lat.HasValue && device.@long.HasValue)
                 {
-                    Label = device.device_name,
-                    Address = device.description,
-                    Location = new Location(device.lat.Value, device.@long.Value),
-                    Type = PinType.Place
-                };
-                MyMap2.Pins.Add(pin);
+                    var pin = new Pin
+                    {
+                        Label = device.device_name,
+                        Address = device.description,
+                        Location = new Location(device.lat.Value, device.@long.Value),
+                        Type = PinType.Place,
+                    };
+                    MyMap2.Pins.Add(pin);
 
-                // Track bounds for zoom
-                minLat = minLat.HasValue ? Math.Min(minLat.Value, device.lat.Value) : device.lat.Value;
-                maxLat = maxLat.HasValue ? Math.Max(maxLat.Value, device.lat.Value) : device.lat.Value;
-                minLong = minLong.HasValue ? Math.Min(minLong.Value, device.@long.Value) : device.@long.Value;
-                maxLong = maxLong.HasValue ? Math.Max(maxLong.Value, device.@long.Value) : device.@long.Value;
+                    // Track bounds for zoom
+                    minLat = minLat.HasValue ? Math.Min(minLat.Value, device.lat.Value) : device.lat.Value;
+                    maxLat = maxLat.HasValue ? Math.Max(maxLat.Value, device.lat.Value) : device.lat.Value;
+                    minLong = minLong.HasValue ? Math.Min(minLong.Value, device.@long.Value) : device.@long.Value;
+                    maxLong = maxLong.HasValue ? Math.Max(maxLong.Value, device.@long.Value) : device.@long.Value;
+                }
             }
+        }
+
+        if (MyMap2.Pins.Count == 0) {
+            //await DisplayAlert("No Devices", $"No devices found for site: {CurrentSite.site_name} Contact: {}  Group:", "OK");
         }
 
         if (minLat.HasValue && minLong.HasValue && maxLat.HasValue && maxLong.HasValue)
@@ -210,6 +302,15 @@ public partial class MapPage : ContentPage
 
     private void OnSearchButtonClicked(object sender, EventArgs e)
     {
-
+        Dispatcher.Dispatch(async () =>
+        {
+            if (!Provider.MapSites.ContainsKey(CurrentSite.site_id))
+            {
+                await GetAllDevice();
+            }
+            await ShowDevicesOnMap();
+        });
     }
+
+
 }
