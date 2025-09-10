@@ -439,7 +439,9 @@
                 <Grid
                     Margin="8,0,8,0"
                     ColumnDefinitions="*,*"
-                    ColumnSpacing="8">
+                    ColumnSpacing="8"
+                    RowDefinitions="Auto,Auto"
+                    RowSpacing="8">
                     <local:MenuItem
                         Title="Site manager"
                         Grid.Row="0"
@@ -455,7 +457,16 @@
                         BadgeType="None"
                         Description="Member and role permission" />
 
+                    <local:MenuItem
+                        x:Name="MapMenuItem"
+                        Title="Map"
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        BadgeType="None"
+                        Description="Manage device by Map" />
+
                 </Grid>
+
                 <!--  Manager Tools  -->
                 <Label
                     Margin="8,8,0,0"

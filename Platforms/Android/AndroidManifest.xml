@@ -1,7 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 	<application android:allowBackup="true" android:icon="@mipmap/appicon" android:roundIcon="@mipmap/appicon_round" android:supportsRtl="true" 
-				 android:usesCleartextTraffic="true"></application>
+				 android:usesCleartextTraffic="true">
+		<!-- Google Maps API Key -->
+		<meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyAkA5N9Xb-vtUU2ff27xe9skdHT2BzYMnA" />
+	</application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />
+ 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+ 	<!--Map API 22 or lower -->
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
 </manifest>
+

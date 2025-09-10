@@ -79,6 +79,10 @@
               "target": "Package",
               "version": "[9.0.100, )"
             },
+            "Microsoft.Maui.Controls.Maps": {
+              "target": "Package",
+              "version": "[9.0.90, )"
+            },
             "Microsoft.NET.ILLink.Tasks": {
               "suppressParent": "All",
               "target": "Package",
@@ -137,6 +141,10 @@
             "Microsoft.Maui.Controls": {
               "target": "Package",
               "version": "[9.0.100, )"
+            },
+            "Microsoft.Maui.Controls.Maps": {
+              "target": "Package",
+              "version": "[9.0.90, )"
             },
             "Microsoft.NET.ILLink.Tasks": {
               "suppressParent": "All",
@@ -197,6 +205,10 @@
               "target": "Package",
               "version": "[9.0.100, )"
             },
+            "Microsoft.Maui.Controls.Maps": {
+              "target": "Package",
+              "version": "[9.0.90, )"
+            },
             "Microsoft.NET.ILLink.Tasks": {
               "suppressParent": "All",
               "target": "Package",
@@ -256,6 +268,10 @@
             "Microsoft.Maui.Controls": {
               "target": "Package",
               "version": "[9.0.100, )"
+            },
+            "Microsoft.Maui.Controls.Maps": {
+              "target": "Package",
+              "version": "[9.0.90, )"
             },
             "Mopups": {
               "target": "Package",

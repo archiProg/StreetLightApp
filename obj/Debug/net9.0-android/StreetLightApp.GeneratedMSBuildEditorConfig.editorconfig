@@ -54,6 +54,12 @@ build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.Manag
 build_metadata.AdditionalFiles.TargetPath = Pages\ManageDevicePage.xaml
 build_metadata.AdditionalFiles.RelativePath = Pages\ManageDevicePage.xaml
 
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Pages/MapPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.MapPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\MapPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\MapPage.xaml
+
 [C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Pages/StartUpPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.StartUpPage.xaml
@@ -84,11 +90,17 @@ build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.Tabbe
 build_metadata.AdditionalFiles.TargetPath = Pages\TabbedPageKits\HomePage.xaml
 build_metadata.AdditionalFiles.RelativePath = Pages\TabbedPageKits\HomePage.xaml
 
-[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Pages/TabbedPageKits/MapPage.xaml]
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Pages/TabbedPageKits/LogPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
-build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.TabbedPageKits.MapPage.xaml
-build_metadata.AdditionalFiles.TargetPath = Pages\TabbedPageKits\MapPage.xaml
-build_metadata.AdditionalFiles.RelativePath = Pages\TabbedPageKits\MapPage.xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.TabbedPageKits.LogPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\TabbedPageKits\LogPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\TabbedPageKits\LogPage.xaml
+
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Pages/TabbedPageKits/MapSitePage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.TabbedPageKits.MapSitePage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\TabbedPageKits\MapSitePage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\TabbedPageKits\MapSitePage.xaml
 
 [C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Pages/TabbedPageKits/ReportPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
@@ -155,6 +167,12 @@ build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Views.SiteItem.xaml
 build_metadata.AdditionalFiles.TargetPath = Views\SiteItem.xaml
 build_metadata.AdditionalFiles.RelativePath = Views\SiteItem.xaml
+
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Views/SiteItemMap.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Views.SiteItemMap.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\SiteItemMap.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\SiteItemMap.xaml
 
 [C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Views/SmithSlider.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml

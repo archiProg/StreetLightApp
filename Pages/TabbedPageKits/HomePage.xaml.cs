@@ -21,6 +21,16 @@ public partial class HomePage : ContentPage
         }
         profileNameLbl.Text = Provider.ProfileName;
         profileUsernameLbl.Text = $"@{Provider.Username}";
+        MapMenuItem.Clicked += MapMenuItem_Clicked;
+    }
+
+    private void MapMenuItem_Clicked(object? sender, EventArgs e)
+    {
+
+        Dispatcher.Dispatch(async () =>
+        {
+            await Navigation.PushAsync(new MapSitePage());
+        });
     }
 
     private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)

@@ -30,7 +30,7 @@ namespace StreetLightApp
                     fonts.AddFont("Poppins-SemiBold.ttf", "PoppinsSemiBold");
                     fonts.AddFont("Poppins-Bold.ttf", "PoppinsBold");
 
-                });
+                }).UseMauiMaps();
             Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping(nameof(Entry), (handler, view) =>
             {
 #if ANDROID

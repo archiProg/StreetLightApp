@@ -19,7 +19,8 @@
         IconImageSource="list_48_noactive.png"
         NavigatedFrom="DevicePage_NavigatedFrom"
         NavigatedTo="DevicePage_NavigatedTo" />
-    <local:MapPage Title="Map" IconImageSource="{OnPlatform Default=google_64.png, iOS=google_64.png}" />
+    <!--<local:MapPage Title="Map" IconImageSource="{OnPlatform Default=google_64.png, iOS=google_64.png}" />-->
     <local:ReportPage Title="Report" IconImageSource="{OnPlatform Default=calendarview_64.png, iOS=calendarview_64.png}" />
+    <local:LogPage Title="Logs" IconImageSource="{OnPlatform Default=calendarview_64.png, iOS=calendarview_64.png}" />
     <local:SettingPage Title="Profile" IconImageSource="{OnPlatform Default=setting_64.png, iOS=setting_64.png}" />
 </TabbedPage>

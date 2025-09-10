@@ -30,6 +30,8 @@ namespace StreetLightApp.Services
 
         public static List<MyDevice> SiteDevices = new List<MyDevice>();
 
+        public static Dictionary<int, List<MyDevice>> MapSites = new();
+
         public static event EventHandler<UpdateStatusDataParam> UpdateStatusDataHandle;
 
         public async static void Initialize()
