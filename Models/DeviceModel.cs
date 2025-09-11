@@ -32,6 +32,10 @@ namespace StreetLightApp.Models
 
     public class DeviceNode : MyDevice
     {
+        public event EventHandler<int> OnlineHandler;
+        public int Online { get; set; }
+
+
         public DeviceNode(MyDevice _myDevice)
         {
             site_id = _myDevice.site_id;
@@ -45,11 +49,20 @@ namespace StreetLightApp.Models
             device_id = _myDevice.device_id;
             device_name = _myDevice.device_name;
             device_style = _myDevice.device_style;
-            lat = _myDevice.lat;
-            @long = _myDevice.@long;
+            lat = _myDevice.gateway_lat;
+            @long = _myDevice.gateway_long;
             group_id = _myDevice.group_id;
             group_name = _myDevice.group_name;
             description = _myDevice.description;
+            Online = 0;
+        }
+
+        public void SetOnline(int online)
+        {
+            Online = online;
+
+            OnlineHandler?.Invoke(this, online);
+
         }
         public ObservableCollection<Control> controls { get; set; }
         public List<Config> config { get; set; }

@@ -108,7 +108,12 @@ namespace StreetLightApp.Services
                         var updateStatusData = baseMessage.Param.Deserialize<UpdateStatusDataParam>();
 
                         WsUpdateDevices(updateStatusData);
+                        WsUpdateDevicesMap(updateStatusData);
                         UpdateStatusDataHandle?.Invoke(null, updateStatusData);
+                        break;
+                    case (int)CmdType.UpdateStatusGateWay:
+                        var updateStatusGateway = baseMessage.Param.Deserialize<UpdateStatusGatewayParam>();
+                        WsUpdateGatewayMap(updateStatusGateway);
                         break;
                 }
 
@@ -116,6 +121,89 @@ namespace StreetLightApp.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"[ERROR] Failed to parse message: {ex.Message}");
+            }
+        }
+
+
+        static async void WsUpdateGatewayMap(UpdateStatusGatewayParam updateStatusGateway)
+        {
+            Console.WriteLine($"updateStatusGateway MemberID: {updateStatusGateway.MemberID} | Online: {updateStatusGateway.Status}");
+            try
+            {
+                foreach (var siteDevicesPair in MapSites)
+                {
+                    var gateway = siteDevicesPair.Value
+                        .FirstOrDefault(d => d.gateway_id == updateStatusGateway.MemberID && d.type == "gateway");
+
+                    if (gateway != null)
+                    {
+                        if (gateway is DeviceNode deviceNode)
+                        {
+                            deviceNode.SetOnline(updateStatusGateway.Status);
+                            Console.WriteLine($"deviceNode name {deviceNode.gateway_name}");
+                        }
+                      
+                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] WsUpdateDevicesMap: {ex.Message}");
+            }
+        }
+
+        static async void WsUpdateDevicesMap(UpdateStatusDataParam updateStatusData)
+        {
+            try
+            {
+                // Find the device in MapSites by gateway_id and device_id
+                foreach (var siteDevicesPair in MapSites)
+                {
+                    var device = siteDevicesPair.Value
+                        .FirstOrDefault(d => d.gateway_id == updateStatusData.Member && d.device_id == updateStatusData.Device);
+
+                    if (device != null)
+                    {
+                        // If device is Dimmer, update its properties
+                        if (device is Dimmer dimmer)
+                        {
+                            switch (updateStatusData.Ctrl)
+                            {
+                                case 0: dimmer.SetOnline(updateStatusData.V); break;
+                                case 1: dimmer.SetDim(updateStatusData.V); break;
+                                case 2: dimmer.SetStatus(updateStatusData.V); break;
+                                case 10: dimmer.SetPercentage(updateStatusData.V); break;
+                                case 11: dimmer.SetTemp(updateStatusData.V); break;
+                                case 12: dimmer.SetCharge(updateStatusData.V); break;
+                                case 13: dimmer.SetPowerVolt(updateStatusData.V); break;
+                                case 14: dimmer.SetPowerCurrent(updateStatusData.V); break;
+                                case 15: dimmer.SetPowerOutVolt(updateStatusData.V); break;
+                                case 16: dimmer.SetPowerOutCurrent(updateStatusData.V); break;
+                                case 17: dimmer.SetBattVolt(updateStatusData.V); break;
+                                case 18: dimmer.SetCapacity(updateStatusData.V); break;
+                                case 19: dimmer.SetBattHealth(updateStatusData.V); break;
+                                case 20: dimmer.SetCycleCount(updateStatusData.V); break;
+                            }
+                        }
+                        //else if (device is DeviceNode node)
+                        //{
+                        //    // For gateways or other device types
+                        //    switch (updateStatusData.Ctrl)
+                        //    {
+                        //        case 0: node.SetOnline(updateStatusData.V); break;
+                        //        case 2: node.SetStatus(updateStatusData.V); break;
+                        //            // Add other controls if needed
+                        //    }
+                        //}
+
+                        // Trigger Map update event for UI
+                        UpdateStatusDataHandle?.Invoke(null, updateStatusData);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] WsUpdateDevicesMap: {ex.Message}");
             }
         }
 

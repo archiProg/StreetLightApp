@@ -32,9 +32,19 @@ namespace StreetLightApp.Models
 
     }
 
+    public class UpdateStatusGatewayParam
+    {
+        [JsonPropertyName("MemberID")]
+        public int MemberID { get; set; }
+
+        [JsonPropertyName("Status")]
+        public int Status { get; set; }
+    }
+
     public enum CmdType
     {
         LOGIN = 2,
-        UpdateDevices = 31
+        UpdateDevices = 31,
+        UpdateStatusGateWay =9
     }
 }

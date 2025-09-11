@@ -60,7 +60,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <AndroidResource Remove="Platforms\Android\Resources\drawable\gateway_offline.png" />
+	  <AndroidResource Remove="Platforms\Android\Resources\drawable\gateway_online.png" />
 	  <AndroidResource Remove="Platforms\Android\Resources\drawable\install_12.png" />
+	  <AndroidResource Remove="Platforms\Android\Resources\drawable\lamp_off.png" />
+	  <AndroidResource Remove="Platforms\Android\Resources\drawable\lamp_offline.png" />
+	  <AndroidResource Remove="Platforms\Android\Resources\drawable\lamp_on.png" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -160,7 +165,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiImage Include="Platforms\Android\Resources\drawable\gateway_offline.png" />
+	  <MauiImage Include="Platforms\Android\Resources\drawable\gateway_online.png" />
 	  <MauiImage Include="Platforms\Android\Resources\drawable\install_12.png" />
+	  <MauiImage Include="Platforms\Android\Resources\drawable\lamp_off.png" />
+	  <MauiImage Include="Platforms\Android\Resources\drawable\lamp_offline.png" />
+	  <MauiImage Include="Platforms\Android\Resources\drawable\lamp_on.png" />
 	</ItemGroup>
 
 </Project>

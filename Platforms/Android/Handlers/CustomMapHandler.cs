@@ -13,7 +13,7 @@ namespace StreetLightApp.Platforms.Android.Handlers
 {
     public class CustomMapHandler : MapHandler
     {
-        private const int _iconSize = 60;
+        private const int _iconSize = 80;
 
         private readonly Dictionary<string, BitmapDescriptor> _iconMap = [];
 
@@ -64,10 +64,25 @@ namespace StreetLightApp.Platforms.Android.Handlers
                 return value;
             }
 
-            var drawable = Context.Resources.GetIdentifier(icon, "drawable", Context.PackageName);
-            var bitmap = BitmapFactory.DecodeResource(Context.Resources, drawable);
+            int drawableId = Context.Resources.GetIdentifier(icon, "drawable", Context.PackageName);
+
+            if (drawableId == 0)
+            {
+                Console.WriteLine($"Drawable not found: {icon}");
+                return BitmapDescriptorFactory.DefaultMarker(); // fallback
+            }
+
+            var bitmap = BitmapFactory.DecodeResource(Context.Resources, drawableId);
+
+            if (bitmap == null)
+            {
+                Console.WriteLine($"Bitmap decode failed: {icon}");
+                return BitmapDescriptorFactory.DefaultMarker();  
+            }
+
             var scaled = Bitmap.CreateScaledBitmap(bitmap, _iconSize, _iconSize, false);
             bitmap.Recycle();
+
             var descriptor = BitmapDescriptorFactory.FromBitmap(scaled);
 
             _iconMap[icon] = descriptor;
@@ -75,16 +90,57 @@ namespace StreetLightApp.Platforms.Android.Handlers
             return descriptor;
         }
 
+        //private void AddPins()
+        //{
+        //    if (VirtualView is MapEx mapEx && mapEx.CustomPins != null)
+        //    {
+        //        foreach (var pin in mapEx.CustomPins)
+        //        {
+        //            var markerOption = new MarkerOptions();
+        //            markerOption.SetTitle(string.Empty);
+        //            markerOption.SetIcon(GetIcon(pin.IconSrc));
+        //            markerOption.SetPosition(new LatLng(pin.Position.Latitude, pin.Position.Longitude));
+        //            var marker = Map.AddMarker(markerOption);
+
+        //            MarkerMap.Add(marker.Id, (marker, pin));
+        //        }
+        //    }
+        //}
+
+        public void UpdatePin(MapPin pin)
+        {
+            var entry = MarkerMap.FirstOrDefault(kvp => kvp.Value.Pin == pin);
+            if (entry.Value.Marker != null)
+            {
+                var marker = entry.Value.Marker;
+
+                // Update icon
+                marker.SetIcon(GetIcon(pin.IconSrc));
+
+                // Update title/snippet
+                //marker.SetTitle(pin.Label);
+                //marker.SetSnippet($"Type: {pin.DeviceType}\nStatus: {pin.Status}");
+
+                Console.WriteLine("UpdatePin:::::::::::::::::::::::::::::");
+            }
+        }
+
+
         private void AddPins()
         {
             if (VirtualView is MapEx mapEx && mapEx.CustomPins != null)
             {
                 foreach (var pin in mapEx.CustomPins)
                 {
-                    var markerOption = new MarkerOptions();
-                    markerOption.SetTitle(string.Empty);
-                    markerOption.SetIcon(GetIcon(pin.IconSrc));
-                    markerOption.SetPosition(new LatLng(pin.Position.Latitude, pin.Position.Longitude));
+                    string title = pin.Label; // e.g., "GW5"
+                    string snippet = $"Type: {pin.DeviceType}\nStatus: {pin.Status}"; // multi-line
+
+                    var markerOption = new MarkerOptions()
+                        .SetPosition(new LatLng(pin.Position.Latitude, pin.Position.Longitude))
+                        .SetIcon(GetIcon(pin.IconSrc))
+                        .SetTitle(title)
+                        .SetSnippet(snippet);
+
                     var marker = Map.AddMarker(markerOption);
 
                     MarkerMap.Add(marker.Id, (marker, pin));
@@ -92,13 +148,23 @@ namespace StreetLightApp.Platforms.Android.Handlers
             }
         }
 
+
+        //public void MarkerClick(object sender, GoogleMap.MarkerClickEventArgs args)
+        //{
+        //    if (MarkerMap.TryGetValue(args.Marker.Id, out (Marker Marker, MapPin Pin) value))
+        //    {
+        //        value.Pin.ClickedCommand?.Execute(null);
+        //    }
+        //}
         public void MarkerClick(object sender, GoogleMap.MarkerClickEventArgs args)
         {
             if (MarkerMap.TryGetValue(args.Marker.Id, out (Marker Marker, MapPin Pin) value))
             {
+                args.Handled = false; // shows default info window
                 value.Pin.ClickedCommand?.Execute(null);
             }
         }
+
     }
 
     public class MapCallbackHandler : Java.Lang.Object, IOnMapReadyCallback
@@ -115,5 +181,7 @@ namespace StreetLightApp.Platforms.Android.Handlers
             mapHandler.UpdateValue(nameof(MapEx.CustomPins));
             googleMap.MarkerClick += mapHandler.MarkerClick;
         }
+
     }
+
 }

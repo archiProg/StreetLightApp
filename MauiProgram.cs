@@ -7,7 +7,9 @@ using Microsoft.Maui.Handlers;
 using Mopups.Hosting;
 using Mopups.Interfaces;
 using Mopups.Services;
-
+#if ANDROID
+using StreetLightApp.Platforms.Android.Handlers;
+#endif
 namespace StreetLightApp
 {
     public static class MauiProgram
@@ -32,7 +34,9 @@ namespace StreetLightApp
                 }).UseMauiMaps().ConfigureMauiHandlers(handlers =>
                 {
 #if ANDROID
-            handlers.AddHandler<Microsoft.Maui.Controls.Maps.Map, StreetLightApp.Platforms.Android.Handlers.CustomMapHandler>();
+            //handlers.AddHandler<Microsoft.Maui.Controls.Maps.Map, StreetLightApp.Platforms.Android.Handlers.CustomMapHandler>();
+            handlers.AddHandler(typeof(StreetLightApp.Controls.MapEx), typeof(StreetLightApp.Platforms.Android.Handlers.CustomMapHandler));
+
 #endif
                 });
 

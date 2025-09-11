@@ -5,6 +5,8 @@ using Microsoft.Maui.Maps;
 using Newtonsoft.Json;
 using StreetLightApp.Models;
 using StreetLightApp.Services;
+using System.Collections.ObjectModel;
+using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
 
 namespace StreetLightApp.Pages;
@@ -12,8 +14,19 @@ namespace StreetLightApp.Pages;
 public partial class MapPage : ContentPage
 {
     Site CurrentSite = null;
-    int ContactPickIndex = 0;
-    int GroupPickIndex = 0;
+    int ContactId = 0;
+    int GroupId = 0;
+
+    Dictionary<int, string> ContactsList = new Dictionary<int, string>
+{
+    { 0, "All Contacts" }
+};
+    Dictionary<int, string> GroupsList = new Dictionary<int, string>
+{
+    { 0, "All Group" }
+};
+
+    Dictionary<string, MapPin> devicePins = new Dictionary<string, MapPin>();
 
     public MapPage(Site _site)
     {
@@ -37,23 +50,6 @@ public partial class MapPage : ContentPage
             await ShowDevicesOnMap();
         });
 
-        List<string> apiGroups = ["1200", "1300", "1400"];
-        var groups = new List<string> { "All Group" };
-        if (apiGroups != null && apiGroups.Count > 0)
-        {
-            groups.AddRange(apiGroups);
-        }
-        GroupPick.ItemsSource = groups;
-        GroupPick.SelectedIndex = 0;
-
-        List<string> apiContacts = ["1200", "1300", "1400"];
-        var contacts = new List<string> { "All Contacts" };
-        if (apiContacts != null && apiContacts.Count > 0)
-        {
-            contacts.AddRange(apiContacts);
-        }
-        ContactPick.ItemsSource = contacts;
-        ContactPick.SelectedIndex = 0;
     }
 
 
@@ -79,13 +75,19 @@ public partial class MapPage : ContentPage
         {
             if (selectedIndex == 0)
             {
-                ContactPickIndex = selectedIndex;
+                // "All Contacts" selected
+                ContactId = 0;
             }
             else
             {
-                string selectedGroup = (string)picker.SelectedItem;
-                ContactPickIndex = selectedIndex;
+                // Get the selected contact name
+                string selectedContactName = picker.Items[selectedIndex];
+
+                // Lookup the ID from the dictionary
+                ContactId = ContactsList.FirstOrDefault(x => x.Value == selectedContactName).Key;
+
             }
+
         }
     }
 
@@ -98,13 +100,18 @@ public partial class MapPage : ContentPage
         {
             if (selectedIndex == 0)
             {
-                GroupPickIndex = selectedIndex;
+                // "All Group" selected
+                GroupId = 0;
             }
             else
             {
-                string selectedGroup = (string)picker.SelectedItem;
-                GroupPickIndex = selectedIndex;
+                // Get the selected group name
+                string selectedGroupName = picker.Items[selectedIndex];
+
+                // Lookup the ID from the dictionary
+                GroupId = GroupsList.FirstOrDefault(x => x.Value == selectedGroupName).Key;
             }
+
         }
     }
 
@@ -135,6 +142,15 @@ public partial class MapPage : ContentPage
 
         foreach (var device in deviceList)
         {
+            if (device.contract_id != null && !ContactsList.ContainsKey(device.contract_id))
+            {
+                ContactsList[device.contract_id] = device.contract_number;
+            }
+
+            if (device.group_id.HasValue && !GroupsList.ContainsKey(device.group_id.Value))
+            {
+                GroupsList[device.group_id.Value] = device.group_name;
+            }
             MyDevice finalDevice = null;
 
             if (device.type == "gateway")
@@ -207,15 +223,27 @@ public partial class MapPage : ContentPage
             if (finalDevice != null)
                 Provider.MapSites[CurrentSite.site_id].Add(finalDevice);
         }
+
+        ContactPick.ItemsSource = ContactsList.ToList();
+        ContactPick.ItemDisplayBinding = new Binding("Value");
+        ContactPick.SelectedIndex = 0;
+
+
+        GroupPick.ItemsSource = GroupsList.ToList();
+        GroupPick.ItemDisplayBinding = new Binding("Value");
+        GroupPick.SelectedIndex = 0;
     }
 
 
     async Task ShowDevicesOnMap()
     {
-        MyMap2.Pins.Clear();
+        MyMap2.CustomPins.Clear();
+        devicePins.Clear();
+        var list = new ObservableCollection<MapPin>();
 
         if (!Provider.MapSites.TryGetValue(CurrentSite.site_id, out var devices))
         {
+            MyMap2.CustomPins = list;
             await DisplayAlert("No Devices", $"No devices found for site: {CurrentSite.site_name}", "OK");
             return;
         }
@@ -226,18 +254,68 @@ public partial class MapPage : ContentPage
 
         foreach (var device in devices)
         {
-            if (ContactPickIndex == 0 && GroupPickIndex == 0)
+            if (ContactPick.SelectedIndex == 0 && GroupPick.SelectedIndex == 0)
             {
                 if (device.lat.HasValue && device.@long.HasValue)
                 {
-                    var pin = new Pin
+                    MapPin pin = null;
+
+                    if (device.type == "gateway")
                     {
-                        Label = device.device_name,
-                        Address = device.description,
-                        Location = new Location(device.lat.Value, device.@long.Value),
-                        Type = PinType.Place,
-                    };
-                    MyMap2.Pins.Add(pin);
+                        if (device is DeviceNode deviceNode)
+                        {
+                            pin = new MapPin(MapPinClicked)
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Position = new Location(deviceNode.lat.Value, deviceNode.@long.Value),
+                                IconSrc = GetGateWayIcon(deviceNode),
+                                Label = deviceNode.gateway_name,
+                                Address = deviceNode.contract_id.ToString(),
+                                DeviceType = deviceNode.type,
+                                Online = deviceNode.Online,
+
+                            };
+                            deviceNode.OnlineHandler += (s, online) => UpdateGateWayStatus((DeviceNode)s);
+                        }
+
+                    }
+                    else
+                    {
+
+                        if (device is Dimmer dimmer)
+                        {
+                            pin = new MapPin(MapPinClicked)
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Position = new Location(dimmer.lat.Value, device.@long.Value),
+                                IconSrc = GetDimmerIcon(dimmer),
+                                Label = dimmer.device_name,
+                                Address = dimmer.description,
+                                DeviceType = "dimmer",
+                                Online = dimmer.Online,
+                                Status = dimmer.Status,
+
+                            };
+
+                            dimmer.OnlineHandler += (s, online) => UpdateDeviceStatus((Dimmer)s);
+                            dimmer.StatusHandler += (s, status) => UpdateDeviceStatus((Dimmer)s);
+                        }
+
+
+                    }
+
+                    if (pin != null)
+                    {
+                        list.Add(pin);
+                        if (device.type == "gateway")
+                        {
+                            devicePins[device.gateway_id.ToString()] = pin;
+                        }
+                        else
+                        {
+                            devicePins[((int)device.device_id).ToString() + device.gateway_id.ToString()] = pin;
+                        }
+                    }
 
                     // Track bounds for zoom
                     minLat = minLat.HasValue ? Math.Min(minLat.Value, device.lat.Value) : device.lat.Value;
@@ -246,10 +324,75 @@ public partial class MapPage : ContentPage
                     maxLong = maxLong.HasValue ? Math.Max(maxLong.Value, device.@long.Value) : device.@long.Value;
                 }
             }
+            else
+            {
+                // Get selected ContactId and GroupId
+                int selectedContactId = ContactId; // store when ContactPick_SelectedIndexChanged is triggered
+                int selectedGroupId = GroupId;     // store when GroupPick_SelectedIndexChanged is triggered
+
+                // Check if device matches selected contact and/or group
+                bool matchContact = selectedContactId == 0 || device.contract_id == selectedContactId;
+                bool matchGroup = selectedGroupId == 0 || (device.group_id.HasValue && device.group_id.Value == selectedGroupId);
+
+                if (matchContact && matchGroup && device.lat.HasValue && device.@long.HasValue)
+                {
+                    MapPin pin = null;
+
+                    if (device.type == "gateway" && device is DeviceNode deviceNode)
+                    {
+                        pin = new MapPin(MapPinClicked)
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Position = new Location(deviceNode.lat.Value, deviceNode.@long.Value),
+                            IconSrc = GetGateWayIcon(deviceNode),
+                            Label = deviceNode.gateway_name,
+                            Address = deviceNode.contract_id.ToString(),
+                            DeviceType = deviceNode.type,
+                            Online = deviceNode.Online,
+                        };
+                        deviceNode.OnlineHandler += (s, online) => UpdateGateWayStatus((DeviceNode)s);
+                    }
+                    else if (device is Dimmer dimmer)
+                    {
+                        pin = new MapPin(MapPinClicked)
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Position = new Location(dimmer.lat.Value, device.@long.Value),
+                            IconSrc = GetDimmerIcon(dimmer),
+                            Label = dimmer.device_name,
+                            Address = dimmer.description,
+                            DeviceType = "dimmer",
+                            Online = dimmer.Online,
+                            Status = dimmer.Status,
+                        };
+                        dimmer.OnlineHandler += (s, online) => UpdateDeviceStatus((Dimmer)s);
+                        dimmer.StatusHandler += (s, status) => UpdateDeviceStatus((Dimmer)s);
+                    }
+
+                    if (pin != null)
+                    {
+                        list.Add(pin);
+                        if (device.type == "gateway")
+                            devicePins[device.gateway_id.ToString()] = pin;
+                        else
+                            devicePins[((int)device.device_id).ToString() + device.gateway_id.ToString()] = pin;
+                    }
+
+                    // Update map bounds
+                    minLat = minLat.HasValue ? Math.Min(minLat.Value, device.lat.Value) : device.lat.Value;
+                    maxLat = maxLat.HasValue ? Math.Max(maxLat.Value, device.lat.Value) : device.lat.Value;
+                    minLong = minLong.HasValue ? Math.Min(minLong.Value, device.@long.Value) : device.@long.Value;
+                    maxLong = maxLong.HasValue ? Math.Max(maxLong.Value, device.@long.Value) : device.@long.Value;
+                }
+            }
         }
 
-        if (MyMap2.Pins.Count == 0) {
-            //await DisplayAlert("No Devices", $"No devices found for site: {CurrentSite.site_name} Contact: {}  Group:", "OK");
+        MyMap2.CustomPins = list;
+
+        if (MyMap2.CustomPins.Count == 0)
+        {
+            await DisplayAlert("No Devices",
+                $"No devices found for site: {CurrentSite.site_name} Contact: {ContactsList[ContactId]}  Group: {GroupsList[GroupId]}", "OK");
         }
 
         if (minLat.HasValue && minLong.HasValue && maxLat.HasValue && maxLong.HasValue)
@@ -268,6 +411,60 @@ public partial class MapPage : ContentPage
                 Distance.FromMeters(radiusMeters)
             ));
         }
+    }
+
+
+    private string GetDimmerIcon(Dimmer dimmer)
+    {
+        if (dimmer.Online != 1) return "lamp_offline";
+        return dimmer.Status == 1 ? "lamp_on" : "lamp_off";
+    }
+
+    private void UpdateDeviceStatus(Dimmer dimmer)
+    {
+        if (devicePins.TryGetValue(((int)dimmer.device_id).ToString() + dimmer.gateway_id.ToString(), out var pin))
+        {
+            pin.IconSrc = GetDimmerIcon(dimmer);
+            pin.Online = dimmer.Online;
+            pin.Status = dimmer.Status;
+
+            UpdatePinOnMap(pin);
+        }
+    }
+
+
+    private string GetGateWayIcon(DeviceNode _deviceNode)
+    {
+        return _deviceNode.Online == 1 ? "gateway_online" : "gateway_offline";
+    }
+
+    private void UpdateGateWayStatus(DeviceNode _deviceNode)
+    {
+        if (devicePins.TryGetValue(((int)_deviceNode.device_id).ToString() + _deviceNode.gateway_id.ToString(), out var pin))
+        {
+            pin.IconSrc = GetGateWayIcon(_deviceNode);
+            pin.Online = _deviceNode.Online;
+
+            UpdatePinOnMap(pin);
+        }
+    }
+
+    private void UpdatePinOnMap(MapPin pin)
+    {
+        Dispatcher.Dispatch(() =>
+        {
+#if ANDROID
+        if (MyMap2?.Handler is StreetLightApp.Platforms.Android.Handlers.CustomMapHandler handler)
+        {
+            handler.UpdatePin(pin);
+        }
+#endif
+        });
+    }
+
+    private void MapPinClicked(MapPin pin)
+    {
+        // Handle pin click
     }
 
 

@@ -3,6 +3,7 @@
     x:Class="StreetLightApp.Pages.MapPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:ctrl="clr-namespace:StreetLightApp.Controls"
     xmlns:maps="http://schemas.microsoft.com/dotnet/2021/maui/maps"
     Title="Map">
     <Grid BackgroundColor="White" RowDefinitions="Auto,Auto,*">
@@ -105,10 +106,15 @@
                 </Grid>
             </StackLayout>
         </StackLayout>
-        <maps:Map
+        <!--<maps:Map
+            x:Name="MyMap2"
+            Grid.Row="2"
+            Margin="16" />-->
+        <ctrl:MapEx
             x:Name="MyMap2"
             Grid.Row="2"
             Margin="16" />
+
     </Grid>
 
 </ContentPage>

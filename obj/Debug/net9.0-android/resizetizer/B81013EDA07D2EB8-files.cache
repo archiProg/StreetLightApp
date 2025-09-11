@@ -12,6 +12,8 @@ obj\Debug\net9.0-android\resizetizer\r\drawable\female5_avatar.png
 obj\Debug\net9.0-android\resizetizer\r\drawable\female5_avatar_half.png
 obj\Debug\net9.0-android\resizetizer\r\drawable\female_avatar.png
 obj\Debug\net9.0-android\resizetizer\r\drawable\fix_64.png
+obj\Debug\net9.0-android\resizetizer\r\drawable\gateway_offline.png
+obj\Debug\net9.0-android\resizetizer\r\drawable\gateway_online.png
 obj\Debug\net9.0-android\resizetizer\r\drawable\google_64.png
 obj\Debug\net9.0-android\resizetizer\r\drawable\google_64_ios.png
 obj\Debug\net9.0-android\resizetizer\r\drawable\gridview_64.png
@@ -22,6 +24,9 @@ obj\Debug\net9.0-android\resizetizer\r\drawable\home_64_noactive_ios.png
 obj\Debug\net9.0-android\resizetizer\r\drawable\icon_gateway.png
 obj\Debug\net9.0-android\resizetizer\r\drawable\install_12.png
 obj\Debug\net9.0-android\resizetizer\r\drawable\install_64.png
+obj\Debug\net9.0-android\resizetizer\r\drawable\lamp_off.png
+obj\Debug\net9.0-android\resizetizer\r\drawable\lamp_offline.png
+obj\Debug\net9.0-android\resizetizer\r\drawable\lamp_on.png
 obj\Debug\net9.0-android\resizetizer\r\drawable\listview_64.png
 obj\Debug\net9.0-android\resizetizer\r\drawable\listview_64_ios.png
 obj\Debug\net9.0-android\resizetizer\r\drawable\list_48_active.png

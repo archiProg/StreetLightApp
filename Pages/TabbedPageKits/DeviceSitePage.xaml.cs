@@ -46,9 +46,7 @@ public partial class DeviceSitePage : ContentPage
                     }
                     else if (e.Ctrl == 2)
                     {
-
                         sw.IsToggled = e.V == 1;
-
                     }
 
                 }
