@@ -16,14 +16,20 @@ public partial class MapPage : ContentPage
     Site CurrentSite = null;
     int ContactId = 0;
     int GroupId = 0;
+    private bool CanToggle = true;
+
+    private bool ShowMoreDetail = false;
+    private bool IsDetailDevice = false;
+
+    Dimmer CurrentDevice;
 
     Dictionary<int, string> ContactsList = new Dictionary<int, string>
 {
-    { 0, "All Contacts" }
+    { 0, "Contact Number All" }
 };
     Dictionary<int, string> GroupsList = new Dictionary<int, string>
 {
-    { 0, "All Group" }
+    { 0, "Group All" }
 };
 
     Dictionary<string, MapPin> devicePins = new Dictionary<string, MapPin>();
@@ -32,7 +38,6 @@ public partial class MapPage : ContentPage
     {
         InitializeComponent();
         CurrentSite = _site;
-
         MyMap2.PropertyChanged += MyMap2_PropertyChanged;
         SitePick.ItemsSource = Provider.SiteList;
         var index = Provider.SiteList.FindIndex(x => x.site_id == _site.site_id);
@@ -237,10 +242,10 @@ public partial class MapPage : ContentPage
 
     async Task ShowDevicesOnMap()
     {
+        Title = CurrentSite.site_name;
         MyMap2.CustomPins.Clear();
         devicePins.Clear();
         var list = new ObservableCollection<MapPin>();
-
         if (!Provider.MapSites.TryGetValue(CurrentSite.site_id, out var devices))
         {
             MyMap2.CustomPins = list;
@@ -294,6 +299,8 @@ public partial class MapPage : ContentPage
                                 DeviceType = "dimmer",
                                 Online = dimmer.Online,
                                 Status = dimmer.Status,
+                                DeviceId = (int)dimmer.device_id,
+                                GateWayId = dimmer.gateway_id
 
                             };
 
@@ -313,6 +320,7 @@ public partial class MapPage : ContentPage
                         }
                         else
                         {
+                            pin.MarkerClickHandler += Pin_MarkerClickHandler;
                             devicePins[((int)device.device_id).ToString() + device.gateway_id.ToString()] = pin;
                         }
                     }
@@ -364,6 +372,9 @@ public partial class MapPage : ContentPage
                             DeviceType = "dimmer",
                             Online = dimmer.Online,
                             Status = dimmer.Status,
+                            DeviceId = (int)dimmer.device_id,
+                            GateWayId = dimmer.gateway_id
+
                         };
                         dimmer.OnlineHandler += (s, online) => UpdateDeviceStatus((Dimmer)s);
                         dimmer.StatusHandler += (s, status) => UpdateDeviceStatus((Dimmer)s);
@@ -375,7 +386,8 @@ public partial class MapPage : ContentPage
                         if (device.type == "gateway")
                             devicePins[device.gateway_id.ToString()] = pin;
                         else
-                            devicePins[((int)device.device_id).ToString() + device.gateway_id.ToString()] = pin;
+                            pin.MarkerClickHandler += Pin_MarkerClickHandler;
+                        devicePins[((int)device.device_id).ToString() + device.gateway_id.ToString()] = pin;
                     }
 
                     // Update map bounds
@@ -413,6 +425,52 @@ public partial class MapPage : ContentPage
         }
     }
 
+    private void Pin_MarkerClickHandler(object? sender, int e)
+    {
+        if (sender is MapPin pin)
+        {
+            if (pin.DeviceType != "gateway")
+            {
+                IsDetailDevice = true;
+                SearchDetailDevice.IsVisible = false;
+                DetailDevice.IsVisible = true;
+                BtBack.IsVisible = true;
+                var _SelectDevice = Provider.MapSites[CurrentSite.site_id].Find(d => d.device_id == pin.DeviceId && d.gateway_id == pin.GateWayId);
+                if (_SelectDevice is Dimmer dimmer)
+                {
+                    ShowMoreDetail = true;
+                    ButtomSheet.Source = ShowMoreDetail? "off_buttom_sheet_icon.png": "open_buttom_sheet_icon.png";
+                    CurrentDevice = dimmer;
+                    DeviceName.Text = dimmer.device_name;
+                    lbSlider.Text = $"{(int)dimmer.Dimvalue}%";
+                    mySlider.Value = (int)dimmer.Dimvalue;
+                    statusSwitch.IsToggled = (int)dimmer.Status == 1;
+                    SetStatus(dimmer.Status);
+                    SetDimmer(dimmer.Dimvalue);
+                    SetTemp(dimmer.Temp);
+                    SetBatteryLevel(dimmer.Percentage);
+                    SetBatteryIn(dimmer.PowerCurrent);
+                    SetBatteryOut(dimmer.PowerOutCurrent);
+                    SetBattVoltOut(dimmer.BattVolt);
+                    SetBattCapacity(dimmer.Capacity);
+                    SetBattHealt(dimmer.BattHealth);
+                    SetCycleCount(dimmer.CycleCount);
+                    SetCharge(dimmer.Charge);
+                    dimmer.StatusHandler += Dimmer_StatusHandler;
+                    dimmer.DimChangeHandler += Dimmer_DimChangeHandler;
+                    dimmer.TempHandler += Dimmer_TempHandler;
+                    dimmer.PercentageHandler += Dimmer_PercentageHandler;
+                    dimmer.PowerCurrentHandler += Dimmer_PowerCurrentHandler;
+                    dimmer.PowerOutCurrentHandler += Dimmer_PowerOutCurrentHandler;
+                    dimmer.BattVoltHandler += Dimmer_BattVoltHandler;
+                    dimmer.CapacityHandler += Dimmer_CapacityHandler;
+                    dimmer.BattHealthHandler += Dimmer_BattHealthHandler;
+                    dimmer.CycleCountHandler += Dimmer_CycleCountHandler;
+                    dimmer.ChargeHandler += Dimmer_ChargeHandler;
+                }
+            }
+        }
+    }
 
     private string GetDimmerIcon(Dimmer dimmer)
     {
@@ -454,10 +512,10 @@ public partial class MapPage : ContentPage
         Dispatcher.Dispatch(() =>
         {
 #if ANDROID
-        if (MyMap2?.Handler is StreetLightApp.Platforms.Android.Handlers.CustomMapHandler handler)
-        {
-            handler.UpdatePin(pin);
-        }
+            if (MyMap2?.Handler is StreetLightApp.Platforms.Android.Handlers.CustomMapHandler handler)
+            {
+                handler.UpdatePin(pin);
+            }
 #endif
         });
     }
@@ -489,7 +547,62 @@ public partial class MapPage : ContentPage
 
     private void DeviceSearchTxt_Focused(object sender, FocusEventArgs e)
     {
+        ShowMoreDetail = true;
+        ButtomSheet.Source = ShowMoreDetail
+    ? "off_buttom_sheet_icon.png"
+    : "open_buttom_sheet_icon.png";
+        Dispatcher.Dispatch(async () =>
+        {
+            if (ShowMoreDetail)
+            {
 
+                if (IsDetailDevice)
+                {
+
+                    DetailDevice.IsVisible = true;
+                    DetailDevice.TranslationY = 50;
+                    await Task.WhenAll(
+        DetailDevice.FadeTo(1, 250, Easing.CubicOut),
+        DetailDevice.TranslateTo(0, 0, 250, Easing.CubicOut)
+    );
+                }
+                else
+                {
+                    MoreDetail.IsVisible = true;
+                    MoreDetail.TranslationY = 50;
+                    await Task.WhenAll(
+        MoreDetail.FadeTo(1, 250, Easing.CubicOut),
+        MoreDetail.TranslateTo(0, 0, 250, Easing.CubicOut)
+    );
+                }
+            }
+            else
+            {
+                if (IsDetailDevice)
+                {
+
+
+
+                    await Task.WhenAll(
+                        DetailDevice.FadeTo(0, 250, Easing.CubicIn),
+                        DetailDevice.TranslateTo(0, 50, 250, Easing.CubicIn)
+
+                    );
+                    DetailDevice.IsVisible = false;
+                }
+                else
+                {
+                    await Task.WhenAll(
+                        MoreDetail.FadeTo(0, 250, Easing.CubicIn),
+                        MoreDetail.TranslateTo(0, 50, 250, Easing.CubicIn)
+
+                    );
+                    MoreDetail.IsVisible = false;
+                }
+
+
+            }
+        });
     }
 
     private void DeviceSearchTxt_Unfocused(object sender, FocusEventArgs e)
@@ -510,4 +623,294 @@ public partial class MapPage : ContentPage
     }
 
 
+    private async void Button_Clicked(object sender, EventArgs e)
+    {
+        if (!CanToggle) return;
+        CanToggle = false;
+
+        ShowMoreDetail = !ShowMoreDetail;
+        ButtomSheet.Source = ShowMoreDetail
+            ? "off_buttom_sheet_icon.png"
+            : "open_buttom_sheet_icon.png";
+
+        if (ShowMoreDetail)
+        {
+            if (IsDetailDevice)
+            {
+
+                DetailDevice.IsVisible = true;
+                DetailDevice.TranslationY = 50;
+                await Task.WhenAll(
+    DetailDevice.FadeTo(1, 250, Easing.CubicOut),
+    DetailDevice.TranslateTo(0, 0, 250, Easing.CubicOut)
+);
+            }
+            else
+            {
+                MoreDetail.IsVisible = true;
+                MoreDetail.TranslationY = 50;
+                await Task.WhenAll(
+    MoreDetail.FadeTo(1, 250, Easing.CubicOut),
+    MoreDetail.TranslateTo(0, 0, 250, Easing.CubicOut)
+);
+            }
+        }
+        else
+        {
+            if (IsDetailDevice)
+            {
+                await Task.WhenAll(
+                    DetailDevice.FadeTo(0, 250, Easing.CubicIn),
+                    DetailDevice.TranslateTo(0, 50, 250, Easing.CubicIn)
+
+                );
+                DetailDevice.IsVisible = false;
+            }
+            else
+            {
+                await Task.WhenAll(
+                    MoreDetail.FadeTo(0, 250, Easing.CubicIn),
+                    MoreDetail.TranslateTo(0, 50, 250, Easing.CubicIn)
+
+                );
+                MoreDetail.IsVisible = false;
+            }
+        }
+
+        await Task.Delay(200);
+        CanToggle = true;
+
+        Console.WriteLine("Tapped handler executed!");
+    }
+
+
+
+    // detail device
+    private void BtBack_Clicked(object sender, EventArgs e)
+    {
+        IsDetailDevice = false;
+        if (ShowMoreDetail)
+        {
+            MoreDetail.IsVisible = true;
+        }
+        else
+        {
+
+            MoreDetail.IsVisible = false;
+        }
+        SearchDetailDevice.IsVisible = true;
+        DetailDevice.IsVisible = false;
+        BtBack.IsVisible = false;
+    }
+
+    private void SetCharge(int charge)
+    {
+        Dispatcher.Dispatch(() =>
+        {
+            ShowStatusChargring.IsVisible = charge == 1;
+        });
+    }
+
+    private void SetStatus(int status)
+    {
+        Dispatcher.Dispatch(() =>
+        {
+            statusSwitch.IsToggled = status == 1;
+            LbPowerSatatusValue.Text = status == 1 ? "ON" : "OFF";
+            LbPowerSatatusValue.TextColor = status == 1 ? Color.FromArgb("#52C68C") : Color.FromArgb("#EF8484");
+        });
+    }
+    private void SetDimmer(int dimvalue)
+    {
+        Dispatcher.Dispatch(() =>
+        {
+            lbSlider.Text = $"{dimvalue}%";
+            LbBrightnessValue.Text = $"{dimvalue}%";
+            mySlider.Value = dimvalue;
+        });
+    }
+
+    private void SetTemp(double temp)
+    {
+        Dispatcher.Dispatch(() =>
+        {
+            LbTemperatureValue.Text = $"{temp}°C";
+        });
+    }
+
+    private void SetBatteryLevel(int percentage)
+    {
+        Dispatcher.Dispatch(() =>
+        {
+            LbBatteryLevelValue.Text = $"{percentage}%";
+        });
+    }
+
+
+    private void SetBatteryIn(double powerCurrent)
+    {
+        Dispatcher.Dispatch(() =>
+        {
+            LbBatteryInValue.Text = $"{(powerCurrent / 1000).ToString("N2")} mA";
+        });
+    }
+
+    private void SetBatteryOut(double powerOutCurrent)
+    {
+        Dispatcher.Dispatch(() =>
+        {
+            LbBatteryCurrentOutValue.Text = $"{(powerOutCurrent / 1000).ToString("N2")} mA";
+        });
+    }
+
+    private void SetBattVoltOut(double battVolt)
+    {
+        Dispatcher.Dispatch(() =>
+        {
+            LbBatteryVoltOutValue.Text = $"{(battVolt / 1000).ToString("N2")} mA";
+        });
+    }
+
+    private void SetBattCapacity(double capacity)
+    {
+        Dispatcher.Dispatch(() =>
+        {
+            LbCapacityValue.Text = $"{(capacity / 1000).ToString("N2")} Ah";
+        });
+    }
+
+    private void SetBattHealt(int battHealth)
+    {
+        Dispatcher.Dispatch(() =>
+        {
+            LbBatteryHealthValue.Text = $"{battHealth}%";
+        });
+    }
+
+    private void SetCycleCount(int cycleCount)
+    {
+        Dispatcher.Dispatch(() =>
+        {
+            LbCycleValue.Text = $"{cycleCount}";
+        });
+    }
+
+
+    private void Dimmer_StatusHandler(object? sender, int e)
+    {
+        SetStatus(e);
+    }
+
+    private void Dimmer_DimChangeHandler(object? sender, int e)
+    {
+        SetDimmer(e);
+    }
+
+    private void Dimmer_TempHandler(object? sender, double e)
+    {
+        SetTemp(e);
+    }
+
+
+    private void Dimmer_PercentageHandler(object? sender, int e)
+    {
+        SetBatteryLevel(e);
+    }
+
+    private void Dimmer_PowerCurrentHandler(object? sender, double e)
+    {
+        SetBatteryIn(e);
+    }
+
+    private void Dimmer_PowerOutCurrentHandler(object? sender, double e)
+    {
+        SetBatteryOut(e);
+    }
+    private void Dimmer_BattVoltHandler(object? sender, double e)
+    {
+        SetBattVoltOut(e);
+    }
+
+    private void Dimmer_CapacityHandler(object? sender, double e)
+    {
+        SetBattCapacity(e);
+    }
+
+    private void Dimmer_BattHealthHandler(object? sender, int e)
+    {
+        SetBattHealt(e);
+    }
+
+
+    private void Dimmer_CycleCountHandler(object? sender, int e)
+    {
+        SetCycleCount(e);
+    }
+
+    private void Dimmer_ChargeHandler(object? sender, int e)
+    {
+        SetCharge(e);
+    }
+
+    private void mySlider_DragCompleted(object sender, EventArgs e)
+    {
+        if (sender is Slider slider)
+        {
+            Dispatcher.Dispatch(async () =>
+            {
+                await Provider.SendWsAsync(
+                    "3",
+                    new
+                    {
+                        Member = CurrentDevice.gateway_id,
+                        Device = CurrentDevice.device_id,
+                        Ctrl = 1,
+                        V = (int)slider.Value
+                    }
+                );
+            });
+        }
+    }
+
+    private void mySlider_HandlerChanged(object sender, ValueChangedEventArgs e)
+    {
+        if (sender is Slider slider)
+        {
+            lbSlider.Text = $"{(int)slider.Value}%";
+        }
+    }
+
+    private void statusSwitch_Toggled(object sender, ToggledEventArgs e)
+    {
+        statusLbl.Text = $"{(e.Value ? "ON" : "OFF")}";
+        statusLbl.TextColor = Color.FromArgb($"#{(e.Value ? "52C68C" : "EF8484")}");
+        Dispatcher.Dispatch(async () =>
+        {
+
+            if (e.Value)
+            {
+                await Provider.SendWsAsync(
+                    "3",
+                    new
+                    {
+                        Member = CurrentDevice.gateway_id,
+                        Device = CurrentDevice.device_id,
+                        Ctrl = 1,
+                        V = CurrentDevice.Dimvalue
+                    }
+                );
+            }
+            await Provider.SendWsAsync(
+                "3",
+                new
+                {
+                    Member = CurrentDevice.gateway_id,
+                    Device = CurrentDevice.device_id,
+                    Ctrl = 2,
+                    V = e.Value ? 1 : 0
+                }
+            );
+
+        });
+    }
 }

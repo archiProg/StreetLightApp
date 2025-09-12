@@ -61,8 +61,7 @@ namespace StreetLightApp.Models
         public void SetStatus(int status)
         {
             Status = status;
-            Console.WriteLine($"SetStatus:::::::::::::::::::::::::{status}");
-            OnStatusHandler();
+             OnStatusHandler();
         }
 
         public void OnDimChangeHandler()
@@ -123,7 +122,7 @@ namespace StreetLightApp.Models
             description = _myDevice.description;
         }
 
-         public List<Config> config { get; set; }
+        public List<Config> config { get; set; }
 
         public void SetName(string name)
         {
@@ -192,7 +191,6 @@ namespace StreetLightApp.Models
 
         internal void SetBattHealth(int last_value)
         {
-            Console.WriteLine($"SetBattHealth:::::::::::::{last_value}");
             BattHealth = last_value;
             BattHealthHandler?.Invoke(this, last_value);
         }

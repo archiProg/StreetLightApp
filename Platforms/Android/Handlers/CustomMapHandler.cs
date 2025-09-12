@@ -149,19 +149,16 @@ namespace StreetLightApp.Platforms.Android.Handlers
         }
 
 
-        //public void MarkerClick(object sender, GoogleMap.MarkerClickEventArgs args)
-        //{
-        //    if (MarkerMap.TryGetValue(args.Marker.Id, out (Marker Marker, MapPin Pin) value))
-        //    {
-        //        value.Pin.ClickedCommand?.Execute(null);
-        //    }
-        //}
+ 
         public void MarkerClick(object sender, GoogleMap.MarkerClickEventArgs args)
         {
+             
             if (MarkerMap.TryGetValue(args.Marker.Id, out (Marker Marker, MapPin Pin) value))
             {
+
                 args.Handled = false; // shows default info window
                 value.Pin.ClickedCommand?.Execute(null);
+                value.Pin.SetMarkerClick(0);
             }
         }
 

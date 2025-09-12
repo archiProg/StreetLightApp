@@ -32,6 +32,8 @@ obj\Debug\net9.0-android\resizetizer\r\drawable\listview_64_ios.png
 obj\Debug\net9.0-android\resizetizer\r\drawable\list_48_active.png
 obj\Debug\net9.0-android\resizetizer\r\drawable\list_48_noactive.png
 obj\Debug\net9.0-android\resizetizer\r\drawable\maintenance_64.png
+obj\Debug\net9.0-android\resizetizer\r\drawable\off_buttom_sheet_icon.png
+obj\Debug\net9.0-android\resizetizer\r\drawable\open_buttom_sheet_icon.png
 obj\Debug\net9.0-android\resizetizer\r\drawable\pick_icon.png
 obj\Debug\net9.0-android\resizetizer\r\drawable\scanner.png
 obj\Debug\net9.0-android\resizetizer\r\drawable\search_icon.png

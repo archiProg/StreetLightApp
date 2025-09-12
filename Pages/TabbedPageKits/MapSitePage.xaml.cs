@@ -39,6 +39,7 @@ public partial class MapSitePage : ContentPage
             item.Clicked += async (a, b) =>
             {
                 await Navigation.PushAsync(new MapPage(site));
+                //await Navigation.PushAsync(new TextMapButtomSheet( ));
             };
 
             currentGrid.Children.Add(item);

@@ -11,6 +11,9 @@ namespace StreetLightApp.Models
 {
     public class MapPin : INotifyPropertyChanged
     {
+
+        public event EventHandler<int> MarkerClickHandler;
+
         public string Id { get; set; }
         public Location Position { get; set; }
         public string Label { get; set; }
@@ -34,6 +37,8 @@ namespace StreetLightApp.Models
         public string DeviceType { get; set; }
         public int Online { get; set; }
         public int Status { get; set; }
+        public int DeviceId { get; set; }
+        public int GateWayId { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null) =>
@@ -43,7 +48,14 @@ namespace StreetLightApp.Models
 
         public MapPin(Action<MapPin> clicked)
         {
-            ClickedCommand = new Command(() => clicked(this));
+             ClickedCommand = new Command(() => clicked(this));
+        }
+
+        public void SetMarkerClick(int value)
+        {
+            Console.WriteLine("SetMarkerClick::::::::::::::::::::::::");
+
+            MarkerClickHandler?.Invoke(this, value);
         }
     }
 }

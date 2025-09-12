@@ -6,11 +6,33 @@
     xmlns:ctrl="clr-namespace:StreetLightApp.Controls"
     xmlns:maps="http://schemas.microsoft.com/dotnet/2021/maui/maps"
     Title="Map">
-    <Grid BackgroundColor="White" RowDefinitions="Auto,Auto,*">
-        <Border Grid.Row="0" Stroke="#F1F5F9" />
+    <Grid BackgroundColor="White" RowDefinitions="*,Auto,Auto">
+        <ctrl:MapEx
+            x:Name="MyMap2"
+            Grid.Row="0"
+            IsShowingUser="True" />
         <StackLayout Grid.Row="1">
-            <StackLayout Padding="16">
-                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+            <Grid>
+                <Button
+                    x:Name="BtBack"
+                    BackgroundColor="Transparent"
+                    Clicked="BtBack_Clicked"
+                    HorizontalOptions="Start"
+                    IsVisible="false"
+                    Text="Back"
+                    TextColor="#44A1FC"
+                    WidthRequest="76" />
+                <ImageButton
+                    x:Name="ButtomSheet"
+                    Margin="0"
+                    Padding="0"
+                    Clicked="Button_Clicked"
+                    HorizontalOptions="Center"
+                    Source="open_buttom_sheet_icon.png"
+                    VerticalOptions="Start" />
+            </Grid>
+            <StackLayout x:Name="SearchDetailDevice">
+                <Grid Padding="16,0,16,16">
                     <Border
                         BackgroundColor="#F6F9FE"
                         Stroke="#F6F9FE"
@@ -34,8 +56,78 @@
                                 Unfocused="DeviceSearchTxt_Unfocused" />
                         </Grid>
                     </Border>
+                </Grid>
+                <StackLayout
+                    x:Name="MoreDetail"
+                    Padding="16,0,16,16"
+                    IsVisible="False">
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                        <StackLayout Grid.Column="0">
+                            <Label Padding="0,0,0,8" Text="Site" />
+                            <Grid>
+                                <Border
+                                    InputTransparent="True"
+                                    Stroke="#F1F5F9"
+                                    StrokeShape="RoundRectangle 8">
+                                    <Grid>
+                                        <Image
+                                            Margin="0,0,16,0"
+                                            HeightRequest="16"
+                                            HorizontalOptions="End"
+                                            Source="pick_icon.png" />
+                                    </Grid>
+                                </Border>
+                                <Picker
+                                    x:Name="SitePick"
+                                    ItemDisplayBinding="{Binding site_name}"
+                                    Opacity="0.5"
+                                    SelectedIndexChanged="SitePick_SelectedIndexChanged" />
+                            </Grid>
+                        </StackLayout>
+                        <StackLayout Grid.Column="1">
+                            <Label Padding="0,0,0,8" Text="Group" />
+
+                            <Grid>
+                                <Border
+                                    InputTransparent="True"
+                                    Stroke="#F1F5F9"
+                                    StrokeShape="RoundRectangle 8">
+                                    <Grid>
+                                        <Image
+                                            Margin="0,0,16,0"
+                                            HeightRequest="16"
+                                            HorizontalOptions="End"
+                                            Source="pick_icon.png" />
+                                    </Grid>
+                                </Border>
+                                <Picker
+                                    x:Name="GroupPick"
+                                    Opacity="0.5"
+                                    SelectedIndexChanged="GroupPick_SelectedIndexChanged" />
+                            </Grid>
+                        </StackLayout>
+                    </Grid>
+                    <Label Padding="0,8" Text="Contact Number" />
+                    <Grid>
+                        <Border
+                            InputTransparent="True"
+                            Stroke="#F1F5F9"
+                            StrokeShape="RoundRectangle 8">
+                            <Grid>
+                                <Image
+                                    Margin="0,0,16,0"
+                                    HeightRequest="16"
+                                    HorizontalOptions="End"
+                                    Source="pick_icon.png" />
+                            </Grid>
+                        </Border>
+                        <Picker
+                            x:Name="ContactPick"
+                            Opacity="0.5"
+                            SelectedIndexChanged="ContactPick_SelectedIndexChanged" />
+                    </Grid>
                     <Button
-                        Grid.Column="1"
+                        Margin="0,8,0,8"
                         Padding="16,0,16,0"
                         BackgroundColor="#316BF7"
                         Clicked="OnSearchButtonClicked"
@@ -44,77 +136,198 @@
                         HeightRequest="42"
                         Text="Search"
                         TextColor="#FFFFFF" />
-                </Grid>
-                <Label Padding="0,8" Text="Site" />
-                <Grid>
-                    <Border
-                        InputTransparent="True"
-                        Stroke="#F1F5F9"
-                        StrokeShape="RoundRectangle 8">
-                        <Grid>
-                            <Image
-                                Margin="0,0,16,0"
-                                HeightRequest="16"
-                                HorizontalOptions="End"
-                                Source="pick_icon.png" />
-                        </Grid>
-                    </Border>
-                    <Picker
-                        x:Name="SitePick"
-                        ItemDisplayBinding="{Binding site_name}"
-                        Opacity="0.5"
-                        SelectedIndexChanged="SitePick_SelectedIndexChanged" />
-                </Grid>
-                <Label Padding="0,8" Text="Contact Number" />
-                <Grid>
-                    <Border
-                        InputTransparent="True"
-                        Stroke="#F1F5F9"
-                        StrokeShape="RoundRectangle 8">
-                        <Grid>
-                            <Image
-                                Margin="0,0,16,0"
-                                HeightRequest="16"
-                                HorizontalOptions="End"
-                                Source="pick_icon.png" />
-                        </Grid>
-                    </Border>
-                    <Picker
-                        x:Name="ContactPick"
-                        Opacity="0.5"
-                        SelectedIndexChanged="ContactPick_SelectedIndexChanged" />
-                </Grid>
-                <Label Padding="0,8" Text="Group" />
-
-                <Grid>
-                    <Border
-                        InputTransparent="True"
-                        Stroke="#F1F5F9"
-                        StrokeShape="RoundRectangle 8">
-                        <Grid>
-                            <Image
-                                Margin="0,0,16,0"
-                                HeightRequest="16"
-                                HorizontalOptions="End"
-                                Source="pick_icon.png" />
-                        </Grid>
-                    </Border>
-                    <Picker
-                        x:Name="GroupPick"
-                        Opacity="0.5"
-                        SelectedIndexChanged="GroupPick_SelectedIndexChanged" />
-                </Grid>
+                </StackLayout>
+                <StackLayout />
             </StackLayout>
+            <StackLayout
+                x:Name="DetailDevice"
+                Padding="16,0,16,16"
+                IsVisible="False">
+                <Grid ColumnDefinitions="*,*">
+                    <Label
+                        x:Name="DeviceName"
+                        Grid.Column="0"
+                        FontFamily="PoppinsSemiBold"
+                        Text="DeviceName"
+                        VerticalOptions="Center" />
+                    <StackLayout
+                        Grid.Column="1"
+                        HorizontalOptions="End"
+                        Orientation="Horizontal"
+                        Spacing="4"
+                        WidthRequest="75">
+                        <Label
+                            x:Name="statusLbl"
+                            FontFamily="PoppinsSemiBold"
+                            Text="OFF"
+                            TextColor="#EF8484"
+                            VerticalOptions="Center" />
+                        <Switch
+                            x:Name="statusSwitch"
+                            Toggled="statusSwitch_Toggled"
+                            VerticalOptions="Center" />
+                    </StackLayout>
+                </Grid>
+                <Grid Padding="0,0,0,16" ColumnDefinitions="Auto,*">
+                    <Label
+                        Grid.Column="0"
+                        FontFamily="PoppinsRegular"
+                        Text="Brightness"
+                        VerticalOptions="End" />
+                    <Grid Grid.Column="1" ColumnDefinitions="Auto,*">
+                        <Border
+                            Grid.Column="0"
+                            Padding="4"
+                            BackgroundColor="#F6FCFF"
+                            HorizontalOptions="Center"
+                            Stroke="#F6FCFF"
+                            StrokeShape="RoundRectangle 12"
+                            VerticalOptions="Center">
+                            <HorizontalStackLayout Spacing="4">
+                                <Image Source="sun_icon.png" />
+                                <Label x:Name="lbSlider" Text="50%" />
+                            </HorizontalStackLayout>
+                        </Border>
+                        <Slider
+                            x:Name="mySlider"
+                            Grid.Column="1"
+                            DragCompleted="mySlider_DragCompleted"
+                            Maximum="100"
+                            MaximumTrackColor="#CCD8E5"
+                            Minimum="0"
+                            MinimumTrackColor="#2A4C6D"
+                            ThumbColor="#2A4C6D"
+                            ValueChanged="mySlider_HandlerChanged" />
+                    </Grid>
+                </Grid>
+                <Label FontFamily="PoppinsSemiBold" Text="Device Status" />
+                <StackLayout Padding="8" Spacing="16">
+                    <Grid ColumnDefinitions="*,*">
+                        <StackLayout Grid.Column="0" Spacing="4">
+                            <Label
+                                FontFamily="PoppinsMedium"
+                                Text="Power satatus"
+                                TextColor="#859FB0" />
+                            <Label
+                                x:Name="LbPowerSatatusValue"
+                                FontFamily="PoppinsMedium"
+                                Text="OFF" />
+                        </StackLayout>
+                        <StackLayout Grid.Column="1" Spacing="4">
+                            <Label
+                                FontFamily="PoppinsMedium"
+                                Text="Brightness"
+                                TextColor="#859FB0" />
+                            <Label
+                                x:Name="LbBrightnessValue"
+                                FontFamily="PoppinsMedium"
+                                Text="100%" />
+                        </StackLayout>
+                    </Grid>
+                    <Grid ColumnDefinitions="*,*">
+                        <StackLayout Grid.Column="0" Spacing="4">
+                            <Label
+                                FontFamily="PoppinsMedium"
+                                Text="Temperature"
+                                TextColor="#859FB0" />
+                            <Label
+                                x:Name="LbTemperatureValue"
+                                FontFamily="PoppinsMedium"
+                                Text="100.0°C" />
+                        </StackLayout>
+                        <StackLayout Grid.Column="1" Spacing="4">
+                            <Label
+                                FontFamily="PoppinsMedium"
+                                Text="Battery Level"
+                                TextColor="#859FB0" />
+                            <HorizontalStackLayout Spacing="8">
+                                <Label
+                                    x:Name="LbBatteryLevelValue"
+                                    FontFamily="PoppinsMedium"
+                                    Text="100%" />
+                                <Label
+                                    x:Name="ShowStatusChargring"
+                                    FontFamily="PoppinsMedium"
+                                    IsVisible="false"
+                                    Text="Chargring"
+                                    TextColor="#F0B405" />
+                            </HorizontalStackLayout>
+                        </StackLayout>
+                    </Grid>
+                    <Grid ColumnDefinitions="*,*">
+                        <StackLayout Grid.Column="0" Spacing="4">
+                            <Label
+                                FontFamily="PoppinsMedium"
+                                Text="Battery IN"
+                                TextColor="#859FB0" />
+                            <Label
+                                x:Name="LbBatteryInValue"
+                                FontFamily="PoppinsMedium"
+                                Text="3.02 mA" />
+                        </StackLayout>
+                        <StackLayout Grid.Column="1" Spacing="4">
+                            <Label
+                                FontFamily="PoppinsMedium"
+                                Text="Battery OUT"
+                                TextColor="#859FB0" />
+                            <Label
+                                x:Name="LbBatteryCurrentOutValue"
+                                FontFamily="PoppinsMedium"
+                                Text="0.00 mA" />
+                        </StackLayout>
+                    </Grid>
+                    <Grid ColumnDefinitions="*,*">
+                        <StackLayout Grid.Column="0" Spacing="4">
+                            <Label
+                                FontFamily="PoppinsMedium"
+                                Text="Battery Output"
+                                TextColor="#859FB0" />
+                            <Label
+                                x:Name="LbBatteryVoltOutValue"
+                                FontFamily="PoppinsMedium"
+                                Text="13.24V" />
+                        </StackLayout>
+                        <StackLayout Grid.Column="1" Spacing="4">
+                            <Label
+                                FontFamily="PoppinsMedium"
+                                Text="Battery Capacity"
+                                TextColor="#859FB0" />
+                            <Label
+                                x:Name="LbCapacityValue"
+                                FontFamily="PoppinsMedium"
+                                Text="28.74Ah" />
+                        </StackLayout>
+                    </Grid>
+                    <Grid ColumnDefinitions="*,*">
+                        <StackLayout Grid.Column="0" Spacing="4">
+                            <Label
+                                FontFamily="PoppinsMedium"
+                                Text="Battery Health"
+                                TextColor="#859FB0" />
+                            <Label
+                                x:Name="LbBatteryHealthValue"
+                                FontFamily="PoppinsMedium"
+                                Text="100%" />
+                        </StackLayout>
+                        <StackLayout Grid.Column="1" Spacing="4">
+                            <Label
+                                FontFamily="PoppinsMedium"
+                                Text="Cycle"
+                                TextColor="#859FB0" />
+                            <Label
+                                x:Name="LbCycleValue"
+                                FontFamily="PoppinsMedium"
+                                Text="74" />
+                        </StackLayout>
+                    </Grid>
+                </StackLayout>
+            </StackLayout>
+
         </StackLayout>
         <!--<maps:Map
             x:Name="MyMap2"
             Grid.Row="2"
             Margin="16" />-->
-        <ctrl:MapEx
-            x:Name="MyMap2"
-            Grid.Row="2"
-            Margin="16" />
-
     </Grid>
 
 </ContentPage>

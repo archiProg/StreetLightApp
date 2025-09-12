@@ -87,9 +87,6 @@
 	  <Compile Update="Pages\TabbedPageKits\MapSitePage.xaml.cs">
 	    <DependentUpon>MapSitePage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="Pages\TabbedPageKits\TestMap.xaml.cs">
-	    <DependentUpon>TestMap.xaml</DependentUpon>
-	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -124,9 +121,6 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\TabbedPageKits\MapSitePage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Pages\TabbedPageKits\TestMap.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\TabbedPageKits\ReportPage.xaml">

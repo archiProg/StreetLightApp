@@ -114,12 +114,6 @@ build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.Tabbe
 build_metadata.AdditionalFiles.TargetPath = Pages\TabbedPageKits\SettingPage.xaml
 build_metadata.AdditionalFiles.RelativePath = Pages\TabbedPageKits\SettingPage.xaml
 
-[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Pages/TabbedPageKits/TestMap.xaml]
-build_metadata.AdditionalFiles.GenKind = Xaml
-build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.TabbedPageKits.TestMap.xaml
-build_metadata.AdditionalFiles.TargetPath = Pages\TabbedPageKits\TestMap.xaml
-build_metadata.AdditionalFiles.RelativePath = Pages\TabbedPageKits\TestMap.xaml
-
 [C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Popups/DimmerPopup.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Popups.DimmerPopup.xaml
