@@ -25,17 +25,18 @@ public partial class MapPage : ContentPage
 
     Dictionary<int, string> ContactsList = new Dictionary<int, string>
 {
-    { 0, "Contact Number All" }
+    { 0, "All" }
 };
     Dictionary<int, string> GroupsList = new Dictionary<int, string>
 {
-    { 0, "Group All" }
+    { 0, "All" }
 };
 
     Dictionary<string, MapPin> devicePins = new Dictionary<string, MapPin>();
 
     public MapPage(Site _site)
     {
+        Console.WriteLine($"_site::::{_site.site_name}");
         InitializeComponent();
         CurrentSite = _site;
         MyMap2.PropertyChanged += MyMap2_PropertyChanged;
@@ -46,12 +47,38 @@ public partial class MapPage : ContentPage
             SitePick.SelectedIndex = index;
         }
         SitePick.SelectedIndexChanged += SitePick_SelectedIndexChanged;
+        Console.WriteLine($"2_site::::{_site.site_name}");
         Dispatcher.Dispatch(async () =>
         {
             if (!Provider.MapSites.ContainsKey(CurrentSite.site_id))
             {
+                Console.WriteLine("GetAllDevice::::");
                 await GetAllDevice();
             }
+            else
+            {
+                foreach (var device in Provider.MapSites[CurrentSite.site_id])
+                {
+                    if (device.contract_id != null && !ContactsList.ContainsKey(device.contract_id))
+                    {
+                        ContactsList[device.contract_id] = device.contract_number;
+                    }
+
+                    if (device.group_id.HasValue && !GroupsList.ContainsKey(device.group_id.Value))
+                    {
+                        GroupsList[device.group_id.Value] = device.group_name;
+                    }
+                }
+
+            }
+            ContactPick.ItemsSource = ContactsList.ToList();
+            ContactPick.ItemDisplayBinding = new Binding("Value");
+            ContactPick.SelectedIndex = 0;
+
+
+            GroupPick.ItemsSource = GroupsList.ToList();
+            GroupPick.ItemDisplayBinding = new Binding("Value");
+            GroupPick.SelectedIndex = 0;
             await ShowDevicesOnMap();
         });
 
@@ -67,6 +94,51 @@ public partial class MapPage : ContentPage
         {
             var selectedSite = (Site)picker.SelectedItem;
             CurrentSite = selectedSite;
+            if (!Provider.MapSites.ContainsKey(CurrentSite.site_id))
+            {
+                Console.WriteLine($"Provider.MapSites[CurrentSite.site_id].Count null ja");
+                ContactsList = new Dictionary<int, string>
+                {
+                    { 0, "All" }
+                };
+                GroupsList = new Dictionary<int, string>
+                {
+                    { 0, "All" }
+                };
+                ContactPick.ItemsSource = ContactsList.ToList();
+                ContactPick.ItemDisplayBinding = new Binding("Value");
+                GroupPick.ItemsSource = GroupsList.ToList();
+                GroupPick.ItemDisplayBinding = new Binding("Value");
+            }
+            else {
+                Console.WriteLine($"Provider.MapSites[CurrentSite.site_id].Count {Provider.MapSites[CurrentSite.site_id].Count}");
+                ContactsList = new Dictionary<int, string>
+                {
+                    { 0, "All" }
+                };
+                GroupsList = new Dictionary<int, string>
+                {
+                    { 0, "All" }
+                };
+                foreach (var device in Provider.MapSites[CurrentSite.site_id])
+                {
+                    if (device.contract_id != null && !ContactsList.ContainsKey(device.contract_id))
+                    {
+                        ContactsList[device.contract_id] = device.contract_number;
+                    }
+
+                    if (device.group_id.HasValue && !GroupsList.ContainsKey(device.group_id.Value))
+                    {
+                        GroupsList[device.group_id.Value] = device.group_name;
+                    }
+                }
+                ContactPick.ItemsSource = ContactsList.ToList();
+                ContactPick.ItemDisplayBinding = new Binding("Value");
+                GroupPick.ItemsSource = GroupsList.ToList();
+                GroupPick.ItemDisplayBinding = new Binding("Value");
+            }
+            ContactPick.SelectedIndex = 0;
+            GroupPick.SelectedIndex = 0;
         }
     }
 
@@ -82,12 +154,13 @@ public partial class MapPage : ContentPage
             {
                 // "All Contacts" selected
                 ContactId = 0;
+
             }
             else
             {
                 // Get the selected contact name
                 string selectedContactName = picker.Items[selectedIndex];
-
+                Console.WriteLine($"selectedIndex: {selectedIndex} selectedContactName {selectedContactName}");
                 // Lookup the ID from the dictionary
                 ContactId = ContactsList.FirstOrDefault(x => x.Value == selectedContactName).Key;
 
@@ -107,11 +180,13 @@ public partial class MapPage : ContentPage
             {
                 // "All Group" selected
                 GroupId = 0;
+
             }
             else
             {
                 // Get the selected group name
                 string selectedGroupName = picker.Items[selectedIndex];
+                Console.WriteLine($"selectedIndex: {selectedIndex} selectedGroupName {selectedGroupName}");
 
                 // Lookup the ID from the dictionary
                 GroupId = GroupsList.FirstOrDefault(x => x.Value == selectedGroupName).Key;
@@ -145,6 +220,14 @@ public partial class MapPage : ContentPage
             Provider.MapSites[CurrentSite.site_id] = new List<MyDevice>();
         }
 
+        ContactsList = new Dictionary<int, string>
+                {
+                    { 0, "All" }
+                };
+        GroupsList = new Dictionary<int, string>
+                {
+                    { 0, "All" }
+                };
         foreach (var device in deviceList)
         {
             if (device.contract_id != null && !ContactsList.ContainsKey(device.contract_id))
@@ -228,15 +311,13 @@ public partial class MapPage : ContentPage
             if (finalDevice != null)
                 Provider.MapSites[CurrentSite.site_id].Add(finalDevice);
         }
-
         ContactPick.ItemsSource = ContactsList.ToList();
         ContactPick.ItemDisplayBinding = new Binding("Value");
         ContactPick.SelectedIndex = 0;
-
-
         GroupPick.ItemsSource = GroupsList.ToList();
         GroupPick.ItemDisplayBinding = new Binding("Value");
         GroupPick.SelectedIndex = 0;
+
     }
 
 
@@ -253,6 +334,8 @@ public partial class MapPage : ContentPage
             return;
         }
 
+        Console.WriteLine($"CurrentSite.site_name::::{CurrentSite.site_name}");
+        Console.WriteLine($"CurrentSite.site_name::::{CurrentSite.site_name}");
 
         double? minLat = null, maxLat = null, minLong = null, maxLong = null;
 
@@ -332,8 +415,9 @@ public partial class MapPage : ContentPage
                     maxLong = maxLong.HasValue ? Math.Max(maxLong.Value, device.@long.Value) : device.@long.Value;
                 }
             }
-            else
+            else if(device.group_id.HasValue)
             {
+                Console.WriteLine($"ContactId: {ContactId} | device.contract_id: {device.contract_id}");
                 // Get selected ContactId and GroupId
                 int selectedContactId = ContactId; // store when ContactPick_SelectedIndexChanged is triggered
                 int selectedGroupId = GroupId;     // store when GroupPick_SelectedIndexChanged is triggered
@@ -439,7 +523,7 @@ public partial class MapPage : ContentPage
                 if (_SelectDevice is Dimmer dimmer)
                 {
                     ShowMoreDetail = true;
-                    ButtomSheet.Source = ShowMoreDetail? "off_buttom_sheet_icon.png": "open_buttom_sheet_icon.png";
+                    ButtomSheet.Source = ShowMoreDetail ? "off_buttom_sheet_icon.png" : "open_buttom_sheet_icon.png";
                     CurrentDevice = dimmer;
                     DeviceName.Text = dimmer.device_name;
                     lbSlider.Text = $"{(int)dimmer.Dimvalue}%";
@@ -623,64 +707,71 @@ public partial class MapPage : ContentPage
     }
 
 
-    private async void Button_Clicked(object sender, EventArgs e)
+    private void Button_Clicked(object sender, EventArgs e)
     {
-        if (!CanToggle) return;
-        CanToggle = false;
-
-        ShowMoreDetail = !ShowMoreDetail;
-        ButtomSheet.Source = ShowMoreDetail
-            ? "off_buttom_sheet_icon.png"
-            : "open_buttom_sheet_icon.png";
-
-        if (ShowMoreDetail)
+        Dispatcher.Dispatch(async () =>
         {
-            if (IsDetailDevice)
-            {
+            if (!CanToggle) return;
+            CanToggle = false;
 
-                DetailDevice.IsVisible = true;
-                DetailDevice.TranslationY = 50;
-                await Task.WhenAll(
-    DetailDevice.FadeTo(1, 250, Easing.CubicOut),
-    DetailDevice.TranslateTo(0, 0, 250, Easing.CubicOut)
-);
+            ShowMoreDetail = !ShowMoreDetail;
+            ButtomSheet.Source = ShowMoreDetail
+                ? "off_buttom_sheet_icon.png"
+                : "open_buttom_sheet_icon.png";
+
+            if (ShowMoreDetail)
+            {
+                if (IsDetailDevice)
+                {
+
+                    DetailDevice.IsVisible = true;
+                    DetailDevice.TranslationY = 50;
+                    await Task.WhenAll(
+                        DetailDevice.FadeTo(1, 250, Easing.CubicOut),
+                        DetailDevice.TranslateTo(0, 0, 250, Easing.CubicOut)
+                    );
+                }
+                else
+                {
+                    MoreDetail.IsVisible = true;
+                    MoreDetail.TranslationY = 50;
+                    await Task.WhenAll(
+        MoreDetail.FadeTo(1, 250, Easing.CubicOut),
+        MoreDetail.TranslateTo(0, 0, 250, Easing.CubicOut)
+    );
+                }
             }
             else
             {
-                MoreDetail.IsVisible = true;
-                MoreDetail.TranslationY = 50;
-                await Task.WhenAll(
-    MoreDetail.FadeTo(1, 250, Easing.CubicOut),
-    MoreDetail.TranslateTo(0, 0, 250, Easing.CubicOut)
-);
+                if (IsDetailDevice)
+                {
+                    await Task.WhenAll(
+                        DetailDevice.FadeTo(0, 250, Easing.CubicIn),
+                        DetailDevice.TranslateTo(0, 50, 250, Easing.CubicIn)
+
+                    );
+                    IsDetailDevice = false;
+                    BtBack.IsVisible = false;
+                    SearchDetailDevice.IsVisible = true;
+
+                    DetailDevice.IsVisible = false;
+                }
+                else
+                {
+                    await Task.WhenAll(
+                        MoreDetail.FadeTo(0, 250, Easing.CubicIn),
+                        MoreDetail.TranslateTo(0, 50, 250, Easing.CubicIn)
+
+                    );
+                    MoreDetail.IsVisible = false;
+                }
             }
-        }
-        else
-        {
-            if (IsDetailDevice)
-            {
-                await Task.WhenAll(
-                    DetailDevice.FadeTo(0, 250, Easing.CubicIn),
-                    DetailDevice.TranslateTo(0, 50, 250, Easing.CubicIn)
 
-                );
-                DetailDevice.IsVisible = false;
-            }
-            else
-            {
-                await Task.WhenAll(
-                    MoreDetail.FadeTo(0, 250, Easing.CubicIn),
-                    MoreDetail.TranslateTo(0, 50, 250, Easing.CubicIn)
+            await Task.Delay(200);
+            CanToggle = true;
 
-                );
-                MoreDetail.IsVisible = false;
-            }
-        }
-
-        await Task.Delay(200);
-        CanToggle = true;
-
-        Console.WriteLine("Tapped handler executed!");
+            Console.WriteLine("Tapped handler executed!");
+        });
     }
 
 
@@ -688,19 +779,26 @@ public partial class MapPage : ContentPage
     // detail device
     private void BtBack_Clicked(object sender, EventArgs e)
     {
-        IsDetailDevice = false;
-        if (ShowMoreDetail)
+        Dispatcher.Dispatch(() =>
         {
-            MoreDetail.IsVisible = true;
-        }
-        else
-        {
+            IsDetailDevice = false;
+            DetailDevice.IsVisible = false;
+            BtBack.IsVisible = false;
+            SearchDetailDevice.IsVisible = true;
+            if (ShowMoreDetail)
+            {
+                Console.WriteLine("ShowMoreDetail:::::::::::::::True");
+                MoreDetail.IsVisible = true;
+            }
+            else
+            {
+                Console.WriteLine("ShowMoreDetail:::::::::::::::False");
+                MoreDetail.IsVisible = false;
+            }
 
-            MoreDetail.IsVisible = false;
-        }
-        SearchDetailDevice.IsVisible = true;
-        DetailDevice.IsVisible = false;
-        BtBack.IsVisible = false;
+
+        });
+
     }
 
     private void SetCharge(int charge)
@@ -889,16 +987,33 @@ public partial class MapPage : ContentPage
 
             if (e.Value)
             {
-                await Provider.SendWsAsync(
-                    "3",
-                    new
-                    {
-                        Member = CurrentDevice.gateway_id,
-                        Device = CurrentDevice.device_id,
-                        Ctrl = 1,
-                        V = CurrentDevice.Dimvalue
-                    }
-                );
+                if (CurrentDevice.Dimvalue == 0)
+                {
+                    await Provider.SendWsAsync(
+                        "3",
+                        new
+                        {
+                            Member = CurrentDevice.gateway_id,
+                            Device = CurrentDevice.device_id,
+                            Ctrl = 1,
+                            V = 100
+                        }
+                    );
+                }
+                else
+                {
+
+                    await Provider.SendWsAsync(
+                        "3",
+                        new
+                        {
+                            Member = CurrentDevice.gateway_id,
+                            Device = CurrentDevice.device_id,
+                            Ctrl = 1,
+                            V = CurrentDevice.Dimvalue
+                        }
+                    );
+                }
             }
             await Provider.SendWsAsync(
                 "3",
