@@ -18,8 +18,8 @@ public partial class MapPage : ContentPage
     int GroupId = 0;
     private bool CanToggle = true;
 
-    private bool ShowMoreDetail = false;
-    private bool IsDetailDevice = false;
+    private bool IsDetaildevicePannel = false;
+    private bool IsButtomSheet = false;
 
     Dimmer CurrentDevice;
 
@@ -34,10 +34,14 @@ public partial class MapPage : ContentPage
 
     Dictionary<string, MapPin> devicePins = new Dictionary<string, MapPin>();
 
+    public ObservableCollection<MyDevice> FilteredDevices { get; set; } = new();
+
+
     public MapPage(Site _site)
     {
         Console.WriteLine($"_site::::{_site.site_name}");
         InitializeComponent();
+        BindingContext = this;
         CurrentSite = _site;
         MyMap2.PropertyChanged += MyMap2_PropertyChanged;
         SitePick.ItemsSource = Provider.SiteList;
@@ -110,7 +114,8 @@ public partial class MapPage : ContentPage
                 GroupPick.ItemsSource = GroupsList.ToList();
                 GroupPick.ItemDisplayBinding = new Binding("Value");
             }
-            else {
+            else
+            {
                 Console.WriteLine($"Provider.MapSites[CurrentSite.site_id].Count {Provider.MapSites[CurrentSite.site_id].Count}");
                 ContactsList = new Dictionary<int, string>
                 {
@@ -342,6 +347,7 @@ public partial class MapPage : ContentPage
 
         foreach (var device in devices)
         {
+            FilteredDevices.Add(device);
             if (ContactPick.SelectedIndex == 0 && GroupPick.SelectedIndex == 0)
             {
                 if (device.lat.HasValue && device.@long.HasValue)
@@ -415,7 +421,7 @@ public partial class MapPage : ContentPage
                     maxLong = maxLong.HasValue ? Math.Max(maxLong.Value, device.@long.Value) : device.@long.Value;
                 }
             }
-            else if(device.group_id.HasValue)
+            else if (device.group_id.HasValue)
             {
                 Console.WriteLine($"ContactId: {ContactId} | device.contract_id: {device.contract_id}");
                 // Get selected ContactId and GroupId
@@ -467,6 +473,7 @@ public partial class MapPage : ContentPage
                     if (pin != null)
                     {
                         list.Add(pin);
+                         
                         if (device.type == "gateway")
                             devicePins[device.gateway_id.ToString()] = pin;
                         else
@@ -515,15 +522,24 @@ public partial class MapPage : ContentPage
         {
             if (pin.DeviceType != "gateway")
             {
-                IsDetailDevice = true;
-                SearchDetailDevice.IsVisible = false;
-                DetailDevice.IsVisible = true;
-                BtBack.IsVisible = true;
+                Dispatcher.Dispatch(async () =>
+                {
+                    IsButtomSheet = true;
+                    SearchDevicePannel.IsVisible = false;
+                    ItemPannel.IsVisible = false;
+                    DetailDevice.IsVisible = true;
+                    DetailDevice.TranslationY = 50;
+                    await Task.WhenAll(
+                        DetailDevice.FadeTo(1, 250, Easing.CubicOut),
+                        DetailDevice.TranslateTo(0, 0, 250, Easing.CubicOut));
+                    BtBack.IsVisible = true;
+                    ButtomSheet.Source = "off_buttom_sheet_icon.png";
+                    IsDetaildevicePannel = true;
+                });
+
                 var _SelectDevice = Provider.MapSites[CurrentSite.site_id].Find(d => d.device_id == pin.DeviceId && d.gateway_id == pin.GateWayId);
                 if (_SelectDevice is Dimmer dimmer)
                 {
-                    ShowMoreDetail = true;
-                    ButtomSheet.Source = ShowMoreDetail ? "off_buttom_sheet_icon.png" : "open_buttom_sheet_icon.png";
                     CurrentDevice = dimmer;
                     DeviceName.Text = dimmer.device_name;
                     lbSlider.Text = $"{(int)dimmer.Dimvalue}%";
@@ -631,62 +647,64 @@ public partial class MapPage : ContentPage
 
     private void DeviceSearchTxt_Focused(object sender, FocusEventArgs e)
     {
-        ShowMoreDetail = true;
-        ButtomSheet.Source = ShowMoreDetail
-    ? "off_buttom_sheet_icon.png"
-    : "open_buttom_sheet_icon.png";
-        Dispatcher.Dispatch(async () =>
-        {
-            if (ShowMoreDetail)
-            {
-
-                if (IsDetailDevice)
-                {
-
-                    DetailDevice.IsVisible = true;
-                    DetailDevice.TranslationY = 50;
-                    await Task.WhenAll(
-        DetailDevice.FadeTo(1, 250, Easing.CubicOut),
-        DetailDevice.TranslateTo(0, 0, 250, Easing.CubicOut)
-    );
-                }
-                else
-                {
-                    MoreDetail.IsVisible = true;
-                    MoreDetail.TranslationY = 50;
-                    await Task.WhenAll(
-        MoreDetail.FadeTo(1, 250, Easing.CubicOut),
-        MoreDetail.TranslateTo(0, 0, 250, Easing.CubicOut)
-    );
-                }
-            }
-            else
-            {
-                if (IsDetailDevice)
-                {
 
 
+        //    ShowMoreDetail = true;
+        //    ButtomSheet.Source = ShowMoreDetail
+        //? "off_buttom_sheet_icon.png"
+        //: "open_buttom_sheet_icon.png";
+        //    Dispatcher.Dispatch(async () =>
+        //    {
+        //        if (ShowMoreDetail)
+        //        {
 
-                    await Task.WhenAll(
-                        DetailDevice.FadeTo(0, 250, Easing.CubicIn),
-                        DetailDevice.TranslateTo(0, 50, 250, Easing.CubicIn)
+        //            if (IsDetailDevice)
+        //            {
 
-                    );
-                    DetailDevice.IsVisible = false;
-                }
-                else
-                {
-                    await Task.WhenAll(
-                        MoreDetail.FadeTo(0, 250, Easing.CubicIn),
-                        MoreDetail.TranslateTo(0, 50, 250, Easing.CubicIn)
+        //                DetailDevice.IsVisible = true;
+        //                DetailDevice.TranslationY = 50;
+        //                await Task.WhenAll(
+        //    DetailDevice.FadeTo(1, 250, Easing.CubicOut),
+        //    DetailDevice.TranslateTo(0, 0, 250, Easing.CubicOut)
+        //);
+        //            }
+        //            else
+        //            {
+        //                MoreDetail.IsVisible = true;
+        //                MoreDetail.TranslationY = 50;
+        //                await Task.WhenAll(
+        //    MoreDetail.FadeTo(1, 250, Easing.CubicOut),
+        //    MoreDetail.TranslateTo(0, 0, 250, Easing.CubicOut)
+        //);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            if (IsDetailDevice)
+        //            {
 
-                    );
-                    MoreDetail.IsVisible = false;
-                }
 
 
-            }
-        });
+        //                await Task.WhenAll(
+        //                    DetailDevice.FadeTo(0, 250, Easing.CubicIn),
+        //                    DetailDevice.TranslateTo(0, 50, 250, Easing.CubicIn)
+
+        //                );
+        //                DetailDevice.IsVisible = false;
+        //            }
+        //            else
+        //            {
+        //                await Task.WhenAll(
+        //                    MoreDetail.FadeTo(0, 250, Easing.CubicIn),
+        //                    MoreDetail.TranslateTo(0, 50, 250, Easing.CubicIn)
+
+        //                );
+        //                MoreDetail.IsVisible = false;
+        //            }
+
+
+        //        }
+        //    });
     }
 
     private void DeviceSearchTxt_Unfocused(object sender, FocusEventArgs e)
@@ -714,58 +732,50 @@ public partial class MapPage : ContentPage
             if (!CanToggle) return;
             CanToggle = false;
 
-            ShowMoreDetail = !ShowMoreDetail;
-            ButtomSheet.Source = ShowMoreDetail
+            IsButtomSheet = !IsButtomSheet;
+            ButtomSheet.Source = IsButtomSheet
                 ? "off_buttom_sheet_icon.png"
                 : "open_buttom_sheet_icon.png";
 
-            if (ShowMoreDetail)
+            if (IsButtomSheet)
             {
-                if (IsDetailDevice)
-                {
-
-                    DetailDevice.IsVisible = true;
-                    DetailDevice.TranslationY = 50;
-                    await Task.WhenAll(
-                        DetailDevice.FadeTo(1, 250, Easing.CubicOut),
-                        DetailDevice.TranslateTo(0, 0, 250, Easing.CubicOut)
-                    );
-                }
-                else
-                {
-                    MoreDetail.IsVisible = true;
-                    MoreDetail.TranslationY = 50;
-                    await Task.WhenAll(
-        MoreDetail.FadeTo(1, 250, Easing.CubicOut),
-        MoreDetail.TranslateTo(0, 0, 250, Easing.CubicOut)
-    );
-                }
+                SearchDevicePannel.IsVisible = true;
+                ItemPannel.IsVisible = true;
+                ItemPannel.IsVisible = true;
+                ItemPannel.TranslationY = 50;
+                await Task.WhenAll(
+                    ItemPannel.FadeTo(1, 250, Easing.CubicOut),
+                    ItemPannel.TranslateTo(0, 0, 250, Easing.CubicOut));
             }
             else
             {
-                if (IsDetailDevice)
+                if (!IsDetaildevicePannel)
                 {
+                    ItemPannel.IsVisible = false;
+                    ItemPannel.TranslationY = 50;
                     await Task.WhenAll(
-                        DetailDevice.FadeTo(0, 250, Easing.CubicIn),
-                        DetailDevice.TranslateTo(0, 50, 250, Easing.CubicIn)
-
+                        ItemPannel.FadeTo(0, 250, Easing.CubicIn),
+                        ItemPannel.TranslateTo(0, 50, 250, Easing.CubicIn),
                     );
-                    IsDetailDevice = false;
-                    BtBack.IsVisible = false;
-                    SearchDetailDevice.IsVisible = true;
 
-                    DetailDevice.IsVisible = false;
                 }
+
                 else
                 {
+                    BtBack.IsVisible = false;
+                    SearchDevicePannel.IsVisible = true;
+                    DetailDevice.IsVisible = false;
+                    DetailDevice.TranslationY = 50;
                     await Task.WhenAll(
-                        MoreDetail.FadeTo(0, 250, Easing.CubicIn),
-                        MoreDetail.TranslateTo(0, 50, 250, Easing.CubicIn)
-
-                    );
-                    MoreDetail.IsVisible = false;
+                        DetailDevice.FadeTo(0, 250, Easing.CubicIn),
+                        DetailDevice.TranslateTo(0, 50, 250, Easing.CubicIn));
+                    IsDetaildevicePannel = false;
                 }
+
+                SearchDevicePannel.IsVisible = true;
+
             }
+
 
             await Task.Delay(200);
             CanToggle = true;
@@ -781,21 +791,20 @@ public partial class MapPage : ContentPage
     {
         Dispatcher.Dispatch(() =>
         {
-            IsDetailDevice = false;
-            DetailDevice.IsVisible = false;
-            BtBack.IsVisible = false;
-            SearchDetailDevice.IsVisible = true;
-            if (ShowMoreDetail)
-            {
-                Console.WriteLine("ShowMoreDetail:::::::::::::::True");
-                MoreDetail.IsVisible = true;
-            }
-            else
-            {
-                Console.WriteLine("ShowMoreDetail:::::::::::::::False");
-                MoreDetail.IsVisible = false;
-            }
 
+            BtBack.IsVisible = false;
+            IsDetaildevicePannel = false;
+            DetailDevice.IsVisible = false;
+            SearchDevicePannel.IsVisible = true;
+            ItemPannel.IsVisible = true;
+
+            ItemPannel.TranslationY = 50;
+            Dispatcher.Dispatch(async () =>
+            {
+                await Task.WhenAll(
+                    ItemPannel.FadeTo(1, 250, Easing.CubicOut),
+                    ItemPannel.TranslateTo(0, 0, 250, Easing.CubicOut));
+                });
 
         });
 

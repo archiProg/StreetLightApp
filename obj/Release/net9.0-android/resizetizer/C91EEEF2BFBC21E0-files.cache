@@ -12,6 +12,8 @@ obj\Release\net9.0-android\resizetizer\r\drawable\female5_avatar.png
 obj\Release\net9.0-android\resizetizer\r\drawable\female5_avatar_half.png
 obj\Release\net9.0-android\resizetizer\r\drawable\female_avatar.png
 obj\Release\net9.0-android\resizetizer\r\drawable\fix_64.png
+obj\Release\net9.0-android\resizetizer\r\drawable\gateway_offline.png
+obj\Release\net9.0-android\resizetizer\r\drawable\gateway_online.png
 obj\Release\net9.0-android\resizetizer\r\drawable\google_64.png
 obj\Release\net9.0-android\resizetizer\r\drawable\google_64_ios.png
 obj\Release\net9.0-android\resizetizer\r\drawable\gridview_64.png
@@ -20,12 +22,18 @@ obj\Release\net9.0-android\resizetizer\r\drawable\home_64_ios.png
 obj\Release\net9.0-android\resizetizer\r\drawable\home_64_noactive.png
 obj\Release\net9.0-android\resizetizer\r\drawable\home_64_noactive_ios.png
 obj\Release\net9.0-android\resizetizer\r\drawable\icon_gateway.png
+obj\Release\net9.0-android\resizetizer\r\drawable\install_12.png
 obj\Release\net9.0-android\resizetizer\r\drawable\install_64.png
+obj\Release\net9.0-android\resizetizer\r\drawable\lamp_off.png
+obj\Release\net9.0-android\resizetizer\r\drawable\lamp_offline.png
+obj\Release\net9.0-android\resizetizer\r\drawable\lamp_on.png
 obj\Release\net9.0-android\resizetizer\r\drawable\listview_64.png
 obj\Release\net9.0-android\resizetizer\r\drawable\listview_64_ios.png
 obj\Release\net9.0-android\resizetizer\r\drawable\list_48_active.png
 obj\Release\net9.0-android\resizetizer\r\drawable\list_48_noactive.png
 obj\Release\net9.0-android\resizetizer\r\drawable\maintenance_64.png
+obj\Release\net9.0-android\resizetizer\r\drawable\off_buttom_sheet_icon.png
+obj\Release\net9.0-android\resizetizer\r\drawable\open_buttom_sheet_icon.png
 obj\Release\net9.0-android\resizetizer\r\drawable\pick_icon.png
 obj\Release\net9.0-android\resizetizer\r\drawable\scanner.png
 obj\Release\net9.0-android\resizetizer\r\drawable\search_icon.png

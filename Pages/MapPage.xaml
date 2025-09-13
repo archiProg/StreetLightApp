@@ -11,7 +11,7 @@
             x:Name="MyMap2"
             Grid.Row="0"
             IsShowingUser="True" />
-        <StackLayout Grid.Row="1">
+        <StackLayout Grid.Row="1" x:Name="bottomPanel">
             <Grid>
                 <Button
                     x:Name="BtBack"
@@ -31,10 +31,11 @@
                     Source="open_buttom_sheet_icon.png"
                     VerticalOptions="Start" />
             </Grid>
-            <StackLayout x:Name="SearchDetailDevice">
+            <StackLayout x:Name="SearchDevicePannel">
                 <Grid Padding="16,0,16,16">
                     <Border
                         BackgroundColor="#F6F9FE"
+                        HeightRequest="42"
                         Stroke="#F6F9FE"
                         StrokeShape="RoundRectangle 8">
                         <Grid ColumnDefinitions="Auto, *">
@@ -58,7 +59,7 @@
                     </Border>
                 </Grid>
                 <StackLayout
-                    x:Name="MoreDetail"
+                    x:Name="ItemPannel"
                     Padding="16,0,16,16"
                     IsVisible="False">
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
@@ -136,8 +137,33 @@
                         HeightRequest="42"
                         Text="Search"
                         TextColor="#FFFFFF" />
+                    <StackLayout>
+                        <Grid Padding="16,0" HorizontalOptions="End">
+                            <Label Text="50 of 1000 Result" />
+                        </Grid>
+
+
+                        <CollectionView
+                            x:Name="DeviceList"
+                            Margin="0,0,0,10"
+                            BackgroundColor="White"
+                            HeightRequest="150"
+                            ItemsSource="{Binding FilteredDevices}"
+                            SelectionMode="Single"
+                            VerticalOptions="End">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Padding="10">
+                                        <Label FontAttributes="Bold" Text="{Binding Name}" />
+                                        <Label FontSize="12" Text="{Binding Status}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+
+
+                    </StackLayout>
                 </StackLayout>
-                <StackLayout />
             </StackLayout>
             <StackLayout
                 x:Name="DetailDevice"

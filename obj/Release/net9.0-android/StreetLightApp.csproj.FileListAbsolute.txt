@@ -545,3 +545,12 @@ C:\Users\Baramee\source\repos\StreetLightApp\StreetLightApp\obj\Release\net9.0-a
 C:\Users\Baramee\source\repos\StreetLightApp\StreetLightApp\obj\Release\net9.0-android\stamp\_GenerateJavaStubs.stamp
 C:\Users\Baramee\source\repos\StreetLightApp\StreetLightApp\obj\Release\net9.0-android\stamp\_GeneratePackageManagerJava.stamp
 C:\Users\Baramee\source\repos\StreetLightApp\StreetLightApp\obj\Release\net9.0-android\stamp\_ResolveLibraryProjectImports.stamp
+C:\Users\Baramee\source\repos\StreetLightApp\StreetLightApp\obj\Release\net9.0-android\resizetizer\r\drawable\gateway_offline.png
+C:\Users\Baramee\source\repos\StreetLightApp\StreetLightApp\obj\Release\net9.0-android\resizetizer\r\drawable\gateway_online.png
+C:\Users\Baramee\source\repos\StreetLightApp\StreetLightApp\obj\Release\net9.0-android\resizetizer\r\drawable\install_12.png
+C:\Users\Baramee\source\repos\StreetLightApp\StreetLightApp\obj\Release\net9.0-android\resizetizer\r\drawable\lamp_off.png
+C:\Users\Baramee\source\repos\StreetLightApp\StreetLightApp\obj\Release\net9.0-android\resizetizer\r\drawable\lamp_offline.png
+C:\Users\Baramee\source\repos\StreetLightApp\StreetLightApp\obj\Release\net9.0-android\resizetizer\r\drawable\lamp_on.png
+C:\Users\Baramee\source\repos\StreetLightApp\StreetLightApp\obj\Release\net9.0-android\resizetizer\r\drawable\off_buttom_sheet_icon.png
+C:\Users\Baramee\source\repos\StreetLightApp\StreetLightApp\obj\Release\net9.0-android\resizetizer\r\drawable\open_buttom_sheet_icon.png
+C:\Users\Baramee\source\repos\StreetLightApp\StreetLightApp\obj\Release\net9.0-android\android\src\crc649e3b587f808dcf56\MapCallbackHandler.java
