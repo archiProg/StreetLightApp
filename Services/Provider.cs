@@ -15,12 +15,12 @@ namespace StreetLightApp.Services
     {
         //public static string APIHost = "http://100.76.74.10:5000";
         //public static string APIHost = "http://192.168.1.66:5000";
-        public static string APIHost = "https://archismartsolution.com:5000";
+        public static string APIHost = "https://cloudbatt.com";
         public static string ProfileName = "User";
         public static string Username = "@Username";
         //public static string HostImage = "http://100.76.74.10:5000/images/profile/";
         //public static string HostImage = "http://192.168.1.66:5000/images/profile/";
-        public static string HostImage = "https://archismartsolution.com:5000/images/profile/";
+        public static string HostImage = "https://cloudbatt.com/images/profile/";
         public static string UserImage = "";
         public static string UserEmail = "";
         public static string UserToken = "";
@@ -39,7 +39,7 @@ namespace StreetLightApp.Services
         public async static void Initialize()
         {
             //await ConnectWssServer("ws://100.76.74.10:8000/echo");
-            await ConnectWssServer("wss://archismartsolution.com:8000/echo");
+            await ConnectWssServer("wss://cloudbatt.com:8000/echo");
         }
 
         public static async Task ConnectWssServer(string _ServerIp)
