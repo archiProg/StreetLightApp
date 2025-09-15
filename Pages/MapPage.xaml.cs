@@ -344,12 +344,12 @@ public partial class MapPage : ContentPage
 
         double? minLat = null, maxLat = null, minLong = null, maxLong = null;
 
-
+        FilteredDevices.Clear();
         foreach (var device in devices)
         {
-            FilteredDevices.Add(device);
             if (ContactPick.SelectedIndex == 0 && GroupPick.SelectedIndex == 0)
             {
+                FilteredDevices.Add(device);
                 if (device.lat.HasValue && device.@long.HasValue)
                 {
                     MapPin pin = null;
@@ -415,15 +415,16 @@ public partial class MapPage : ContentPage
                     }
 
                     // Track bounds for zoom
-                    minLat = minLat.HasValue ? Math.Min(minLat.Value, device.lat.Value) : device.lat.Value;
-                    maxLat = maxLat.HasValue ? Math.Max(maxLat.Value, device.lat.Value) : device.lat.Value;
-                    minLong = minLong.HasValue ? Math.Min(minLong.Value, device.@long.Value) : device.@long.Value;
-                    maxLong = maxLong.HasValue ? Math.Max(maxLong.Value, device.@long.Value) : device.@long.Value;
+                    minLat = minLat.HasValue ? Math.Min(minLat.Value, device.lat.Value != null ? device.lat.Value : device.gateway_lat) : device.lat.Value != null ? device.lat.Value : device.gateway_lat;
+                    maxLat = maxLat.HasValue ? Math.Max(maxLat.Value, device.lat.Value != null ? device.lat.Value : device.gateway_lat) : device.lat.Value != null ? device.lat.Value : device.gateway_lat;
+                    minLong = minLong.HasValue ? Math.Min(minLong.Value, device.@long.Value != null ? device.@long.Value : device.gateway_long) : device.@long.Value != null ? device.@long.Value : device.gateway_long;
+                    maxLong = maxLong.HasValue ? Math.Max(maxLong.Value, device.@long.Value != null ? device.@long.Value : device.gateway_long) : device.@long.Value != null ? device.@long.Value : device.gateway_long;
                 }
             }
-            else if (device.group_id.HasValue)
+
+            else
             {
-                Console.WriteLine($"ContactId: {ContactId} | device.contract_id: {device.contract_id}");
+
                 // Get selected ContactId and GroupId
                 int selectedContactId = ContactId; // store when ContactPick_SelectedIndexChanged is triggered
                 int selectedGroupId = GroupId;     // store when GroupPick_SelectedIndexChanged is triggered
@@ -434,6 +435,7 @@ public partial class MapPage : ContentPage
 
                 if (matchContact && matchGroup && device.lat.HasValue && device.@long.HasValue)
                 {
+                    FilteredDevices.Add(device);
                     MapPin pin = null;
 
                     if (device.type == "gateway" && device is DeviceNode deviceNode)
@@ -473,21 +475,24 @@ public partial class MapPage : ContentPage
                     if (pin != null)
                     {
                         list.Add(pin);
-                         
+
                         if (device.type == "gateway")
                             devicePins[device.gateway_id.ToString()] = pin;
                         else
+                        {
                             pin.MarkerClickHandler += Pin_MarkerClickHandler;
-                        devicePins[((int)device.device_id).ToString() + device.gateway_id.ToString()] = pin;
+                            devicePins[((int)device.device_id).ToString() + device.gateway_id.ToString()] = pin;
+                        }
                     }
 
                     // Update map bounds
-                    minLat = minLat.HasValue ? Math.Min(minLat.Value, device.lat.Value) : device.lat.Value;
-                    maxLat = maxLat.HasValue ? Math.Max(maxLat.Value, device.lat.Value) : device.lat.Value;
-                    minLong = minLong.HasValue ? Math.Min(minLong.Value, device.@long.Value) : device.@long.Value;
-                    maxLong = maxLong.HasValue ? Math.Max(maxLong.Value, device.@long.Value) : device.@long.Value;
+                    minLat = minLat.HasValue ? Math.Min(minLat.Value, device.lat.Value != null ? device.lat.Value : device.gateway_lat) : device.lat.Value != null ? device.lat.Value : device.gateway_lat;
+                    maxLat = maxLat.HasValue ? Math.Max(maxLat.Value, device.lat.Value != null ? device.lat.Value : device.gateway_lat) : device.lat.Value != null ? device.lat.Value : device.gateway_lat;
+                    minLong = minLong.HasValue ? Math.Min(minLong.Value, device.@long.Value != null ? device.@long.Value : device.gateway_long) : device.@long.Value != null ? device.@long.Value : device.gateway_long;
+                    maxLong = maxLong.HasValue ? Math.Max(maxLong.Value, device.@long.Value != null ? device.@long.Value : device.gateway_long) : device.@long.Value != null ? device.@long.Value : device.gateway_long;
                 }
             }
+            resultSizeSite.Text = $"{FilteredDevices.Count}/{Provider.MapSites[CurrentSite.site_id].Count}";
         }
 
         MyMap2.CustomPins = list;
@@ -755,7 +760,7 @@ public partial class MapPage : ContentPage
                     ItemPannel.TranslationY = 50;
                     await Task.WhenAll(
                         ItemPannel.FadeTo(0, 250, Easing.CubicIn),
-                        ItemPannel.TranslateTo(0, 50, 250, Easing.CubicIn),
+                        ItemPannel.TranslateTo(0, 50, 250, Easing.CubicIn)
                     );
 
                 }
@@ -804,7 +809,7 @@ public partial class MapPage : ContentPage
                 await Task.WhenAll(
                     ItemPannel.FadeTo(1, 250, Easing.CubicOut),
                     ItemPannel.TranslateTo(0, 0, 250, Easing.CubicOut));
-                });
+            });
 
         });
 
