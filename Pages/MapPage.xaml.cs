@@ -331,6 +331,7 @@ public partial class MapPage : ContentPage
         Title = CurrentSite.site_name;
         MyMap2.CustomPins.Clear();
         devicePins.Clear();
+        FilteredDevices.Clear();
         var list = new ObservableCollection<MapPin>();
         if (!Provider.MapSites.TryGetValue(CurrentSite.site_id, out var devices))
         {
@@ -344,7 +345,7 @@ public partial class MapPage : ContentPage
 
         double? minLat = null, maxLat = null, minLong = null, maxLong = null;
 
-        FilteredDevices.Clear();
+
         foreach (var device in devices)
         {
             if (ContactPick.SelectedIndex == 0 && GroupPick.SelectedIndex == 0)
@@ -1041,5 +1042,38 @@ public partial class MapPage : ContentPage
             );
 
         });
+    }
+
+    private void Button_Clicked_1(object sender, EventArgs e)
+    {
+        if (sender is Button button && button.BindingContext is MyDevice device)
+        {
+            if (device.type == "gateway")
+            {
+                var gateway = device as DeviceNode;
+                if (gateway != null)
+                {
+                    var radiusMeters = Math.Max(gateway.gateway_lat, gateway.gateway_long) * 100 / 2;
+                    MyMap2.MoveToRegion(MapSpan.FromCenterAndRadius(
+                        new Location(gateway.gateway_lat, gateway.gateway_long),
+                        Distance.FromMeters(radiusMeters)
+                    ));
+                }
+            }
+            else{
+                var dimmer = device as Dimmer;
+                if (dimmer != null)
+                {
+                    var radiusMeters = Math.Max(dimmer.lat.Value, dimmer.@long.Value) * 100 / 2;
+                    MyMap2.MoveToRegion(MapSpan.FromCenterAndRadius(
+                        new Location(dimmer.lat.Value, dimmer.@long.Value),
+                        Distance.FromMeters(radiusMeters)
+                    ));
+                }
+
+            }
+        }
+
+
     }
 }

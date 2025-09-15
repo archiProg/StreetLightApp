@@ -22,6 +22,8 @@ public partial class DeviceSitePage : ContentPage
 
     private bool _isUpdatingSelectAll = false;
     private bool IsSelectAll = false;
+    private bool _updatingSwitch = false;
+
 
     public DeviceSitePage(Site _site)
     {
@@ -34,7 +36,8 @@ public partial class DeviceSitePage : ContentPage
 
     private void Provider_UpdateStatusDataHandle(object? sender, UpdateStatusDataParam e)
     {
-        Dispatcher.Dispatch(() => {
+        Dispatcher.Dispatch(() =>
+        {
             if (SelectDevices.Count == 1)
             {
                 if (SelectDevices[0].device_id == e.Device)
@@ -46,7 +49,9 @@ public partial class DeviceSitePage : ContentPage
                     }
                     else if (e.Ctrl == 2)
                     {
+                        _updatingSwitch = true;
                         sw.IsToggled = e.V == 1;
+                        _updatingSwitch = false;
                     }
 
                 }
@@ -188,7 +193,8 @@ public partial class DeviceSitePage : ContentPage
                     _isUpdatingSelectAll = false;
                     IsSelectAll = false;
                 }
-                else if (IsSelectAll) {
+                else if (IsSelectAll)
+                {
                     _isUpdatingSelectAll = true;
                     SelectAllCheckBox.IsChecked = false;
                     _isUpdatingSelectAll = false;
@@ -345,6 +351,7 @@ public partial class DeviceSitePage : ContentPage
                     deviceItem.SetChecked(true);
                 }
             }
+            SelectDevices = _allDevices;
         }
         else
         {
@@ -588,19 +595,44 @@ public partial class DeviceSitePage : ContentPage
 
     private async void OnToggled(object sender, ToggledEventArgs e)
     {
+        if (_updatingSwitch) return; // ignore programmatic updates
+
         foreach (var device in SelectDevices)
         {
-            await Provider.SendWsAsync(
-                "3",
-                new
+            if (device is Dimmer dimmer)
+            {
+                if (dimmer.Dimvalue == 0)
                 {
-                    Member = device.gateway_id,
-                    Device = device.device_id,
+                    await Provider.SendWsAsync("3", new
+                    {
+                        Member = dimmer.gateway_id,
+                        Device = dimmer.device_id,
+                        Ctrl = 1,
+                        V = 100
+                    });
+                }
+                else
+                {
+                    await Provider.SendWsAsync("3", new
+                    {
+                        Member = dimmer.gateway_id,
+                        Device = dimmer.device_id,
+                        Ctrl = 1,
+                        V = dimmer.Dimvalue
+                    });
+                }
+
+                await Provider.SendWsAsync("3", new
+                {
+                    Member = dimmer.gateway_id,
+                    Device = dimmer.device_id,
                     Ctrl = 2,
                     V = e.Value ? 1 : 0
-                }
-            );
+                });
+            }
         }
+        Task.Delay(500);
+
 
     }
 }
