@@ -595,7 +595,7 @@ public partial class DeviceSitePage : ContentPage
 
     private async void OnToggled(object sender, ToggledEventArgs e)
     {
-        if (_updatingSwitch) return; // ignore programmatic updates
+        if (_updatingSwitch) return;  
 
         foreach (var device in SelectDevices)
         {

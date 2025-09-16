@@ -1,14 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Text;
 
 
 namespace StreetLightApp.Models
 {
-    public class Dimmer : MyDevice
+    public class Dimmer : MyDevice, INotifyPropertyChanged
     {
-        public int Online { get; set; }
+        private int online;
+        public int Online
+        {
+            get => online;
+            set
+            {
+                if (online != value)
+                {
+                    online = value;
+                    OnPropertyChanged(nameof(Online));
+                    OnOnlineHandler();
+                }
+            }
+        }
         public int Dimvalue { get; set; }
         public int Status { get; set; }
         public string img_power_on_Icon { get; set; } = "";
@@ -42,6 +56,13 @@ namespace StreetLightApp.Models
         public event EventHandler<int> CycleCountHandler;
 
         public List<ImageSource> ImageSourcesList = new List<ImageSource>();
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         public void OnStatusHandler()
         {
             try
@@ -61,7 +82,7 @@ namespace StreetLightApp.Models
         public void SetStatus(int status)
         {
             Status = status;
-             OnStatusHandler();
+            OnStatusHandler();
         }
 
         public void OnDimChangeHandler()

@@ -136,16 +136,26 @@ namespace StreetLightApp.Services
                 {
                     var gateway = siteDevicesPair.Value
                         .FirstOrDefault(d => d.gateway_id == updateStatusGateway.MemberID && d.type == "gateway");
-
+                    Console.WriteLine($"SiteId {siteDevicesPair.Key}");
                     if (gateway != null)
                     {
+                        Console.WriteLine($"SiteId2:: {siteDevicesPair.Key}");
                         if (gateway is DeviceNode deviceNode)
                         {
-                            deviceNode.SetOnline(updateStatusGateway.Status);
+                            Console.WriteLine($"SiteId3:: {siteDevicesPair.Key}");
+
+                            try {
+                                deviceNode.SetOnline(updateStatusGateway.Status);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"[ERROR] SiteId3::: {ex}");
+                            }
+
                             Console.WriteLine($"deviceNode name {deviceNode.gateway_name}");
                         }
                       
-                     }
+                    }
                 }
             }
             catch (Exception ex)
@@ -187,18 +197,6 @@ namespace StreetLightApp.Services
                                 case 20: dimmer.SetCycleCount(updateStatusData.V); break;
                             }
                         }
-                        //else if (device is DeviceNode node)
-                        //{
-                        //    // For gateways or other device types
-                        //    switch (updateStatusData.Ctrl)
-                        //    {
-                        //        case 0: node.SetOnline(updateStatusData.V); break;
-                        //        case 2: node.SetStatus(updateStatusData.V); break;
-                        //            // Add other controls if needed
-                        //    }
-                        //}
-
-                        // Trigger Map update event for UI
                         UpdateStatusDataHandle?.Invoke(null, updateStatusData);
                     }
                 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,10 +31,24 @@ namespace StreetLightApp.Models
     }
 
 
-    public class DeviceNode : MyDevice
+    public class DeviceNode : MyDevice, INotifyPropertyChanged
     {
         public event EventHandler<int> OnlineHandler;
-        public int Online { get; set; }
+
+        private int online;
+        public int Online
+        {
+            get => online;
+            set
+            {
+                if (online != value)
+                {
+                    online = value;
+                    OnPropertyChanged(nameof(Online));
+                    OnOnlineHandler();
+                }
+            }
+        }
 
 
         public DeviceNode(MyDevice _myDevice)
@@ -60,12 +75,30 @@ namespace StreetLightApp.Models
         public void SetOnline(int online)
         {
             Online = online;
-
-            OnlineHandler?.Invoke(this, online);
-
+            OnOnlineHandler();
         }
+
+        public void OnOnlineHandler()
+        {
+            try
+            {
+                 OnlineHandler?.Invoke(this, Online);
+            }
+            catch (Exception ex)
+            {
+                 OnlineHandler?.Invoke(this, Online);
+            }
+        }
+
         public ObservableCollection<Control> controls { get; set; }
         public List<Config> config { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
     }
 
     public class Control

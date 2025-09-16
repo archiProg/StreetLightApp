@@ -144,6 +144,9 @@
                                     <Border
                                         BackgroundColor="#52C68C"
                                         HeightRequest="6"
+                                        Stroke="Transparent"
+                                        StrokeShape="RoundRectangle 16"
+                                        StrokeThickness="0"
                                         WidthRequest="6" />
                                     <Label Text="Online" />
                                 </HorizontalStackLayout>
@@ -151,6 +154,9 @@
                                     <Border
                                         BackgroundColor="#EF8484"
                                         HeightRequest="6"
+                                        Stroke="Transparent"
+                                        StrokeShape="RoundRectangle 16"
+                                        StrokeThickness="0"
                                         WidthRequest="6" />
                                     <Label Text="Offline" />
                                 </HorizontalStackLayout>
@@ -158,6 +164,9 @@
                                     <Border
                                         BackgroundColor="#FDBA74"
                                         HeightRequest="6"
+                                        Stroke="Transparent"
+                                        StrokeShape="RoundRectangle 16"
+                                        StrokeThickness="0"
                                         WidthRequest="6" />
                                     <Label Text="Issue" />
                                 </HorizontalStackLayout>
@@ -181,31 +190,70 @@
                             VerticalOptions="End">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
-                                    <Border HeightRequest="42">
-                                        <HorizontalStackLayout>
-                                            <StackLayout>
-                                                <HorizontalStackLayout>
-                                                    <Label FontAttributes="Bold" Text="{Binding device_name}">
-                                                        <Label.Triggers>
-                                                            <DataTrigger
-                                                                Binding="{Binding type}"
-                                                                TargetType="Label"
-                                                                Value="gateway">
-                                                                <Setter Property="Text" Value="{Binding gateway_name}" />
-                                                            </DataTrigger>
-                                                        </Label.Triggers>
-                                                    </Label>
-                                                </HorizontalStackLayout>
-                                                <HorizontalStackLayout Spacing="4">
-                                                    <Label Text="{Binding contract_number}" TextColor="#627296" />
-                                                    <Label Text="{Binding contract_number}" TextColor="#627296" />
-                                                </HorizontalStackLayout>
-                                                <BoxView BackgroundColor="#EEEEEE" HeightRequest="0.5" />
-                                            </StackLayout>
-                                            <Button Clicked="Button_Clicked_1"/>
-                                        </HorizontalStackLayout>
-                                    </Border>
-
+                                    <StackLayout>
+                                        <Border
+                                            HeightRequest="41"
+                                            Stroke="Transparent"
+                                            StrokeThickness="0">
+                                            <Border.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="OnBorderTapped" />
+                                            </Border.GestureRecognizers>
+                                            <Grid ColumnDefinitions="*,Auto">
+                                                <StackLayout Grid.Column="0">
+                                                    <HorizontalStackLayout Spacing="8">
+                                                        <Label FontAttributes="Bold" Text="{Binding device_name}">
+                                                            <Label.Triggers>
+                                                                <DataTrigger
+                                                                    Binding="{Binding type}"
+                                                                    TargetType="Label"
+                                                                    Value="gateway">
+                                                                    <Setter Property="Text" Value="{Binding gateway_name}" />
+                                                                </DataTrigger>
+                                                            </Label.Triggers>
+                                                        </Label>
+                                                        <Border
+                                                            HeightRequest="6"
+                                                            Stroke="Transparent"
+                                                            StrokeShape="RoundRectangle 16"
+                                                            StrokeThickness="0"
+                                                            WidthRequest="6">
+                                                            <Border.Triggers>
+                                                                <DataTrigger
+                                                                    Binding="{Binding Online}"
+                                                                    TargetType="Border"
+                                                                    Value="1">
+                                                                    <Setter Property="BackgroundColor" Value="LightGreen" />
+                                                                </DataTrigger>
+                                                                <DataTrigger
+                                                                    Binding="{Binding Online}"
+                                                                    TargetType="Border"
+                                                                    Value="0">
+                                                                    <Setter Property="BackgroundColor" Value="LightCoral" />
+                                                                </DataTrigger>
+                                                            </Border.Triggers>
+                                                        </Border>
+                                                    </HorizontalStackLayout>
+                                                    <HorizontalStackLayout Spacing="4">
+                                                        <Label Text="{Binding contract_number}" TextColor="#627296" />
+                                                        <Border
+                                                            BackgroundColor="#C4C4C4"
+                                                            HeightRequest="4"
+                                                            Stroke="Transparent"
+                                                            StrokeShape="RoundRectangle 16"
+                                                            StrokeThickness="0"
+                                                            WidthRequest="4" />
+                                                        <Label Text="{Binding contract_number}" TextColor="#627296" />
+                                                    </HorizontalStackLayout>
+                                                </StackLayout>
+                                                <ImageButton
+                                                    Grid.Column="1"
+                                                    Margin="0,12,0,12"
+                                                    Clicked="Button_Clicked_1"
+                                                    Source="detail_pin" />
+                                            </Grid>
+                                        </Border>
+                                        <BoxView BackgroundColor="#EEEEEE" HeightRequest="0.5" />
+                                    </StackLayout>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>
@@ -275,7 +323,21 @@
                             ValueChanged="mySlider_HandlerChanged" />
                     </Grid>
                 </Grid>
-                <Label FontFamily="PoppinsSemiBold" Text="Device Status" />
+                <HorizontalStackLayout Spacing="8">
+                    <Label FontFamily="PoppinsSemiBold" Text="Device Status :" />
+                    <Label
+                        x:Name="LbDeviceOffline"
+                        FontFamily="PoppinsMedium"
+                        IsVisible="False"
+                        Text="Device Offline"
+                        TextColor="red" />
+                    <Label
+                        x:Name="LbGateWayOffline"
+                        FontFamily="PoppinsMedium"
+                        IsVisible="False"
+                        Text="GateWay Offline"
+                        TextColor="red" />
+                </HorizontalStackLayout>
                 <StackLayout Padding="8" Spacing="16">
                     <Grid ColumnDefinitions="*,*">
                         <StackLayout Grid.Column="0" Spacing="4">

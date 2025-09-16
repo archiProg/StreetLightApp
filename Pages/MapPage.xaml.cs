@@ -336,6 +336,15 @@ public partial class MapPage : ContentPage
         if (!Provider.MapSites.TryGetValue(CurrentSite.site_id, out var devices))
         {
             MyMap2.CustomPins = list;
+            if (!Provider.MapSites.ContainsKey(CurrentSite.site_id))
+            {
+                resultSizeSite.Text = $"0/0";
+            }
+            else
+            {
+                resultSizeSite.Text = $"{FilteredDevices.Count}/{Provider.MapSites[CurrentSite.site_id].Count}";
+
+            }
             await DisplayAlert("No Devices", $"No devices found for site: {CurrentSite.site_name}", "OK");
             return;
         }
@@ -533,11 +542,14 @@ public partial class MapPage : ContentPage
                     IsButtomSheet = true;
                     SearchDevicePannel.IsVisible = false;
                     ItemPannel.IsVisible = false;
-                    DetailDevice.IsVisible = true;
-                    DetailDevice.TranslationY = 50;
-                    await Task.WhenAll(
-                        DetailDevice.FadeTo(1, 250, Easing.CubicOut),
-                        DetailDevice.TranslateTo(0, 0, 250, Easing.CubicOut));
+                    if (DetailDevice.IsVisible == false)
+                    {
+                        DetailDevice.IsVisible = true;
+                        DetailDevice.TranslationY = 50;
+                        await Task.WhenAll(
+        DetailDevice.FadeTo(1, 250, Easing.CubicOut),
+        DetailDevice.TranslateTo(0, 0, 250, Easing.CubicOut));
+                    }
                     BtBack.IsVisible = true;
                     ButtomSheet.Source = "off_buttom_sheet_icon.png";
                     IsDetaildevicePannel = true;
@@ -546,11 +558,18 @@ public partial class MapPage : ContentPage
                 var _SelectDevice = Provider.MapSites[CurrentSite.site_id].Find(d => d.device_id == pin.DeviceId && d.gateway_id == pin.GateWayId);
                 if (_SelectDevice is Dimmer dimmer)
                 {
+                    var gateway = Provider.MapSites[CurrentSite.site_id].Find(d => d.gateway_id == dimmer.gateway_id && d.type == "gateway");
+                    if (gateway is DeviceNode deviceNode)
+                    {
+                        SetDeviceNodeOnline(deviceNode.Online);
+                        deviceNode.OnlineHandler += DeviceNode_OnlineHandler;
+                    }
                     CurrentDevice = dimmer;
                     DeviceName.Text = dimmer.device_name;
                     lbSlider.Text = $"{(int)dimmer.Dimvalue}%";
                     mySlider.Value = (int)dimmer.Dimvalue;
                     statusSwitch.IsToggled = (int)dimmer.Status == 1;
+                    SetOnline(dimmer.Online);
                     SetStatus(dimmer.Status);
                     SetDimmer(dimmer.Dimvalue);
                     SetTemp(dimmer.Temp);
@@ -562,6 +581,7 @@ public partial class MapPage : ContentPage
                     SetBattHealt(dimmer.BattHealth);
                     SetCycleCount(dimmer.CycleCount);
                     SetCharge(dimmer.Charge);
+                    dimmer.OnlineHandler += Dimmer_OnlineHandler;
                     dimmer.StatusHandler += Dimmer_StatusHandler;
                     dimmer.DimChangeHandler += Dimmer_DimChangeHandler;
                     dimmer.TempHandler += Dimmer_TempHandler;
@@ -576,6 +596,36 @@ public partial class MapPage : ContentPage
                 }
             }
         }
+    }
+
+    private void Dimmer_OnlineHandler(object? sender, int e)
+    {
+        SetOnline(e);
+    }
+
+    private void DeviceNode_OnlineHandler(object? sender, int e)
+    {
+        SetDeviceNodeOnline(e);
+    }
+
+
+    private void SetDeviceNodeOnline(int online)
+    {
+        Dispatcher.Dispatch(() =>
+        {
+            if (online == 1)
+            {
+                LbGateWayOffline.IsVisible = false;
+                mySlider.IsEnabled = true;
+                statusSwitch.IsEnabled = true;
+            }
+            else
+            {
+                LbGateWayOffline.IsVisible = true;
+                mySlider.IsEnabled = false;
+                statusSwitch.IsEnabled = false;
+            }
+        });
     }
 
     private string GetDimmerIcon(Dimmer dimmer)
@@ -604,7 +654,7 @@ public partial class MapPage : ContentPage
 
     private void UpdateGateWayStatus(DeviceNode _deviceNode)
     {
-        if (devicePins.TryGetValue(((int)_deviceNode.device_id).ToString() + _deviceNode.gateway_id.ToString(), out var pin))
+        if (devicePins.TryGetValue(_deviceNode.gateway_id.ToString(), out var pin))
         {
             pin.IconSrc = GetGateWayIcon(_deviceNode);
             pin.Online = _deviceNode.Online;
@@ -814,6 +864,23 @@ public partial class MapPage : ContentPage
 
         });
 
+    }
+
+    private void SetOnline(int online)
+    {
+        Dispatcher.Dispatch(() =>
+        {
+            if (online == 1)
+            {
+                LbDeviceOffline.IsVisible = false;
+            }
+            else
+            {
+                LbDeviceOffline.IsVisible = true;
+                mySlider.IsEnabled = false;
+                statusSwitch.IsEnabled = false;
+            }
+        });
     }
 
     private void SetCharge(int charge)
@@ -1046,25 +1113,79 @@ public partial class MapPage : ContentPage
 
     private void Button_Clicked_1(object sender, EventArgs e)
     {
-        if (sender is Button button && button.BindingContext is MyDevice device)
+        if (sender is ImageButton button && button.BindingContext is MyDevice device)
         {
             if (device.type == "gateway")
             {
                 var gateway = device as DeviceNode;
                 if (gateway != null)
                 {
-                    var radiusMeters = Math.Max(gateway.gateway_lat, gateway.gateway_long) * 100 / 2;
+                    var radiusMeters = Math.Max(gateway.gateway_lat, gateway.gateway_long) * 1 / 10;
                     MyMap2.MoveToRegion(MapSpan.FromCenterAndRadius(
                         new Location(gateway.gateway_lat, gateway.gateway_long),
                         Distance.FromMeters(radiusMeters)
                     ));
                 }
             }
-            else{
+            else
+            {
+                Dispatcher.Dispatch(async () =>
+                {
+                    IsButtomSheet = true;
+                    SearchDevicePannel.IsVisible = false;
+                    ItemPannel.IsVisible = false;
+
+                    if (DetailDevice.IsVisible == false)
+                    {
+                        DetailDevice.IsVisible = true;
+                        DetailDevice.TranslationY = 50;
+                        await Task.WhenAll(
+        DetailDevice.FadeTo(1, 250, Easing.CubicOut),
+        DetailDevice.TranslateTo(0, 0, 250, Easing.CubicOut));
+                    }
+                    BtBack.IsVisible = true;
+                    ButtomSheet.Source = "off_buttom_sheet_icon.png";
+                    IsDetaildevicePannel = true;
+                });
+
                 var dimmer = device as Dimmer;
                 if (dimmer != null)
                 {
-                    var radiusMeters = Math.Max(dimmer.lat.Value, dimmer.@long.Value) * 100 / 2;
+                    var gateway = Provider.MapSites[CurrentSite.site_id].Find(d => d.gateway_id == dimmer.gateway_id && d.type == "gateway");
+                    if (gateway is DeviceNode deviceNode)
+                    {
+                        SetDeviceNodeOnline(deviceNode.Online);
+                        deviceNode.OnlineHandler += DeviceNode_OnlineHandler;
+                    }
+                    CurrentDevice = dimmer;
+                    DeviceName.Text = dimmer.device_name;
+                    lbSlider.Text = $"{(int)dimmer.Dimvalue}%";
+                    mySlider.Value = (int)dimmer.Dimvalue;
+                    statusSwitch.IsToggled = (int)dimmer.Status == 1;
+                    SetStatus(dimmer.Status);
+                    SetDimmer(dimmer.Dimvalue);
+                    SetTemp(dimmer.Temp);
+                    SetBatteryLevel(dimmer.Percentage);
+                    SetBatteryIn(dimmer.PowerCurrent);
+                    SetBatteryOut(dimmer.PowerOutCurrent);
+                    SetBattVoltOut(dimmer.BattVolt);
+                    SetBattCapacity(dimmer.Capacity);
+                    SetBattHealt(dimmer.BattHealth);
+                    SetCycleCount(dimmer.CycleCount);
+                    SetCharge(dimmer.Charge);
+                    dimmer.StatusHandler += Dimmer_StatusHandler;
+                    dimmer.DimChangeHandler += Dimmer_DimChangeHandler;
+                    dimmer.TempHandler += Dimmer_TempHandler;
+                    dimmer.PercentageHandler += Dimmer_PercentageHandler;
+                    dimmer.PowerCurrentHandler += Dimmer_PowerCurrentHandler;
+                    dimmer.PowerOutCurrentHandler += Dimmer_PowerOutCurrentHandler;
+                    dimmer.BattVoltHandler += Dimmer_BattVoltHandler;
+                    dimmer.CapacityHandler += Dimmer_CapacityHandler;
+                    dimmer.BattHealthHandler += Dimmer_BattHealthHandler;
+                    dimmer.CycleCountHandler += Dimmer_CycleCountHandler;
+                    dimmer.ChargeHandler += Dimmer_ChargeHandler;
+
+                    var radiusMeters = Math.Max(dimmer.lat.Value, dimmer.@long.Value) * 1 / 10;
                     MyMap2.MoveToRegion(MapSpan.FromCenterAndRadius(
                         new Location(dimmer.lat.Value, dimmer.@long.Value),
                         Distance.FromMeters(radiusMeters)
@@ -1075,5 +1196,36 @@ public partial class MapPage : ContentPage
         }
 
 
+    }
+
+    private void OnBorderTapped(object sender, TappedEventArgs e)
+    {
+        if (sender is Border border && border.BindingContext is MyDevice device)
+        {
+            if (device.type == "gateway")
+            {
+                var gateway = device as DeviceNode;
+                if (gateway != null)
+                {
+                    var radiusMeters = Math.Max(gateway.gateway_lat, gateway.gateway_long) * 1 / 10;
+                    MyMap2.MoveToRegion(MapSpan.FromCenterAndRadius(
+                        new Location(gateway.gateway_lat, gateway.gateway_long),
+                        Distance.FromMeters(radiusMeters)
+                    ));
+                }
+            }
+            else
+            {
+                var dimmer = device as Dimmer;
+                if (dimmer != null)
+                {
+                    var radiusMeters = Math.Max(dimmer.lat.Value, dimmer.@long.Value) * 1 / 10;
+                    MyMap2.MoveToRegion(MapSpan.FromCenterAndRadius(
+                        new Location(dimmer.lat.Value, dimmer.@long.Value),
+                        Distance.FromMeters(radiusMeters)
+                    ));
+                }
+            }
+        }
     }
 }
