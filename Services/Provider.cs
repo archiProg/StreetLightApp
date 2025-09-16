@@ -35,16 +35,19 @@ namespace StreetLightApp.Services
         public static Dictionary<int, List<MyDevice>> MapSites = new();
 
         public static event EventHandler<UpdateStatusDataParam> UpdateStatusDataHandle;
+        public static event EventHandler<UpdateStatusGatewayParam> UpdateStatusGatewayHandle;
 
         public async static void Initialize()
         {
-            //await ConnectWssServer("ws://100.76.74.10:8000/echo");
+            Console.WriteLine("Provider Initialize:::::::::::::::");
             await ConnectWssServer("wss://cloudbatt.com:8000/echo");
         }
 
         public static async Task ConnectWssServer(string _ServerIp)
         {
-            if (_WssClient != null) _WssClient.Dispose();
+            if (_WssClient != null) {
+                _WssClient.Dispose();
+            }
 
             _WssClient = new WatsonWsClient(new Uri(_ServerIp));
             _WssClient.AcceptInvalidCertificates = false;
@@ -54,10 +57,7 @@ namespace StreetLightApp.Services
             _WssClient.Logger = WsLogger;
             _WssClient.Start();
 
-            string token = Preferences.Get("token", "");
-            await SendLoginWssAsync(token);
-
-            Console.WriteLine("Client connected: " + _WssClient.Connected);
+            
         }
 
         private static async Task SendLoginWssAsync(string token)
@@ -82,8 +82,11 @@ namespace StreetLightApp.Services
             }
         }
 
-        static void WsServerConnected(object sender, EventArgs args)
+        static async void WsServerConnected(object sender, EventArgs args)
         {
+            string token = Preferences.Get("token", "");
+            await SendLoginWssAsync(token);
+            Console.WriteLine("Client connected: " + _WssClient.Connected);
             Console.WriteLine("WsServer connected::::::::::::::");
         }
 
@@ -116,6 +119,7 @@ namespace StreetLightApp.Services
                     case (int)CmdType.UpdateStatusGateWay:
                         var updateStatusGateway = baseMessage.Param.Deserialize<UpdateStatusGatewayParam>();
                         WsUpdateGatewayMap(updateStatusGateway);
+                        UpdateStatusGatewayHandle?.Invoke(null, updateStatusGateway);
                         break;
                 }
 

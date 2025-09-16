@@ -54,6 +54,68 @@ namespace StreetLightApp.Models
         public event EventHandler<double> CapacityHandler;
         public event EventHandler<int> BattHealthHandler;
         public event EventHandler<int> CycleCountHandler;
+        
+        //public void ClearPageEvent()
+        //{
+        //    try
+        //    {
+        //        foreach (Delegate d in OnlineHandler.GetInvocationList())
+        //        {
+        //            //Console.WriteLine("d.Target.ToString():" + d.Target.ToString());
+        //            if (d.Target.ToString() == "Archi2022.Views.DeviceControlPage.AirconditionPage")
+        //            {
+        //                OnlineHandler -= (EventHandler<int>)d;
+        //            }
+        //        }
+        //        foreach (Delegate d in PM25Handler.GetInvocationList())
+        //        {
+        //            if (d.Target.ToString() == "Archi2022.Views.DeviceControlPage.AirconditionPage")
+        //            {
+        //                PM25Handler -= (EventHandler<int>)d;
+        //            }
+        //        }
+        //        foreach (Delegate d in CO2Handler.GetInvocationList())
+        //        {
+        //            if (d.Target.ToString() == "Archi2022.Views.DeviceControlPage.AirQualityPage")
+        //            {
+        //                CO2Handler -= (EventHandler<int>)d;
+        //            }
+        //        }
+        //        foreach (Delegate d in TVOCHandler.GetInvocationList())
+        //        {
+        //            if (d.Target.ToString() == "Archi2022.Views.DeviceControlPage.AirQualityPage")
+        //            {
+        //                TVOCHandler -= (EventHandler<int>)d;
+        //            }
+        //        }
+        //        foreach (Delegate d in HCHOHandler.GetInvocationList())
+        //        {
+        //            if (d.Target.ToString() == "Archi2022.Views.DeviceControlPage.AirQualityPage")
+        //            {
+        //                HCHOHandler -= (EventHandler<int>)d;
+        //            }
+        //        }
+        //        foreach (Delegate d in TempHandler.GetInvocationList())
+        //        {
+        //            if (d.Target.ToString() == "Archi2022.Views.DeviceControlPage.AirQualityPage")
+        //            {
+        //                TempHandler -= (EventHandler<double>)d;
+        //            }
+        //        }
+        //        foreach (Delegate d in HumidityHandler.GetInvocationList())
+        //        {
+        //            if (d.Target.ToString() == "Archi2022.Views.DeviceControlPage.AirQualityPage")
+        //            {
+        //                HumidityHandler -= (EventHandler<int>)d;
+        //            }
+        //        }
+        //    }
+        //    catch (Exception error)
+        //    {
+
+        //    }
+        //}
+
 
         public List<ImageSource> ImageSourcesList = new List<ImageSource>();
 

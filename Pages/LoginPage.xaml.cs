@@ -33,6 +33,7 @@ public partial class LoginPage : ContentPage
 
             if (res.Success == true)
             {
+                Provider.Initialize();
                 var page = new NavigationPage(new BaseTabbedPage())
                 {
                     BarTextColor = Colors.Black,

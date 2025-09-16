@@ -20,8 +20,9 @@ public partial class MapPage : ContentPage
 
     private bool IsDetaildevicePannel = false;
     private bool IsButtomSheet = false;
+    private bool _updatingSwitch = false;
 
-    Dimmer CurrentDevice;
+    MyDevice CurrentDevice;
 
     Dictionary<int, string> ContactsList = new Dictionary<int, string>
 {
@@ -39,8 +40,9 @@ public partial class MapPage : ContentPage
 
     public MapPage(Site _site)
     {
-        Console.WriteLine($"_site::::{_site.site_name}");
         InitializeComponent();
+        Provider.UpdateStatusDataHandle += Provider_UpdateStatusDataHandle;
+        Provider.UpdateStatusGatewayHandle += Provider_UpdateStatusGatewayHandle; ;
         BindingContext = this;
         CurrentSite = _site;
         MyMap2.PropertyChanged += MyMap2_PropertyChanged;
@@ -87,6 +89,7 @@ public partial class MapPage : ContentPage
         });
 
     }
+
 
 
     private void SitePick_SelectedIndexChanged(object sender, EventArgs e)
@@ -199,6 +202,7 @@ public partial class MapPage : ContentPage
 
         }
     }
+
 
 
     async Task GetAllDevice()
@@ -562,7 +566,6 @@ public partial class MapPage : ContentPage
                     if (gateway is DeviceNode deviceNode)
                     {
                         SetDeviceNodeOnline(deviceNode.Online);
-                        deviceNode.OnlineHandler += DeviceNode_OnlineHandler;
                     }
                     CurrentDevice = dimmer;
                     DeviceName.Text = dimmer.device_name;
@@ -581,32 +584,13 @@ public partial class MapPage : ContentPage
                     SetBattHealt(dimmer.BattHealth);
                     SetCycleCount(dimmer.CycleCount);
                     SetCharge(dimmer.Charge);
-                    dimmer.OnlineHandler += Dimmer_OnlineHandler;
-                    dimmer.StatusHandler += Dimmer_StatusHandler;
-                    dimmer.DimChangeHandler += Dimmer_DimChangeHandler;
-                    dimmer.TempHandler += Dimmer_TempHandler;
-                    dimmer.PercentageHandler += Dimmer_PercentageHandler;
-                    dimmer.PowerCurrentHandler += Dimmer_PowerCurrentHandler;
-                    dimmer.PowerOutCurrentHandler += Dimmer_PowerOutCurrentHandler;
-                    dimmer.BattVoltHandler += Dimmer_BattVoltHandler;
-                    dimmer.CapacityHandler += Dimmer_CapacityHandler;
-                    dimmer.BattHealthHandler += Dimmer_BattHealthHandler;
-                    dimmer.CycleCountHandler += Dimmer_CycleCountHandler;
-                    dimmer.ChargeHandler += Dimmer_ChargeHandler;
                 }
             }
         }
     }
 
-    private void Dimmer_OnlineHandler(object? sender, int e)
-    {
-        SetOnline(e);
-    }
 
-    private void DeviceNode_OnlineHandler(object? sender, int e)
-    {
-        SetDeviceNodeOnline(e);
-    }
+
 
 
     private void SetDeviceNodeOnline(int online)
@@ -616,11 +600,27 @@ public partial class MapPage : ContentPage
             if (online == 1)
             {
                 LbGateWayOffline.IsVisible = false;
-                mySlider.IsEnabled = true;
-                statusSwitch.IsEnabled = true;
+                var dimmer = CurrentDevice as Dimmer;
+                if (dimmer != null)
+                {
+                    if (dimmer.Online == 1)
+                    {
+                        LbDeviceOffline.Text = "Online";
+                        LbDeviceOffline.TextColor = Colors.LightGreen;
+                        mySlider.IsEnabled = true;
+                        statusSwitch.IsEnabled = true;
+                    }
+                    else
+                    {
+                        LbDeviceOffline.Text = "Offline";
+                        LbDeviceOffline.TextColor = Colors.LightCoral;
+                    }
+                }
             }
             else
             {
+                LbDeviceOffline.Text = "-";
+                LbDeviceOffline.TextColor = Colors.Gray;
                 LbGateWayOffline.IsVisible = true;
                 mySlider.IsEnabled = false;
                 statusSwitch.IsEnabled = false;
@@ -705,62 +705,6 @@ public partial class MapPage : ContentPage
     {
 
 
-        //    ShowMoreDetail = true;
-        //    ButtomSheet.Source = ShowMoreDetail
-        //? "off_buttom_sheet_icon.png"
-        //: "open_buttom_sheet_icon.png";
-        //    Dispatcher.Dispatch(async () =>
-        //    {
-        //        if (ShowMoreDetail)
-        //        {
-
-        //            if (IsDetailDevice)
-        //            {
-
-        //                DetailDevice.IsVisible = true;
-        //                DetailDevice.TranslationY = 50;
-        //                await Task.WhenAll(
-        //    DetailDevice.FadeTo(1, 250, Easing.CubicOut),
-        //    DetailDevice.TranslateTo(0, 0, 250, Easing.CubicOut)
-        //);
-        //            }
-        //            else
-        //            {
-        //                MoreDetail.IsVisible = true;
-        //                MoreDetail.TranslationY = 50;
-        //                await Task.WhenAll(
-        //    MoreDetail.FadeTo(1, 250, Easing.CubicOut),
-        //    MoreDetail.TranslateTo(0, 0, 250, Easing.CubicOut)
-        //);
-        //            }
-        //        }
-        //        else
-        //        {
-        //            if (IsDetailDevice)
-        //            {
-
-
-
-        //                await Task.WhenAll(
-        //                    DetailDevice.FadeTo(0, 250, Easing.CubicIn),
-        //                    DetailDevice.TranslateTo(0, 50, 250, Easing.CubicIn)
-
-        //                );
-        //                DetailDevice.IsVisible = false;
-        //            }
-        //            else
-        //            {
-        //                await Task.WhenAll(
-        //                    MoreDetail.FadeTo(0, 250, Easing.CubicIn),
-        //                    MoreDetail.TranslateTo(0, 50, 250, Easing.CubicIn)
-
-        //                );
-        //                MoreDetail.IsVisible = false;
-        //            }
-
-
-        //        }
-        //    });
     }
 
     private void DeviceSearchTxt_Unfocused(object sender, FocusEventArgs e)
@@ -819,6 +763,7 @@ public partial class MapPage : ContentPage
                 else
                 {
                     BtBack.IsVisible = false;
+                    LbGateWayOffline.IsVisible = false;
                     SearchDevicePannel.IsVisible = true;
                     DetailDevice.IsVisible = false;
                     DetailDevice.TranslationY = 50;
@@ -849,6 +794,7 @@ public partial class MapPage : ContentPage
         {
 
             BtBack.IsVisible = false;
+            LbGateWayOffline.IsVisible = false;
             IsDetaildevicePannel = false;
             DetailDevice.IsVisible = false;
             SearchDevicePannel.IsVisible = true;
@@ -870,15 +816,30 @@ public partial class MapPage : ContentPage
     {
         Dispatcher.Dispatch(() =>
         {
-            if (online == 1)
+            var gateway = Provider.MapSites[CurrentSite.site_id].Find(x => x.gateway_id == CurrentDevice.gateway_id && x.type == "gateway");
+            if (gateway != null)
             {
-                LbDeviceOffline.IsVisible = false;
-            }
-            else
-            {
-                LbDeviceOffline.IsVisible = true;
-                mySlider.IsEnabled = false;
-                statusSwitch.IsEnabled = false;
+
+                var lastgateway = gateway as DeviceNode;
+                if (lastgateway != null)
+                {
+                    if (online == 1 && lastgateway.Online == 1)
+                    {
+                        LbDeviceOffline.Text = "Online";
+                        LbDeviceOffline.TextColor = Color.FromArgb("#52C68C");
+                        mySlider.IsEnabled = true;
+                        statusSwitch.IsEnabled = true;
+
+
+                    }
+                    else if (lastgateway.Online == 1)
+                    {
+                        LbDeviceOffline.Text = "Offline";
+                        LbDeviceOffline.TextColor = Color.FromArgb("#EF8484");
+                        mySlider.IsEnabled = false;
+                        statusSwitch.IsEnabled = false;
+                    }
+                }
             }
         });
     }
@@ -895,8 +856,8 @@ public partial class MapPage : ContentPage
     {
         Dispatcher.Dispatch(() =>
         {
-            statusSwitch.IsToggled = status == 1;
-            LbPowerSatatusValue.Text = status == 1 ? "ON" : "OFF";
+             statusSwitch.IsToggled = status == 1;
+             LbPowerSatatusValue.Text = status == 1 ? "ON" : "OFF";
             LbPowerSatatusValue.TextColor = status == 1 ? Color.FromArgb("#52C68C") : Color.FromArgb("#EF8484");
         });
     }
@@ -976,61 +937,7 @@ public partial class MapPage : ContentPage
     }
 
 
-    private void Dimmer_StatusHandler(object? sender, int e)
-    {
-        SetStatus(e);
-    }
 
-    private void Dimmer_DimChangeHandler(object? sender, int e)
-    {
-        SetDimmer(e);
-    }
-
-    private void Dimmer_TempHandler(object? sender, double e)
-    {
-        SetTemp(e);
-    }
-
-
-    private void Dimmer_PercentageHandler(object? sender, int e)
-    {
-        SetBatteryLevel(e);
-    }
-
-    private void Dimmer_PowerCurrentHandler(object? sender, double e)
-    {
-        SetBatteryIn(e);
-    }
-
-    private void Dimmer_PowerOutCurrentHandler(object? sender, double e)
-    {
-        SetBatteryOut(e);
-    }
-    private void Dimmer_BattVoltHandler(object? sender, double e)
-    {
-        SetBattVoltOut(e);
-    }
-
-    private void Dimmer_CapacityHandler(object? sender, double e)
-    {
-        SetBattCapacity(e);
-    }
-
-    private void Dimmer_BattHealthHandler(object? sender, int e)
-    {
-        SetBattHealt(e);
-    }
-
-
-    private void Dimmer_CycleCountHandler(object? sender, int e)
-    {
-        SetCycleCount(e);
-    }
-
-    private void Dimmer_ChargeHandler(object? sender, int e)
-    {
-        SetCharge(e);
-    }
 
     private void mySlider_DragCompleted(object sender, EventArgs e)
     {
@@ -1062,53 +969,66 @@ public partial class MapPage : ContentPage
 
     private void statusSwitch_Toggled(object sender, ToggledEventArgs e)
     {
+        if (_updatingSwitch) return;
+
         statusLbl.Text = $"{(e.Value ? "ON" : "OFF")}";
         statusLbl.TextColor = Color.FromArgb($"#{(e.Value ? "52C68C" : "EF8484")}");
         Dispatcher.Dispatch(async () =>
         {
 
-            if (e.Value)
-            {
-                if (CurrentDevice.Dimvalue == 0)
-                {
-                    await Provider.SendWsAsync(
-                        "3",
-                        new
-                        {
-                            Member = CurrentDevice.gateway_id,
-                            Device = CurrentDevice.device_id,
-                            Ctrl = 1,
-                            V = 100
-                        }
-                    );
-                }
-                else
-                {
 
+            if (CurrentDevice.type != "gateway")
+            {
+                var focusDevice = CurrentDevice as Dimmer;
+                if (focusDevice != null)
+                {
+                    if (e.Value)
+                    {
+
+                        if (focusDevice.Dimvalue == 0)
+                        {
+                            await Provider.SendWsAsync(
+                                "3",
+                                new
+                                {
+                                    Member = focusDevice.gateway_id,
+                                    Device = focusDevice.device_id,
+                                    Ctrl = 1,
+                                    V = 100
+                                }
+                            );
+                        }
+                        else
+                        {
+
+                            await Provider.SendWsAsync(
+                                "3",
+                                new
+                                {
+                                    Member = focusDevice.gateway_id,
+                                    Device = focusDevice.device_id,
+                                    Ctrl = 1,
+                                    V = focusDevice.Dimvalue
+                                }
+                            );
+                        }
+                    }
                     await Provider.SendWsAsync(
                         "3",
                         new
                         {
-                            Member = CurrentDevice.gateway_id,
-                            Device = CurrentDevice.device_id,
-                            Ctrl = 1,
-                            V = CurrentDevice.Dimvalue
+                            Member = focusDevice.gateway_id,
+                            Device = focusDevice.device_id,
+                            Ctrl = 2,
+                            V = e.Value ? 1 : 0
                         }
                     );
+
                 }
             }
-            await Provider.SendWsAsync(
-                "3",
-                new
-                {
-                    Member = CurrentDevice.gateway_id,
-                    Device = CurrentDevice.device_id,
-                    Ctrl = 2,
-                    V = e.Value ? 1 : 0
-                }
-            );
 
-        });
+        }
+ );
     }
 
     private void Button_Clicked_1(object sender, EventArgs e)
@@ -1155,13 +1075,13 @@ public partial class MapPage : ContentPage
                     if (gateway is DeviceNode deviceNode)
                     {
                         SetDeviceNodeOnline(deviceNode.Online);
-                        deviceNode.OnlineHandler += DeviceNode_OnlineHandler;
                     }
                     CurrentDevice = dimmer;
                     DeviceName.Text = dimmer.device_name;
                     lbSlider.Text = $"{(int)dimmer.Dimvalue}%";
                     mySlider.Value = (int)dimmer.Dimvalue;
                     statusSwitch.IsToggled = (int)dimmer.Status == 1;
+                    SetOnline(dimmer.Online);
                     SetStatus(dimmer.Status);
                     SetDimmer(dimmer.Dimvalue);
                     SetTemp(dimmer.Temp);
@@ -1173,17 +1093,8 @@ public partial class MapPage : ContentPage
                     SetBattHealt(dimmer.BattHealth);
                     SetCycleCount(dimmer.CycleCount);
                     SetCharge(dimmer.Charge);
-                    dimmer.StatusHandler += Dimmer_StatusHandler;
-                    dimmer.DimChangeHandler += Dimmer_DimChangeHandler;
-                    dimmer.TempHandler += Dimmer_TempHandler;
-                    dimmer.PercentageHandler += Dimmer_PercentageHandler;
-                    dimmer.PowerCurrentHandler += Dimmer_PowerCurrentHandler;
-                    dimmer.PowerOutCurrentHandler += Dimmer_PowerOutCurrentHandler;
-                    dimmer.BattVoltHandler += Dimmer_BattVoltHandler;
-                    dimmer.CapacityHandler += Dimmer_CapacityHandler;
-                    dimmer.BattHealthHandler += Dimmer_BattHealthHandler;
-                    dimmer.CycleCountHandler += Dimmer_CycleCountHandler;
-                    dimmer.ChargeHandler += Dimmer_ChargeHandler;
+
+
 
                     var radiusMeters = Math.Max(dimmer.lat.Value, dimmer.@long.Value) * 1 / 10;
                     MyMap2.MoveToRegion(MapSpan.FromCenterAndRadius(
@@ -1227,5 +1138,57 @@ public partial class MapPage : ContentPage
                 }
             }
         }
+    }
+
+
+    private void Provider_UpdateStatusGatewayHandle(object? sender, UpdateStatusGatewayParam e)
+    {
+        Dispatcher.Dispatch(() =>
+        {
+            if (CurrentDevice != null)
+            {
+                if (CurrentDevice.gateway_id == e.MemberID)
+                {
+                    SetDeviceNodeOnline(e.Status);
+                }
+            }
+        });
+    }
+
+    private void Provider_UpdateStatusDataHandle(object? sender, UpdateStatusDataParam e)
+    {
+        Dispatcher.Dispatch(() =>
+        {
+            if (CurrentDevice != null)
+            {
+                if (CurrentDevice.gateway_id == e.Member && CurrentDevice.device_id == e.Device)
+                {
+                    if (CurrentDevice is Dimmer dimmer)
+                    {
+                        switch (e.Ctrl)
+                        {
+                            case 0: SetOnline(e.V); break;
+                            case 1: SetDimmer(e.V); break;
+                            case 2:
+                                _updatingSwitch = true;
+                                SetStatus(e.V);
+                                _updatingSwitch = false;
+                                break;
+                            case 10: SetBatteryLevel(e.V); break;
+                            case 11: SetTemp(e.V); break;
+                            case 12: SetCharge(e.V); break;
+                            case 14: SetBatteryIn(e.V); break;
+                            case 15: SetBattVoltOut(e.V); break;
+                            case 16: SetBatteryOut(e.V); break;
+                            case 17: SetBatteryLevel(e.V); break;
+                            case 18: SetBattCapacity(e.V); break;
+                            case 19: SetBattHealt(e.V); break;
+                            case 20: SetCycleCount(e.V); break;
+                        }
+
+                    }
+                }
+            }
+        });
     }
 }

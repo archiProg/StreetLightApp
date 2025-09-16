@@ -30,6 +30,15 @@
                     HorizontalOptions="Center"
                     Source="open_buttom_sheet_icon.png"
                     VerticalOptions="Start" />
+                <Label
+                    x:Name="LbGateWayOffline"
+                    Padding="16,8"
+                    FontFamily="PoppinsMedium"
+                    HorizontalOptions="End"
+                    IsVisible="false"
+                    Text="GateWay Offline"
+                    TextColor="red"
+                    VerticalOptions="End" />
             </Grid>
             <StackLayout x:Name="SearchDevicePannel">
                 <Grid Padding="16,0,16,16">
@@ -328,14 +337,7 @@
                     <Label
                         x:Name="LbDeviceOffline"
                         FontFamily="PoppinsMedium"
-                        IsVisible="False"
                         Text="Device Offline"
-                        TextColor="red" />
-                    <Label
-                        x:Name="LbGateWayOffline"
-                        FontFamily="PoppinsMedium"
-                        IsVisible="False"
-                        Text="GateWay Offline"
                         TextColor="red" />
                 </HorizontalStackLayout>
                 <StackLayout Padding="8" Spacing="16">
