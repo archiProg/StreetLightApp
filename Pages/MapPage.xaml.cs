@@ -20,7 +20,7 @@ public partial class MapPage : ContentPage
 
     private bool IsDetaildevicePannel = false;
     private bool IsButtomSheet = false;
-    private bool _updatingSwitch = false;
+
 
     MyDevice CurrentDevice;
 
@@ -856,11 +856,20 @@ public partial class MapPage : ContentPage
     {
         Dispatcher.Dispatch(() =>
         {
-             statusSwitch.IsToggled = status == 1;
-             LbPowerSatatusValue.Text = status == 1 ? "ON" : "OFF";
+            // Temporarily detach the event
+            statusSwitch.Toggled -= statusSwitch_Toggled;
+
+            statusSwitch.IsToggled = status == 1;
+            LbPowerSatatusValue.Text = status == 1 ? "ON" : "OFF";
+            statusLbl.Text = status == 1 ? "ON" : "OFF";
+            statusLbl.TextColor = status == 1 ? Color.FromArgb("#52C68C") : Color.FromArgb("#EF8484");
             LbPowerSatatusValue.TextColor = status == 1 ? Color.FromArgb("#52C68C") : Color.FromArgb("#EF8484");
+
+            // Re-attach the event
+            statusSwitch.Toggled += statusSwitch_Toggled;
         });
     }
+
     private void SetDimmer(int dimvalue)
     {
         Dispatcher.Dispatch(() =>
@@ -969,8 +978,6 @@ public partial class MapPage : ContentPage
 
     private void statusSwitch_Toggled(object sender, ToggledEventArgs e)
     {
-        if (_updatingSwitch) return;
-
         statusLbl.Text = $"{(e.Value ? "ON" : "OFF")}";
         statusLbl.TextColor = Color.FromArgb($"#{(e.Value ? "52C68C" : "EF8484")}");
         Dispatcher.Dispatch(async () =>
@@ -1169,11 +1176,7 @@ public partial class MapPage : ContentPage
                         {
                             case 0: SetOnline(e.V); break;
                             case 1: SetDimmer(e.V); break;
-                            case 2:
-                                _updatingSwitch = true;
-                                SetStatus(e.V);
-                                _updatingSwitch = false;
-                                break;
+                            case 2: SetStatus(e.V); break;
                             case 10: SetBatteryLevel(e.V); break;
                             case 11: SetTemp(e.V); break;
                             case 12: SetCharge(e.V); break;
