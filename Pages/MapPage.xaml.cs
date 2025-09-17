@@ -1,6 +1,7 @@
 ﻿using Microsoft.Maui.ApplicationModel.Communication;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Maps;
+using Microsoft.Maui.Graphics.Text;
 using Microsoft.Maui.Maps;
 using Newtonsoft.Json;
 using StreetLightApp.Models;
@@ -379,8 +380,9 @@ public partial class MapPage : ContentPage
                                 IconSrc = GetGateWayIcon(deviceNode),
                                 Label = deviceNode.gateway_name,
                                 Address = deviceNode.contract_id.ToString(),
-                                DeviceType = deviceNode.type,
+                                DeviceType = "gateway",
                                 Online = deviceNode.Online,
+                                GateWayId = deviceNode.gateway_id
 
                             };
                             deviceNode.OnlineHandler += (s, online) => UpdateGateWayStatus((DeviceNode)s);
@@ -419,6 +421,7 @@ public partial class MapPage : ContentPage
                         list.Add(pin);
                         if (device.type == "gateway")
                         {
+                            pin.MarkerClickHandler += Pin_MarkerClickHandler;
                             devicePins[device.gateway_id.ToString()] = pin;
                         }
                         else
@@ -491,7 +494,10 @@ public partial class MapPage : ContentPage
                         list.Add(pin);
 
                         if (device.type == "gateway")
+                        {
+                            pin.MarkerClickHandler += Pin_MarkerClickHandler;
                             devicePins[device.gateway_id.ToString()] = pin;
+                        }
                         else
                         {
                             pin.MarkerClickHandler += Pin_MarkerClickHandler;
@@ -539,13 +545,50 @@ public partial class MapPage : ContentPage
     {
         if (sender is MapPin pin)
         {
-            if (pin.DeviceType != "gateway")
+            if (pin.DeviceType == "gateway")
             {
                 Dispatcher.Dispatch(async () =>
                 {
                     IsButtomSheet = true;
                     SearchDevicePannel.IsVisible = false;
                     ItemPannel.IsVisible = false;
+                    GawayItem.IsVisible = true;
+                    DeviceItem.IsVisible = false;
+
+                    if (DetailDevice.IsVisible == false)
+                    {
+                        DetailDevice.IsVisible = true;
+                        DetailDevice.TranslationY = 50;
+                        await Task.WhenAll(
+        DetailDevice.FadeTo(1, 250, Easing.CubicOut),
+        DetailDevice.TranslateTo(0, 0, 250, Easing.CubicOut));
+                    }
+                    BtBack.IsVisible = true;
+                    ButtomSheet.Source = "off_buttom_sheet_icon.png";
+                    IsDetaildevicePannel = true;
+                });
+                var _SelectGateway = Provider.MapSites[CurrentSite.site_id].Find(d => d.gateway_id == pin.GateWayId && d.type == "gateway");
+                if (_SelectGateway != null)
+                {
+
+                    if (_SelectGateway is DeviceNode deviceNode)
+                    {
+                        CurrentDevice = deviceNode;
+                        SetDeviceNodeOnline(deviceNode.Online);
+                        GatewayName.Text = deviceNode.gateway_name;
+                    }
+
+                }
+            }
+            else
+            {
+                Dispatcher.Dispatch(async () =>
+                {
+                    IsButtomSheet = true;
+                    SearchDevicePannel.IsVisible = false;
+                    ItemPannel.IsVisible = false;
+                    GawayItem.IsVisible = false;
+                    DeviceItem.IsVisible = true;
                     if (DetailDevice.IsVisible == false)
                     {
                         DetailDevice.IsVisible = true;
@@ -568,6 +611,7 @@ public partial class MapPage : ContentPage
                         SetDeviceNodeOnline(deviceNode.Online);
                     }
                     CurrentDevice = dimmer;
+                    CurrentDevice.type = "dimmer";
                     DeviceName.Text = dimmer.device_name;
                     lbSlider.Text = $"{(int)dimmer.Dimvalue}%";
                     mySlider.Value = (int)dimmer.Dimvalue;
@@ -595,37 +639,57 @@ public partial class MapPage : ContentPage
 
     private void SetDeviceNodeOnline(int online)
     {
+
+
         Dispatcher.Dispatch(() =>
-        {
-            if (online == 1)
-            {
-                LbGateWayOffline.IsVisible = false;
-                var dimmer = CurrentDevice as Dimmer;
-                if (dimmer != null)
-                {
-                    if (dimmer.Online == 1)
-                    {
-                        LbDeviceOffline.Text = "Online";
-                        LbDeviceOffline.TextColor = Colors.LightGreen;
-                        mySlider.IsEnabled = true;
-                        statusSwitch.IsEnabled = true;
-                    }
-                    else
-                    {
-                        LbDeviceOffline.Text = "Offline";
-                        LbDeviceOffline.TextColor = Colors.LightCoral;
-                    }
-                }
-            }
-            else
-            {
-                LbDeviceOffline.Text = "-";
-                LbDeviceOffline.TextColor = Colors.Gray;
-                LbGateWayOffline.IsVisible = true;
-                mySlider.IsEnabled = false;
-                statusSwitch.IsEnabled = false;
-            }
-        });
+       {
+           if (online == 1)
+           {
+               LbGateWayOffline.IsVisible = false;
+               if (CurrentDevice.type == "gateway")
+               {
+                   LbGatewayStatus.Text = "Online";
+                   LbGatewayStatus.TextColor = Color.FromArgb("#52C68C");
+               }
+               else if (CurrentDevice.type == "dimmer")
+               {
+                   var dimmer = CurrentDevice as Dimmer;
+                   if (dimmer != null)
+                   {
+                       if (dimmer.Online == 1)
+                       {
+                           LbDeviceOffline.Text = "Online";
+                           LbDeviceOffline.TextColor = Colors.LightGreen;
+                           mySlider.IsEnabled = true;
+                           statusSwitch.IsEnabled = true;
+                       }
+                       else
+                       {
+                           LbDeviceOffline.Text = "Offline";
+                           LbDeviceOffline.TextColor = Colors.LightCoral;
+                       }
+                   }
+               }
+           }
+           else
+           {
+               if (CurrentDevice.type == "gateway")
+               {
+                   LbGatewayStatus.Text = "Offline";
+                   LbGatewayStatus.TextColor = Color.FromArgb("#EF8484");
+                   LbGateWayOffline.IsVisible = false;
+               }
+               else if (CurrentDevice.type == "dimmer")
+               {
+                   LbDeviceOffline.Text = "-";
+                   LbDeviceOffline.TextColor = Colors.Gray;
+                   LbGateWayOffline.IsVisible = true;
+                   mySlider.IsEnabled = false;
+                   statusSwitch.IsEnabled = false;
+               }
+
+           }
+       });
     }
 
     private string GetDimmerIcon(Dimmer dimmer)
@@ -736,9 +800,12 @@ public partial class MapPage : ContentPage
             ButtomSheet.Source = IsButtomSheet
                 ? "off_buttom_sheet_icon.png"
                 : "open_buttom_sheet_icon.png";
-
+            
+            CurrentDevice = null;
+            
             if (IsButtomSheet)
             {
+
                 SearchDevicePannel.IsVisible = true;
                 ItemPannel.IsVisible = true;
                 ItemPannel.IsVisible = true;
@@ -799,7 +866,9 @@ public partial class MapPage : ContentPage
             DetailDevice.IsVisible = false;
             SearchDevicePannel.IsVisible = true;
             ItemPannel.IsVisible = true;
-
+            GawayItem.IsVisible = false;
+            DeviceItem.IsVisible = false;
+            CurrentDevice = null;
             ItemPannel.TranslationY = 50;
             Dispatcher.Dispatch(async () =>
             {
@@ -1044,9 +1113,33 @@ public partial class MapPage : ContentPage
         {
             if (device.type == "gateway")
             {
+                Dispatcher.Dispatch(async () =>
+                {
+                    IsButtomSheet = true;
+                    SearchDevicePannel.IsVisible = false;
+                    ItemPannel.IsVisible = false;
+                    GawayItem.IsVisible = true;
+                    DeviceItem.IsVisible = false;
+
+                    if (DetailDevice.IsVisible == false)
+                    {
+                        DetailDevice.IsVisible = true;
+                        DetailDevice.TranslationY = 50;
+                        await Task.WhenAll(
+        DetailDevice.FadeTo(1, 250, Easing.CubicOut),
+        DetailDevice.TranslateTo(0, 0, 250, Easing.CubicOut));
+                    }
+                    BtBack.IsVisible = true;
+                    ButtomSheet.Source = "off_buttom_sheet_icon.png";
+                    IsDetaildevicePannel = true;
+                });
+
                 var gateway = device as DeviceNode;
                 if (gateway != null)
                 {
+                    CurrentDevice = gateway;
+                    SetDeviceNodeOnline(gateway.Online);
+                    GatewayName.Text = gateway.gateway_name;
                     var radiusMeters = Math.Max(gateway.gateway_lat, gateway.gateway_long) * 1 / 10;
                     MyMap2.MoveToRegion(MapSpan.FromCenterAndRadius(
                         new Location(gateway.gateway_lat, gateway.gateway_long),
@@ -1061,6 +1154,8 @@ public partial class MapPage : ContentPage
                     IsButtomSheet = true;
                     SearchDevicePannel.IsVisible = false;
                     ItemPannel.IsVisible = false;
+                    GawayItem.IsVisible = false;
+                    DeviceItem.IsVisible = true;
 
                     if (DetailDevice.IsVisible == false)
                     {
@@ -1084,6 +1179,7 @@ public partial class MapPage : ContentPage
                         SetDeviceNodeOnline(deviceNode.Online);
                     }
                     CurrentDevice = dimmer;
+                    CurrentDevice.type = "dimmer";
                     DeviceName.Text = dimmer.device_name;
                     lbSlider.Text = $"{(int)dimmer.Dimvalue}%";
                     mySlider.Value = (int)dimmer.Dimvalue;
