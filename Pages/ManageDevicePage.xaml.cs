@@ -90,8 +90,8 @@ public partial class ManageDevicePage : ContentPage
             statusSwitch.IsToggled = status == 1;
             LbPowerSatatusValue.Text = status == 1 ? "ON" : "OFF";
             LbPowerSatatusValue.TextColor = status == 1 ? Color.FromArgb("#52C68C") : Color.FromArgb("#EF8484");
-            statusLbl.Text = $"{(e.Value ? "ON" : "OFF")}";
-            statusLbl.TextColor = Color.FromArgb($"#{(e.Value ? "52C68C" : "EF8484")}");
+            statusLbl.Text = status == 1 ? "ON" : "OFF";
+            statusLbl.TextColor = status == 1 ? Color.FromArgb("#52C68C") : Color.FromArgb("#EF8484");
 
             statusSwitch.Toggled += statusSwitch_Toggled;
         });
