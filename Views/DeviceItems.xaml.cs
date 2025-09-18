@@ -29,6 +29,9 @@ public partial class DeviceItems : ContentView
             LbDeviceName.WidthRequest = 75;
         }
 
+        ContactNum.Text = _dev.contract_number;
+        GroupNum.Text = _dev.group_name;
+
     }
 
     private void CheckBoxSelect_CheckedChanged(object sender, CheckedChangedEventArgs e)

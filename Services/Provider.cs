@@ -30,7 +30,7 @@ namespace StreetLightApp.Services
 
         public static List<Site> SiteList = new List<Site>();
 
-        public static List<MyDevice> SiteDevices = new List<MyDevice>();
+        //public static List<MyDevice> SiteDevices = new List<MyDevice>();
 
         public static Dictionary<int, List<MyDevice>> MapSites = new();
 
@@ -112,7 +112,7 @@ namespace StreetLightApp.Services
                     case (int)CmdType.UpdateDevices:
                         var updateStatusData = baseMessage.Param.Deserialize<UpdateStatusDataParam>();
 
-                        WsUpdateDevices(updateStatusData);
+                        //WsUpdateDevices(updateStatusData);
                         WsUpdateDevicesMap(updateStatusData);
                         UpdateStatusDataHandle?.Invoke(null, updateStatusData);
                         break;
@@ -212,52 +212,52 @@ namespace StreetLightApp.Services
         }
 
 
-        static async void WsUpdateDevices(UpdateStatusDataParam updateStatusData)
-        {
-            var device = SiteDevices.FirstOrDefault(g => g.gateway_id == updateStatusData.Member && g.device_id == updateStatusData.Device);
-            if (device != null)
-            {
-                Console.WriteLine($"device.device_style::::::::::{device.device_style}");
-                switch (device.device_style)
-                {
-                    case 3: // Dimmer
-                        if (device is Dimmer dimmer)
-                        {
+        //static async void WsUpdateDevices(UpdateStatusDataParam updateStatusData)
+        //{
+        //    var device = SiteDevices.FirstOrDefault(g => g.gateway_id == updateStatusData.Member && g.device_id == updateStatusData.Device);
+        //    if (device != null)
+        //    {
+        //        Console.WriteLine($"device.device_style::::::::::{device.device_style}");
+        //        switch (device.device_style)
+        //        {
+        //            case 3: // Dimmer
+        //                if (device is Dimmer dimmer)
+        //                {
 
-                            switch (updateStatusData.Ctrl)
-                            {
-                                case 0: dimmer.SetOnline(updateStatusData.V); break;
-                                case 1: dimmer.SetDim(updateStatusData.V); break;
-                                case 2: dimmer.SetStatus(updateStatusData.V); break;
-                                case 10: dimmer.SetPercentage(updateStatusData.V); break;
-                                case 11: dimmer.SetTemp(updateStatusData.V); break;
-                                case 12: dimmer.SetCharge(updateStatusData.V); break;
-                                case 13: dimmer.SetPowerVolt(updateStatusData.V); break;
-                                case 14: dimmer.SetPowerCurrent(updateStatusData.V); break;
-                                case 15: dimmer.SetPowerOutVolt(updateStatusData.V); break;
-                                case 16: dimmer.SetPowerOutCurrent(updateStatusData.V); break;
-                                case 17: dimmer.SetBattVolt(updateStatusData.V); break;
-                                case 18: dimmer.SetCapacity(updateStatusData.V); break;
-                                case 19: dimmer.SetBattHealth(updateStatusData.V); break;
-                                case 20: dimmer.SetCycleCount(updateStatusData.V); break;
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine($"Device {device.device_id} expected to be Dimmer but is {device.GetType().Name}");
-                        }
-                        break;
+        //                    switch (updateStatusData.Ctrl)
+        //                    {
+        //                        case 0: dimmer.SetOnline(updateStatusData.V); break;
+        //                        case 1: dimmer.SetDim(updateStatusData.V); break;
+        //                        case 2: dimmer.SetStatus(updateStatusData.V); break;
+        //                        case 10: dimmer.SetPercentage(updateStatusData.V); break;
+        //                        case 11: dimmer.SetTemp(updateStatusData.V); break;
+        //                        case 12: dimmer.SetCharge(updateStatusData.V); break;
+        //                        case 13: dimmer.SetPowerVolt(updateStatusData.V); break;
+        //                        case 14: dimmer.SetPowerCurrent(updateStatusData.V); break;
+        //                        case 15: dimmer.SetPowerOutVolt(updateStatusData.V); break;
+        //                        case 16: dimmer.SetPowerOutCurrent(updateStatusData.V); break;
+        //                        case 17: dimmer.SetBattVolt(updateStatusData.V); break;
+        //                        case 18: dimmer.SetCapacity(updateStatusData.V); break;
+        //                        case 19: dimmer.SetBattHealth(updateStatusData.V); break;
+        //                        case 20: dimmer.SetCycleCount(updateStatusData.V); break;
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    Console.WriteLine($"Device {device.device_id} expected to be Dimmer but is {device.GetType().Name}");
+        //                }
+        //                break;
 
-                    default:
-                        Console.WriteLine($"Unknown device type {device.device_style} for device {device.device_id}");
-                        break;
-                }
-            }
-            else
-            {
-                Console.WriteLine($"Device {updateStatusData.Device} not found in gateway {updateStatusData.Member}");
-            }
-        }
+        //            default:
+        //                Console.WriteLine($"Unknown device type {device.device_style} for device {device.device_id}");
+        //                break;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine($"Device {updateStatusData.Device} not found in gateway {updateStatusData.Member}");
+        //    }
+        //}
 
         public static async Task SendWsAsync(string cmd, object _param)
         {

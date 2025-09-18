@@ -91,6 +91,7 @@
                 </HorizontalStackLayout>
                 <StackLayout Orientation="Horizontal" Spacing="4">
                     <Label
+                        x:Name="ContactNum"
                         FontFamily="PoppinsRegular"
                         FontSize="12"
                         Text="CN:TH20250001"
@@ -104,6 +105,7 @@
                         VerticalOptions="Center"
                         WidthRequest="4" />
                     <Label
+                        x:Name="GroupNum"
                         FontFamily="PoppinsRegular"
                         FontSize="14"
                         Text="Group Ladprao Road"

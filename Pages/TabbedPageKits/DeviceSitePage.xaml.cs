@@ -4,6 +4,7 @@ using RestSharp;
 using StreetLightApp.Models;
 using StreetLightApp.Services;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace StreetLightApp.Pages.TabbedPageKits;
 
@@ -11,28 +12,79 @@ public partial class DeviceSitePage : ContentPage
 {
 
     Site CurrentSite = null;
+    int ContactId = 0;
+    int GroupId = 0;
+
     private List<MyDevice> _allDevices = new();
     private List<MyDevice> SelectDevices = new();
+    List<MyDevice> filteredDevices;
+
 
     private int _loadedCount = 0;
     private const int PageSize = 20;
     private bool _isLoading = false;
-    int totalDevices = 0;
-    int totalItems = 0;
 
-    private bool _isUpdatingSelectAll = false;
     private bool IsSelectAll = false;
-    private bool _updatingSwitch = false;
 
+
+    Dictionary<int, string> ContactsList = new Dictionary<int, string>
+{
+    { 0, "All" }
+};
+    Dictionary<int, string> GroupsList = new Dictionary<int, string>
+{
+    { 0, "All" }
+};
 
     public DeviceSitePage(Site _site)
     {
         InitializeComponent();
         Title = _site.site_name;
         CurrentSite = _site;
-        GetAllDevice();
-        Provider.UpdateStatusDataHandle += Provider_UpdateStatusDataHandle;
+        new Thread(async () =>
+        {
+            if (!Provider.MapSites.ContainsKey(CurrentSite.site_id))
+            {
+              await GetAllDevice();
+            }
+            else
+            {
+                foreach (var device in Provider.MapSites[CurrentSite.site_id])
+                {
+                    if (device.contract_id != null && !ContactsList.ContainsKey(device.contract_id))
+                    {
+                        ContactsList[device.contract_id] = device.contract_number;
+                    }
+
+                    if (device.group_id.HasValue && !GroupsList.ContainsKey(device.group_id.Value))
+                    {
+                        GroupsList[device.group_id.Value] = device.group_name;
+                    }
+                }
+
+            }
+            Provider.UpdateStatusDataHandle += Provider_UpdateStatusDataHandle;
+            _allDevices = Provider.MapSites[CurrentSite.site_id];
+            filteredDevices = Provider.MapSites[CurrentSite.site_id];
+            DeviceStack.Children.Clear();
+            ContactPick.ItemsSource = ContactsList.ToList();
+            ContactPick.ItemDisplayBinding = new Binding("Value");
+            ContactPick.SelectedIndex = 0;
+
+
+            GroupPick.ItemsSource = GroupsList.ToList();
+            GroupPick.ItemDisplayBinding = new Binding("Value");
+            GroupPick.SelectedIndex = 0;
+            _loadedCount = 0;
+            LoadMoreItems();
+            TotalDevices.Text = $"({filteredDevices.Count})";
+            TotalSelects.Text = $"(Up to {filteredDevices.Count(x => x.type != "gateway")} Items)";
+
+        }).Start();
     }
+
+
+
 
     private void Provider_UpdateStatusDataHandle(object? sender, UpdateStatusDataParam e)
     {
@@ -49,9 +101,9 @@ public partial class DeviceSitePage : ContentPage
                     }
                     else if (e.Ctrl == 2)
                     {
-                        _updatingSwitch = true;
+                        sw.Toggled -= OnToggled;
                         sw.IsToggled = e.V == 1;
-                        _updatingSwitch = false;
+                        sw.Toggled += OnToggled;
                     }
 
                 }
@@ -59,10 +111,7 @@ public partial class DeviceSitePage : ContentPage
         });
     }
 
-    protected override void OnDisappearing()
-    {
-        base.OnDisappearing();
-    }
+
 
     private async void LoadMoreItems()
     {
@@ -75,7 +124,7 @@ public partial class DeviceSitePage : ContentPage
         new Thread(() =>
         {
 
-            int remaining = _allDevices.Count - _loadedCount;
+            int remaining = filteredDevices.Count - _loadedCount;
             int toLoad = Math.Min(PageSize, remaining);
 
             var newItems = new List<View>();
@@ -83,7 +132,7 @@ public partial class DeviceSitePage : ContentPage
             for (int i = 0; i < toLoad; i++)
             {
 
-                var dev = _allDevices[_loadedCount++];
+                var dev = filteredDevices[_loadedCount++];
                 if (dev != null)
                 {
                     View deviceItem = null;
@@ -179,27 +228,27 @@ public partial class DeviceSitePage : ContentPage
 
                 }
                 SelectDevices.Add(item);
-                if (SelectDevices.Count == totalItems)
+                if (SelectDevices.Count == filteredDevices.Count(x => x.type != "gateway"))
                 {
                     SelectAllCheckBox.IsChecked = true;
                 }
             }
             else
             {
-                if (SelectDevices.Count == totalItems)
+                if (SelectDevices.Count == filteredDevices.Count(x => x.type != "gateway"))
                 {
-                    _isUpdatingSelectAll = true;
+                    SelectAllCheckBox.CheckedChanged -= OnSelectAllCheckedChanged;
                     SelectAllCheckBox.IsChecked = false;
-                    _isUpdatingSelectAll = false;
+                    SelectAllCheckBox.CheckedChanged += OnSelectAllCheckedChanged;
                     IsSelectAll = false;
                 }
                 else if (IsSelectAll)
                 {
-                    _isUpdatingSelectAll = true;
+                    SelectAllCheckBox.CheckedChanged -= OnSelectAllCheckedChanged;
                     SelectAllCheckBox.IsChecked = false;
-                    _isUpdatingSelectAll = false;
+                    SelectAllCheckBox.CheckedChanged += OnSelectAllCheckedChanged;
                     IsSelectAll = false;
-                    SelectDevices = _allDevices.FindAll(x => x.type != "gateway");
+                    SelectDevices = filteredDevices.FindAll(x => x.type != "gateway");
                 }
                 SelectDevices.Remove(item);
                 if (SelectDevices.Count == 1)
@@ -228,6 +277,7 @@ public partial class DeviceSitePage : ContentPage
 
     async Task GetAllDevice()
     {
+
         Console.WriteLine($"{Provider.APIHost}/api/get-devicelist/{CurrentSite.site_id}");
         var response = await RequestApi.GetAPIJWT($"{Provider.APIHost}/api/get-devicelist/{CurrentSite.site_id}");
 
@@ -239,13 +289,36 @@ public partial class DeviceSitePage : ContentPage
 
         Console.WriteLine($"GetAllDevice:::{response.Message}");
         var deviceList = JsonConvert.DeserializeObject<List<MyDevice>>(response?.Message?.ToString());
-        if (deviceList == null || deviceList.Count == 0)
-            return;
+        //if (deviceList == null || deviceList.Count == 0)
+        //    return;
 
-        Provider.SiteDevices.Clear(); // clear old data
+        if (Provider.MapSites == null)
+            Provider.MapSites = new Dictionary<int, List<MyDevice>>();
 
+        if (!Provider.MapSites.ContainsKey(CurrentSite.site_id))
+        {
+            Provider.MapSites[CurrentSite.site_id] = new List<MyDevice>();
+        }
+
+        ContactsList = new Dictionary<int, string>
+                {
+                    { 0, "All" }
+                };
+        GroupsList = new Dictionary<int, string>
+                {
+                    { 0, "All" }
+                };
         foreach (var device in deviceList)
         {
+            if (device.contract_id != null && !ContactsList.ContainsKey(device.contract_id))
+            {
+                ContactsList[device.contract_id] = device.contract_number;
+            }
+
+            if (device.group_id.HasValue && !GroupsList.ContainsKey(device.group_id.Value))
+            {
+                GroupsList[device.group_id.Value] = device.group_name;
+            }
             MyDevice finalDevice = null;
 
             if (device.type == "gateway")
@@ -316,27 +389,23 @@ public partial class DeviceSitePage : ContentPage
             }
 
             if (finalDevice != null)
-                Provider.SiteDevices.Add(finalDevice);
+            {
+                Provider.MapSites[CurrentSite.site_id].Add(finalDevice);
+            }
         }
-
-        // update UI
-        _allDevices = Provider.SiteDevices;
-        totalDevices = Provider.SiteDevices.Count();
-        totalItems = Provider.SiteDevices.Count(x => x.type != "gateway");
-        DeviceStack.Children.Clear();
-        _loadedCount = 0;
-        LoadMoreItems();
-
-        TotalDevices.Text = $"({totalDevices})";
-        TotalSelects.Text = $"(Up to {Provider.SiteDevices.Count(x => x.type != "gateway")} Items)";
+        ContactPick.ItemsSource = ContactsList.ToList();
+        ContactPick.ItemDisplayBinding = new Binding("Value");
+        ContactPick.SelectedIndex = 0;
+        GroupPick.ItemsSource = GroupsList.ToList();
+        GroupPick.ItemDisplayBinding = new Binding("Value");
+        GroupPick.SelectedIndex = 0;
+        Console.WriteLine("GetAllDevice::::end");
     }
 
 
 
     private void OnSelectAllCheckedChanged(object sender, CheckedChangedEventArgs e)
     {
-        if (_isUpdatingSelectAll) return;
-
         bool isChecked = e.Value;
         IsSelectAll = isChecked;
 
@@ -348,16 +417,17 @@ public partial class DeviceSitePage : ContentPage
             {
                 if (child is Views.DimmerItem deviceItem)
                 {
+
                     deviceItem.SetChecked(true);
                 }
             }
-            SelectDevices = _allDevices;
+            SelectDevices = filteredDevices.Where(x => x.type != "gateway").ToList();
         }
         else
         {
             ControlMenu.IsVisible = false;
             BVControlMenu.IsVisible = false;
-            SelectDevices.Clear();
+            SelectDevices = new();
 
             foreach (var child in DeviceStack.Children)
             {
@@ -368,7 +438,7 @@ public partial class DeviceSitePage : ContentPage
             }
         }
 
-        LbDevicelist.Text = $"Control ({_allDevices.Count(x => x.type != "gateway")} Lamps)";
+        LbDevicelist.Text = $"Control ({filteredDevices.Count(x => x.type != "gateway")} Lamps)";
     }
 
 
@@ -385,72 +455,18 @@ public partial class DeviceSitePage : ContentPage
         ControlMenu.IsVisible = false;
         BVControlMenu.IsVisible = false;
         DeviceSearchTxt.Text = "";
-        List<MyDevice> filteredDevices;
 
-        new Thread(() =>
-        {
-            List<MyDevice> filteredDevices;
 
-            filteredDevices = _allDevices;
 
-            var newItems = new List<View>();
 
-            foreach (var dev in filteredDevices)
-            {
-                View deviceItem = null;
+        filteredDevices = _allDevices;
 
-                if (dev.type == "gateway")
-                {
-                    deviceItem = new Views.DeviceItems(dev);
-                }
-                else
-                {
-                    switch (dev.device_style)
-                    {
-                        case 3: // Dimmer
-                            if (dev is Dimmer dimmer)
-                            {
-                                deviceItem = new Views.DimmerItem(dimmer);
-                                ((Views.DimmerItem)deviceItem).CheckedChanged += DeviceItem_CheckedChanged;
-                            }
-                            break;
-                        default:
-                            deviceItem = new Label
-                            {
-                                Text = $"Device: {dev.device_name} (Type {dev.device_style})",
-                                Margin = new Thickness(5)
-                            };
-                            break;
-                    }
-                }
 
-                if (deviceItem != null)
-                    newItems.Add(deviceItem);
-            }
-
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                foreach (var item in newItems)
-                {
-                    DeviceStack.Children.Add(item);
-                }
-
-                int nonGatewayCount = filteredDevices.Count();
-                TotalDevices.Text = $"({nonGatewayCount})";
-                LbDevicelist.Text = $"Control (0 Lamps)";
-
-                LoadingIndicator.IsRunning = false;
-                LoadingIndicator.IsVisible = false;
-
-                SelectAllCheckBox.IsEnabled = true;
-                DeviceSearchTxt.IsEnabled = true;
-
-                IsSelectAll = false;
-                SelectDevices.Clear();
-
-            });
-
-        }).Start();
+        _loadedCount = 0;
+        LoadMoreItems();
+        DeviceSearchTxt.IsEnabled = true;
+        TotalDevices.Text = $"({filteredDevices.Count})";
+        TotalSelects.Text = $"(Up to {filteredDevices.Count(x => x.type != "gateway")} Items)";
     }
 
     private void OnSearchButtonClicked(object sender, EventArgs e)
@@ -463,85 +479,54 @@ public partial class DeviceSitePage : ContentPage
         SelectAllCheckBox.IsChecked = false;
         DeviceSearchTxt.IsEnabled = false;
 
-        new Thread(() =>
+        if (string.IsNullOrEmpty(searchText))
         {
-            List<MyDevice> filteredDevices;
-            List<MyDevice> filteredDevices2;
-
-            if (string.IsNullOrEmpty(searchText))
+            filteredDevices = new();
+            foreach (var device in _allDevices)
             {
-                filteredDevices = _allDevices;
-            }
-            else
-            {
-                filteredDevices = _allDevices
-                    .Where(d =>
-                        (!string.IsNullOrEmpty(d.device_name) && d.device_name.Contains(searchText, StringComparison.OrdinalIgnoreCase)) ||
-                        (!string.IsNullOrEmpty(d.gateway_name) && d.gateway_name.Contains(searchText, StringComparison.OrdinalIgnoreCase) && d.type == "gateway")
-                    )
-                    .Distinct()
-                    .ToList();
-            }
+                int selectedContactId = ContactId;
+                int selectedGroupId = GroupId;
 
-
-
-            var newItems = new List<View>();
-
-            foreach (var dev in filteredDevices)
-            {
-                View deviceItem = null;
-
-                if (dev.type == "gateway")
+                bool matchContact = selectedContactId == 0 || device.contract_id == selectedContactId;
+                bool matchGroup = selectedGroupId == 0 || (device.group_id.HasValue && device.group_id.Value == selectedGroupId);
+                if (matchContact && matchGroup)
                 {
-                    deviceItem = new Views.DeviceItems(dev);
+                    filteredDevices.Add(device);
                 }
-                else
+            }
+        }
+        else if (!string.IsNullOrEmpty(searchText))
+        {
+            filteredDevices = new();
+
+            var _DevicesFilterName = _allDevices
+               .Where(d =>
+                   (!string.IsNullOrEmpty(d.device_name) && d.device_name.Contains(searchText, StringComparison.OrdinalIgnoreCase)) ||
+                   (!string.IsNullOrEmpty(d.gateway_name) && d.gateway_name.Contains(searchText, StringComparison.OrdinalIgnoreCase) && d.type == "gateway")
+               )
+               .Distinct()
+               .ToList();
+            foreach (var device in _DevicesFilterName)
+            {
+                int selectedContactId = ContactId;
+                int selectedGroupId = GroupId;
+
+                bool matchContact = selectedContactId == 0 || device.contract_id == selectedContactId;
+                bool matchGroup = selectedGroupId == 0 || (device.group_id.HasValue && device.group_id.Value == selectedGroupId);
+                if (matchContact && matchGroup)
                 {
-                    switch (dev.device_style)
-                    {
-                        case 3: // Dimmer
-                            if (dev is Dimmer dimmer)
-                            {
-                                deviceItem = new Views.DimmerItem(dimmer);
-                                ((Views.DimmerItem)deviceItem).CheckedChanged += DeviceItem_CheckedChanged;
-                            }
-                            break;
-
-                        default:
-                            deviceItem = new Label
-                            {
-                                Text = $"Device: {dev.device_name} (Type {dev.device_style})",
-                                Margin = new Thickness(5)
-                            };
-                            break;
-                    }
+                    filteredDevices.Add(device);
                 }
-
-                if (deviceItem != null)
-                    newItems.Add(deviceItem);
             }
 
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                foreach (var item in newItems)
-                {
-                    DeviceStack.Children.Add(item);
-                }
 
-                int nonGatewayCount = filteredDevices.Count();
-                TotalDevices.Text = $"({nonGatewayCount})";
-                LbDevicelist.Text = $"Control (0 Lamps)";
 
-                LoadingIndicator.IsRunning = false;
-                LoadingIndicator.IsVisible = false;
-
-                SelectAllCheckBox.IsEnabled = true;
-                DeviceSearchTxt.IsEnabled = true;
-
-                IsSelectAll = false;
-                SelectDevices.Clear();
-            });
-        }).Start();
+        }
+        _loadedCount = 0;
+        LoadMoreItems();
+        DeviceSearchTxt.IsEnabled = true;
+        TotalDevices.Text = $"({filteredDevices.Count})";
+        TotalSelects.Text = $"(Up to {filteredDevices.Count(x => x.type != "gateway")} Items)";
     }
 
 
@@ -595,7 +580,6 @@ public partial class DeviceSitePage : ContentPage
 
     private async void OnToggled(object sender, ToggledEventArgs e)
     {
-        if (_updatingSwitch) return;  
 
         foreach (var device in SelectDevices)
         {
@@ -634,5 +618,57 @@ public partial class DeviceSitePage : ContentPage
         Task.Delay(500);
 
 
+    }
+
+    private void ContactPick_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        var picker = (Picker)sender;
+        int selectedIndex = picker.SelectedIndex;
+
+        if (selectedIndex != -1)
+        {
+            if (selectedIndex == 0)
+            {
+                // "All Contacts" selected
+                ContactId = 0;
+
+            }
+            else
+            {
+                // Get the selected contact name
+                string selectedContactName = picker.Items[selectedIndex];
+                Console.WriteLine($"selectedIndex: {selectedIndex} selectedContactName {selectedContactName}");
+                // Lookup the ID from the dictionary
+                ContactId = ContactsList.FirstOrDefault(x => x.Value == selectedContactName).Key;
+
+            }
+
+        }
+    }
+
+    private void GroupPick_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        var picker = (Picker)sender;
+        int selectedIndex = picker.SelectedIndex;
+
+        if (selectedIndex != -1)
+        {
+            if (selectedIndex == 0)
+            {
+                // "All Group" selected
+                GroupId = 0;
+
+            }
+            else
+            {
+                // Get the selected group name
+                string selectedGroupName = picker.Items[selectedIndex];
+                Console.WriteLine($"selectedIndex: {selectedIndex} selectedGroupName {selectedGroupName}");
+
+                // Lookup the ID from the dictionary
+                GroupId = GroupsList.FirstOrDefault(x => x.Value == selectedGroupName).Key;
+            }
+
+        }
     }
 }

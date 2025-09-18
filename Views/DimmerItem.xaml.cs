@@ -15,6 +15,8 @@ public partial class DimmerItem : ContentView
         LbDeviceName.Text = _dim.device_name;
         DeviceCheckBox.IsVisible = true;
         LbDeviceName.WidthRequest = 75;
+        ContactNum.Text = _dim.contract_number;
+        GroupNum.Text = _dim.group_name;
         SetStatus(_dim.Status);
         SetDimmer(_dim.Dimvalue);
         SetPercentage(_dim.Percentage);
@@ -25,6 +27,7 @@ public partial class DimmerItem : ContentView
         _dev.PercentageHandler += _dev_PercentageHandler;
         _dev.BattVoltHandler += _dev_BattVoltHandler;
         _dev.CapacityHandler += _dev_CapacityHandler;
+
     }
 
     private void SetStatus(int _Status)
@@ -99,7 +102,11 @@ public partial class DimmerItem : ContentView
     {
         if (_dev.type != "gateway")
         {
+            DeviceCheckBox.CheckedChanged -= CheckBoxSelect_CheckedChanged;
+
             DeviceCheckBox.IsChecked = isChecked;
+
+            DeviceCheckBox.CheckedChanged += CheckBoxSelect_CheckedChanged;
         }
     }
 

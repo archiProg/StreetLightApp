@@ -1,3 +1,4 @@
+using Microsoft.Maui.Controls;
 using StreetLightApp.Services;
 using StreetLightApp.Views;
 
@@ -21,16 +22,21 @@ public partial class DevicePage : ContentPage
                 };
                 siteBtn.Clicked += async(a, b) =>
                 {
+                    await Indicator(true);
                     await Navigation.PushAsync(new DeviceSitePage(site));
+                    Indicator(false);
                 };
                 sitePanel.Children.Add(siteBtn);
             }
         }
     }
-    protected override void OnAppearing()
-    {
-        base.OnAppearing();
-        Provider.SiteDevices.Clear();
 
+    async Task Indicator(bool running)
+    {
+        Dispatcher.Dispatch(async () =>
+        {
+            indicatorView.IsVisible = running;
+            indicator.IsVisible = running;
+        });
     }
 }

@@ -60,18 +60,9 @@
                         </Grid>
                     </Border>
                     <Picker
-                        x:Name="sitePick"
-                        Title="Contact number"
-                        BackgroundColor="#FFFFFF"
+                        x:Name="ContactPick"
                         Opacity="0.5"
-                        TextColor="#B8C9D9">
-                        <Picker.ItemsSource>
-                            <x:Array Type="{x:Type x:String}">
-                                <x:String>All Contact number</x:String>
-                                <x:String>1200</x:String>
-                            </x:Array>
-                        </Picker.ItemsSource>
-                    </Picker>
+                        SelectedIndexChanged="ContactPick_SelectedIndexChanged" />
                 </Grid>
                 <Label Padding="0,8" Text="Group" />
 
@@ -89,19 +80,9 @@
                         </Grid>
                     </Border>
                     <Picker
-                        x:Name="groupPick"
-                        Title="Group"
-                        Grid.Column="1"
-                        BackgroundColor="#FFFFFF"
-                        Opacity="0.5">
-                        <Picker.ItemsSource>
-                            <x:Array Type="{x:Type x:String}">
-                                <x:String>All Group</x:String>
-                                <x:String>1200</x:String>
-                            </x:Array>
-                        </Picker.ItemsSource>
-                    </Picker>
-
+                        x:Name="GroupPick"
+                        Opacity="0.5"
+                        SelectedIndexChanged="GroupPick_SelectedIndexChanged" />
                 </Grid>
             </StackLayout>
 

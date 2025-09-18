@@ -39,6 +39,29 @@
                 Padding="8,0,8,34"
                 Spacing="8" />
         </ScrollView>
+        <Border
+            x:Name="indicatorView"
+            Padding="64"
+            BackgroundColor="{DynamicResource PrimaryTextColor}"
+            HorizontalOptions="Fill"
+            IsVisible="True"
+            Opacity="0.5"
+            StrokeShape="RoundRectangle 0"
+            VerticalOptions="Fill" />
+        <Border
+            x:Name="indicator"
+            Padding="64"
+            BackgroundColor="{DynamicResource PrimaryColor}"
+            HorizontalOptions="Center"
+            IsVisible="True"
+            StrokeShape="RoundRectangle 16"
+            VerticalOptions="Center">
+            <ActivityIndicator
+                HorizontalOptions="Center"
+                IsRunning="True"
+                VerticalOptions="Center"
+                Color="Red" />
+        </Border>
     </Grid>
 
 </ContentPage>

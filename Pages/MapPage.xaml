@@ -258,7 +258,7 @@
                                                     Grid.Column="1"
                                                     Margin="0,12,0,12"
                                                     Clicked="Button_Clicked_1"
-                                                    Source="detail_pin" />
+                                                    Source="info_icon" />
                                             </Grid>
                                         </Border>
                                         <BoxView BackgroundColor="#EEEEEE" HeightRequest="0.5" />
