@@ -1,4 +1,5 @@
-﻿using Microsoft.Maui.Controls;
+﻿using Microsoft.Maui;
+using Microsoft.Maui.Controls;
 using Newtonsoft.Json;
 using RestSharp;
 using StreetLightApp.Models;
@@ -39,51 +40,109 @@ public partial class DeviceSitePage : ContentPage
     public DeviceSitePage(Site _site)
     {
         InitializeComponent();
+        Console.WriteLine("DeviceSitePage .Show:::::::::::::::::::::::::");
+
         Title = _site.site_name;
         CurrentSite = _site;
-        new Thread(async () =>
-        {
-            if (!Provider.MapSites.ContainsKey(CurrentSite.site_id))
-            {
-              await GetAllDevice();
-            }
-            else
-            {
-                foreach (var device in Provider.MapSites[CurrentSite.site_id])
-                {
-                    if (device.contract_id != null && !ContactsList.ContainsKey(device.contract_id))
-                    {
-                        ContactsList[device.contract_id] = device.contract_number;
-                    }
 
-                    if (device.group_id.HasValue && !GroupsList.ContainsKey(device.group_id.Value))
-                    {
-                        GroupsList[device.group_id.Value] = device.group_name;
-                    }
+        if (!Provider.MapSites.ContainsKey(CurrentSite.site_id))
+        {
+
+            try
+            {
+
+                Dispatcher.Dispatch(async () =>
+                {
+                    await Indicator(true);
+                    await GetAllDevice();
+                    Provider.UpdateStatusDataHandle += Provider_UpdateStatusDataHandle;
+                    _allDevices = Provider.MapSites[CurrentSite.site_id];
+                    filteredDevices = Provider.MapSites[CurrentSite.site_id];
+                    DeviceStack.Children.Clear();
+                    ContactPick.ItemsSource = ContactsList.ToList();
+                    ContactPick.ItemDisplayBinding = new Binding("Value");
+                    ContactPick.SelectedIndex = 0;
+
+
+                    GroupPick.ItemsSource = GroupsList.ToList();
+                    GroupPick.ItemDisplayBinding = new Binding("Value");
+                    GroupPick.SelectedIndex = 0;
+                    _loadedCount = 0;
+                    await LoadFristItems();
+                    TotalDevices.Text = $"({filteredDevices.Count})";
+                    TotalSelects.Text = $"(Up to {filteredDevices.Count(x => x.type != "gateway")} Items)";
+                    await Indicator(false);
+                });
+
+
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine("FloorPlanControllerPage.Error:" + error);
+            }
+
+
+        }
+        else
+        {
+
+            foreach (var device in Provider.MapSites[CurrentSite.site_id])
+            {
+                if (device.contract_id != null && !ContactsList.ContainsKey(device.contract_id))
+                {
+                    ContactsList[device.contract_id] = device.contract_number;
                 }
 
+                if (device.group_id.HasValue && !GroupsList.ContainsKey(device.group_id.Value))
+                {
+                    GroupsList[device.group_id.Value] = device.group_name;
+                }
             }
-            Provider.UpdateStatusDataHandle += Provider_UpdateStatusDataHandle;
-            _allDevices = Provider.MapSites[CurrentSite.site_id];
-            filteredDevices = Provider.MapSites[CurrentSite.site_id];
-            DeviceStack.Children.Clear();
-            ContactPick.ItemsSource = ContactsList.ToList();
-            ContactPick.ItemDisplayBinding = new Binding("Value");
-            ContactPick.SelectedIndex = 0;
 
 
-            GroupPick.ItemsSource = GroupsList.ToList();
-            GroupPick.ItemDisplayBinding = new Binding("Value");
-            GroupPick.SelectedIndex = 0;
-            _loadedCount = 0;
-            LoadMoreItems();
-            TotalDevices.Text = $"({filteredDevices.Count})";
-            TotalSelects.Text = $"(Up to {filteredDevices.Count(x => x.type != "gateway")} Items)";
+            Dispatcher.Dispatch(async () =>
+            {
+                Provider.UpdateStatusDataHandle += Provider_UpdateStatusDataHandle;
+                _allDevices = Provider.MapSites[CurrentSite.site_id];
+                filteredDevices = Provider.MapSites[CurrentSite.site_id];
+                DeviceStack.Children.Clear();
+                ContactPick.ItemsSource = ContactsList.ToList();
+                ContactPick.ItemDisplayBinding = new Binding("Value");
+                ContactPick.SelectedIndex = 0;
 
-        }).Start();
+
+                GroupPick.ItemsSource = GroupsList.ToList();
+                GroupPick.ItemDisplayBinding = new Binding("Value");
+                GroupPick.SelectedIndex = 0;
+                _loadedCount = 0;
+
+                LoadMoreItems();
+                TotalDevices.Text = $"({filteredDevices.Count})";
+                TotalSelects.Text = $"(Up to {filteredDevices.Count(x => x.type != "gateway")} Items)";
+            });
+
+        }
     }
 
 
+    async Task Indicator(bool running)
+    {
+        Dispatcher.Dispatch(() =>
+        {
+            indicator.IsVisible = running;
+        });
+    }
+    async Task IndicatorSenddata(bool running)
+    {
+        Dispatcher.Dispatch(() =>
+        {
+            indicatorSenddata.IsVisible = running;
+            mySlider.IsEnabled = !running;
+            sw.IsEnabled = !running;
+        });
+
+        await Task.Delay(100);
+    }
 
 
     private void Provider_UpdateStatusDataHandle(object? sender, UpdateStatusDataParam e)
@@ -97,7 +156,9 @@ public partial class DeviceSitePage : ContentPage
                     if (e.Ctrl == 1)
                     {
                         lbSlider.Text = $"{e.V}%";
+                        mySlider.DragCompleted -= mySlider_DragCompleted;
                         mySlider.Value = e.V;
+                        mySlider.DragCompleted += mySlider_DragCompleted;
                     }
                     else if (e.Ctrl == 2)
                     {
@@ -111,7 +172,79 @@ public partial class DeviceSitePage : ContentPage
         });
     }
 
+    private async Task LoadFristItems()
+    {
+        if (_isLoading) return;
+        _isLoading = true;
+        SelectAllCheckBox.IsEnabled = false;
+        LoadingIndicator.IsVisible = true;
+        LoadingIndicator.IsRunning = true;
 
+
+
+        int remaining = filteredDevices.Count - _loadedCount;
+        int toLoad = Math.Min(PageSize, remaining);
+
+        var newItems = new List<View>();
+
+        for (int i = 0; i < toLoad; i++)
+        {
+
+            var dev = filteredDevices[_loadedCount++];
+            if (dev != null)
+            {
+                View deviceItem = null;
+
+                if (dev.type == "gateway")
+                {
+                    deviceItem = new Views.DeviceItems(dev);
+                }
+                else
+                {
+
+                    switch (dev.device_style)
+                    {
+                        case 3: // Dimmer
+                            if (dev is Dimmer dimmer)
+                            {
+                                var dimmerItem = new Views.DimmerItem(dimmer);
+
+                                dimmerItem.SetChecked(IsSelectAll);
+
+                                dimmerItem.CheckedChanged += DeviceItem_CheckedChanged;
+
+                                deviceItem = dimmerItem;
+                            }
+                            break;
+
+                        default:
+                            deviceItem = new Label
+                            {
+                                Text = $"Device: {dev.device_name} (Type {dev.device_style})",
+                                Margin = new Thickness(5)
+                            }; break;
+                    }
+                }
+                if (deviceItem != null)
+                    newItems.Add(deviceItem);
+            }
+        }
+
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            foreach (var item in newItems)
+            {
+                DeviceStack.Children.Add(item);
+            }
+
+            LoadingIndicator.IsRunning = false;
+            LoadingIndicator.IsVisible = false;
+
+            _isLoading = false;
+            SelectAllCheckBox.IsEnabled = true;
+        });
+
+    }
 
     private async void LoadMoreItems()
     {
@@ -215,16 +348,29 @@ public partial class DeviceSitePage : ContentPage
                     if (item is Dimmer dimmer)
                     {
                         lbSlider.Text = $"{(int)dimmer.Dimvalue}%";
+
+                        mySlider.DragCompleted -= mySlider_DragCompleted;
                         mySlider.Value = (int)dimmer.Dimvalue;
+                        mySlider.DragCompleted += mySlider_DragCompleted;
+                        sw.Toggled -= OnToggled;
                         sw.IsToggled = (int)dimmer.Status == 1;
+                        sw.Toggled += OnToggled;
+
+
                     }
                 }
                 else
                 {
 
                     lbSlider.Text = $"50%";
+
+                    mySlider.DragCompleted -= mySlider_DragCompleted;
                     mySlider.Value = 50;
+                    mySlider.DragCompleted += mySlider_DragCompleted;
+                    sw.Toggled -= OnToggled;
                     sw.IsToggled = false;
+                    sw.Toggled += OnToggled;
+
 
                 }
                 SelectDevices.Add(item);
@@ -561,18 +707,23 @@ public partial class DeviceSitePage : ContentPage
         {
             Dispatcher.Dispatch(async () =>
             {
-                foreach (var device in SelectDevices)
+                try
                 {
-                    await Provider.SendWsAsync(
-                        "3",
-                        new
+                    await IndicatorSenddata(true);
+                    foreach (var device in SelectDevices)
+                    {
+                        await Provider.SendWsAsync("3", new
                         {
                             Member = device.gateway_id,
                             Device = device.device_id,
                             Ctrl = 1,
                             V = (int)slider.Value
-                        }
-                    );
+                        });
+                    }
+                }
+                finally
+                {
+                    await IndicatorSenddata(false);
                 }
             });
         }
@@ -580,7 +731,7 @@ public partial class DeviceSitePage : ContentPage
 
     private async void OnToggled(object sender, ToggledEventArgs e)
     {
-
+        await IndicatorSenddata(true);
         foreach (var device in SelectDevices)
         {
             if (device is Dimmer dimmer)
@@ -615,7 +766,7 @@ public partial class DeviceSitePage : ContentPage
                 });
             }
         }
-        Task.Delay(500);
+        await IndicatorSenddata(false);
 
 
     }

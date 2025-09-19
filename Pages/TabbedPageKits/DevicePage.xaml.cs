@@ -22,21 +22,10 @@ public partial class DevicePage : ContentPage
                 };
                 siteBtn.Clicked += async(a, b) =>
                 {
-                    await Indicator(true);
-                    await Navigation.PushAsync(new DeviceSitePage(site));
-                    Indicator(false);
-                };
+                     await Navigation.PushAsync(new DeviceSitePage(site));
+                 };
                 sitePanel.Children.Add(siteBtn);
             }
         }
-    }
-
-    async Task Indicator(bool running)
-    {
-        Dispatcher.Dispatch(async () =>
-        {
-            indicatorView.IsVisible = running;
-            indicator.IsVisible = running;
-        });
     }
 }

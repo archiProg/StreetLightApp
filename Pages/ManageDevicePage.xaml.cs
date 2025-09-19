@@ -236,6 +236,7 @@ public partial class ManageDevicePage : ContentPage
         statusLbl.TextColor = Color.FromArgb($"#{(e.Value ? "52C68C" : "EF8484")}");
         Dispatcher.Dispatch(async () =>
         {
+            await IndicatorSenddata(true);
             foreach (var device in _SelectDevices)
             {
                 await Provider.SendWsAsync(
@@ -249,15 +250,32 @@ public partial class ManageDevicePage : ContentPage
                     }
                 );
             }
+            await IndicatorSenddata(false);
         });
     }
 
+    async Task IndicatorSenddata(bool running)
+    {
+        Dispatcher.Dispatch(() =>
+        {
+            indicatorSenddata.IsVisible = running;
+            mySlider.IsEnabled = !running;
+            statusSwitch.IsEnabled = !running;
+        });
+
+        await Task.Delay(100);
+    }
+
+
     private void mySlider_DragCompleted(object sender, EventArgs e)
     {
+
+
         if (sender is Slider slider)
         {
             Dispatcher.Dispatch(async () =>
             {
+                await IndicatorSenddata(true);
                 foreach (var device in _SelectDevices)
                 {
                     await Provider.SendWsAsync(
@@ -271,6 +289,7 @@ public partial class ManageDevicePage : ContentPage
                         }
                     );
                 }
+                await IndicatorSenddata(false);
             });
         }
     }
