@@ -239,16 +239,55 @@ public partial class ManageDevicePage : ContentPage
             await IndicatorSenddata(true);
             foreach (var device in _SelectDevices)
             {
-                await Provider.SendWsAsync(
-                    "3",
-                    new
+                if (device.type != "gateway")
+                {
+                    var focusDevice = device as Dimmer;
+                    if (focusDevice != null)
                     {
-                        Member = device.gateway_id,
-                        Device = device.device_id,
-                        Ctrl = 2,
-                        V = e.Value ? 1 : 0
+                        if (e.Value)
+                        {
+
+                            if (focusDevice.Dimvalue == 0)
+                            {
+                                await Provider.SendWsAsync(
+                                    "3",
+                                    new
+                                    {
+                                        Member = focusDevice.gateway_id,
+                                        Device = focusDevice.device_id,
+                                        Ctrl = 1,
+                                        V = 100
+                                    }
+                                );
+                            }
+                            else
+                            {
+
+                                await Provider.SendWsAsync(
+                                    "3",
+                                    new
+                                    {
+                                        Member = focusDevice.gateway_id,
+                                        Device = focusDevice.device_id,
+                                        Ctrl = 1,
+                                        V = focusDevice.Dimvalue
+                                    }
+                                );
+                            }
+                        }
+                        await Provider.SendWsAsync(
+                            "3",
+                            new
+                            {
+                                Member = focusDevice.gateway_id,
+                                Device = focusDevice.device_id,
+                                Ctrl = 2,
+                                V = e.Value ? 1 : 0
+                            }
+                        );
+
                     }
-                );
+                }
             }
             await IndicatorSenddata(false);
         });
@@ -276,6 +315,22 @@ public partial class ManageDevicePage : ContentPage
             Dispatcher.Dispatch(async () =>
             {
                 await IndicatorSenddata(true);
+                if ((int)slider.Value == 0)
+                {
+                    statusSwitch.Toggled -= statusSwitch_Toggled;
+                    statusSwitch.IsToggled = false;
+                    statusSwitch.Toggled += statusSwitch_Toggled;
+                }
+                else
+                {
+                    statusSwitch.Toggled -= statusSwitch_Toggled;
+                    statusSwitch.IsToggled = true;
+                    statusSwitch.Toggled += statusSwitch_Toggled;
+                }
+                LbPowerSatatusValue.Text = statusSwitch.IsToggled ? "ON" : "OFF";
+                LbPowerSatatusValue.TextColor = statusSwitch.IsToggled ? Color.FromArgb("#52C68C") : Color.FromArgb("#EF8484");
+                statusLbl.Text = statusSwitch.IsToggled ? "ON" : "OFF";
+                statusLbl.TextColor = statusSwitch.IsToggled ? Color.FromArgb("#52C68C") : Color.FromArgb("#EF8484");
                 foreach (var device in _SelectDevices)
                 {
                     await Provider.SendWsAsync(
@@ -434,6 +489,18 @@ public partial class ManageDevicePage : ContentPage
         BtnSat.BackgroundColor = Color.FromArgb("#C5E8FF");
         BtnSat.TextColor = Color.FromArgb("#000000");
     }
-
- 
+    private async void ButtonIfonmation_Clicked(object sender, EventArgs e)
+    {
+        string ListSelected = "";
+        int count = 0;
+        foreach (var device in _SelectDevices)
+        {
+            Console.WriteLine(device.device_name);
+            ListSelected += device.device_name;
+            if (count != _SelectDevices.Count - 1)
+                ListSelected += ", ";
+            count++;
+        }
+        DisplayAlert("Selected Devices", ListSelected, "Close");
+    }
 }

@@ -40,6 +40,7 @@
                             MinimumWidthRequest="24"
                             Text="i"
                             TextColor="#FFFFFF"
+                            Clicked="ButtonIfonmation_Clicked"
                             WidthRequest="24" />
                     </Grid>
                     <StackLayout

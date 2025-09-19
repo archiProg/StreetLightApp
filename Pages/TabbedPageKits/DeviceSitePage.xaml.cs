@@ -567,6 +567,10 @@ public partial class DeviceSitePage : ContentPage
                     deviceItem.SetChecked(true);
                 }
             }
+            lbSlider.Text = $"50%";
+            mySlider.DragCompleted -= mySlider_DragCompleted;
+            mySlider.Value = 50;
+            mySlider.DragCompleted += mySlider_DragCompleted;
             SelectDevices = filteredDevices.Where(x => x.type != "gateway").ToList();
         }
         else
@@ -602,12 +606,11 @@ public partial class DeviceSitePage : ContentPage
         BVControlMenu.IsVisible = false;
         DeviceSearchTxt.Text = "";
 
-
-
-
         filteredDevices = _allDevices;
 
-
+        ContactPick.SelectedIndex = 0;
+        GroupPick.SelectedIndex = 0;
+        
         _loadedCount = 0;
         LoadMoreItems();
         DeviceSearchTxt.IsEnabled = true;
@@ -710,6 +713,18 @@ public partial class DeviceSitePage : ContentPage
                 try
                 {
                     await IndicatorSenddata(true);
+                    if ((int)slider.Value == 0)
+                    {
+                        sw.Toggled -= OnToggled;
+                        sw.IsToggled = false;
+                        sw.Toggled += OnToggled;
+                    }
+                    else
+                    {
+                        sw.Toggled -= OnToggled;
+                        sw.IsToggled = true;
+                        sw.Toggled += OnToggled;
+                    }
                     foreach (var device in SelectDevices)
                     {
                         await Provider.SendWsAsync("3", new

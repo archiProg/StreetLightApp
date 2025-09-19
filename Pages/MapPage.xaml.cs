@@ -57,6 +57,7 @@ public partial class MapPage : ContentPage
         Console.WriteLine($"2_site::::{_site.site_name}");
         Dispatcher.Dispatch(async () =>
         {
+            await Indicator(true);
             if (!Provider.MapSites.ContainsKey(CurrentSite.site_id))
             {
                 Console.WriteLine("GetAllDevice::::");
@@ -87,6 +88,7 @@ public partial class MapPage : ContentPage
             GroupPick.ItemDisplayBinding = new Binding("Value");
             GroupPick.SelectedIndex = 0;
             await ShowDevicesOnMap();
+            await Indicator(false);
         });
 
     }
@@ -358,9 +360,25 @@ public partial class MapPage : ContentPage
         Console.WriteLine($"CurrentSite.site_name::::{CurrentSite.site_name}");
 
         double? minLat = null, maxLat = null, minLong = null, maxLong = null;
+        string searchText = DeviceSearchTxt.Text?.Trim().ToLower();
+        List<MyDevice> _DevicesFilterName = new();
 
+        if (!string.IsNullOrEmpty(searchText))
+        {
+            _DevicesFilterName = devices
+     .Where(d =>
+         (!string.IsNullOrEmpty(d.device_name) && d.device_name.Contains(searchText, StringComparison.OrdinalIgnoreCase)) ||
+         (!string.IsNullOrEmpty(d.gateway_name) && d.gateway_name.Contains(searchText, StringComparison.OrdinalIgnoreCase) && d.type == "gateway")
+     )
+     .Distinct()
+     .ToList();
+        }
+        else
+        {
+            _DevicesFilterName = devices;
+        }
 
-        foreach (var device in devices)
+        foreach (var device in _DevicesFilterName)
         {
             if (ContactPick.SelectedIndex == 0 && GroupPick.SelectedIndex == 0)
             {
@@ -780,11 +798,21 @@ public partial class MapPage : ContentPage
     {
         Dispatcher.Dispatch(async () =>
         {
+            await Indicator(true);
             if (!Provider.MapSites.ContainsKey(CurrentSite.site_id))
             {
                 await GetAllDevice();
             }
             await ShowDevicesOnMap();
+            await Indicator(false);
+        });
+    }
+
+    async Task Indicator(bool running)
+    {
+        Dispatcher.Dispatch(() =>
+        {
+            indicator.IsVisible = running;
         });
     }
 
@@ -800,9 +828,9 @@ public partial class MapPage : ContentPage
             ButtomSheet.Source = IsButtomSheet
                 ? "off_buttom_sheet_icon.png"
                 : "open_buttom_sheet_icon.png";
-            
+
             CurrentDevice = null;
-            
+
             if (IsButtomSheet)
             {
 
@@ -855,6 +883,94 @@ public partial class MapPage : ContentPage
 
 
     // detail device
+
+    protected override bool OnBackButtonPressed()
+    {
+        if (BtBack.IsVisible)
+        {
+            Dispatcher.Dispatch(() =>
+            {
+
+                BtBack.IsVisible = false;
+                LbGateWayOffline.IsVisible = false;
+                IsDetaildevicePannel = false;
+                DetailDevice.IsVisible = false;
+                SearchDevicePannel.IsVisible = true;
+                ItemPannel.IsVisible = true;
+                GawayItem.IsVisible = false;
+                DeviceItem.IsVisible = false;
+                CurrentDevice = null;
+                ItemPannel.TranslationY = 50;
+                Dispatcher.Dispatch(async () =>
+                {
+                    await Task.WhenAll(
+                        ItemPannel.FadeTo(1, 250, Easing.CubicOut),
+                        ItemPannel.TranslateTo(0, 0, 250, Easing.CubicOut));
+                });
+
+            });
+            return true;
+        }
+        else if (IsButtomSheet)
+        {
+            Dispatcher.Dispatch(async () =>
+            {
+
+                IsButtomSheet = false;
+                ButtomSheet.Source = IsButtomSheet
+                    ? "off_buttom_sheet_icon.png"
+                    : "open_buttom_sheet_icon.png";
+
+                CurrentDevice = null;
+
+                if (IsButtomSheet)
+                {
+
+                    SearchDevicePannel.IsVisible = true;
+                    ItemPannel.IsVisible = true;
+                    ItemPannel.IsVisible = true;
+                    ItemPannel.TranslationY = 50;
+                    await Task.WhenAll(
+                        ItemPannel.FadeTo(1, 250, Easing.CubicOut),
+                        ItemPannel.TranslateTo(0, 0, 250, Easing.CubicOut));
+                }
+                else
+                {
+                    if (!IsDetaildevicePannel)
+                    {
+                        ItemPannel.IsVisible = false;
+                        ItemPannel.TranslationY = 50;
+                        await Task.WhenAll(
+                            ItemPannel.FadeTo(0, 250, Easing.CubicIn),
+                            ItemPannel.TranslateTo(0, 50, 250, Easing.CubicIn)
+                        );
+
+                    }
+
+                    else
+                    {
+                        BtBack.IsVisible = false;
+                        LbGateWayOffline.IsVisible = false;
+                        SearchDevicePannel.IsVisible = true;
+                        DetailDevice.IsVisible = false;
+                        DetailDevice.TranslationY = 50;
+                        await Task.WhenAll(
+                            DetailDevice.FadeTo(0, 250, Easing.CubicIn),
+                            DetailDevice.TranslateTo(0, 50, 250, Easing.CubicIn));
+                        IsDetaildevicePannel = false;
+                    }
+
+                    SearchDevicePannel.IsVisible = true;
+
+                }
+            });
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
     private void BtBack_Clicked(object sender, EventArgs e)
     {
         Dispatcher.Dispatch(() =>
