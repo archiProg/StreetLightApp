@@ -4,50 +4,104 @@ namespace StreetLightApp.Pages.TabbedPageKits;
 
 public partial class ReportPage : ContentPage
 {
-    private List<MapPin> _pins;
-    public List<MapPin> Pins
-    {
-        get { return _pins; }
-        set { _pins = value; OnPropertyChanged(); }
-    }
+
 
     public ReportPage()
     {
         InitializeComponent();
-
-        BindingContext = this;
-
-        Pins = new List<MapPin>()
-        {
-            new MapPin(MapPinClicked)
-            {
-                Id = Guid.NewGuid().ToString(),
-                Position = new Location(51.731551, -0.156230),
-                IconSrc = "install_12"
-            },
-            new MapPin(MapPinClicked)
-            {
-                Id = Guid.NewGuid().ToString(),
-                Position = new Location(51.762951, -0.182317),
-                IconSrc = "install_12"
-            },
-            new MapPin(MapPinClicked)
-            {
-                Id = Guid.NewGuid().ToString(),
-                Position = new Location(51.754034, -0.074997),
-                IconSrc = "install_12"
-            },
-            new MapPin(MapPinClicked)
-            {
-                Id = Guid.NewGuid().ToString(),
-                Position = new Location(51.704029, -0.135474),
-                IconSrc = "install_12"
-            }
-        };
     }
 
     private void MapPinClicked(MapPin pin)
     {
         // Handle pin click
+    }
+
+    private void DeviceSearchTxt_Focused(object sender, FocusEventArgs e)
+    {
+
+    }
+
+    private void DeviceSearchTxt_Unfocused(object sender, FocusEventArgs e)
+    {
+
+    }
+
+    private void SitePick_SelectedIndexChanged(object sender, EventArgs e)
+    {
+
+    }
+
+
+
+    // maintenace detail
+    private void CheckBoxPowerInput_CheckedChanged(object sender, CheckedChangedEventArgs e)
+    {
+        if (e.Value)
+        {
+            CheckBoxPowerOutput.IsChecked = false;
+            CheckBoxBattery.IsChecked = false;
+        }
+    }
+
+    private void CheckBoxPowerOutput_CheckedChanged(object sender, CheckedChangedEventArgs e)
+    {
+        if (e.Value)
+        {
+            CheckBoxPowerInput.IsChecked = false;
+            CheckBoxBattery.IsChecked = false;
+        }
+    }
+
+    private void CheckBoxBattery_CheckedChanged(object sender, CheckedChangedEventArgs e)
+    {
+        if (e.Value)
+        {
+            CheckBoxPowerInput.IsChecked = false;
+            CheckBoxPowerOutput.IsChecked = false;
+        }
+    }
+
+    private void OnSearchButtonClicked(object sender, EventArgs e)
+    {
+
+    }
+
+    private void CheckBoxRepair_CheckedChanged(object sender, CheckedChangedEventArgs e)
+    {
+        if (e.Value)
+        {
+            CheckBoxInspection.IsChecked = false;
+        }
+    }
+
+    private void CheckBoxInspection_CheckedChanged(object sender, CheckedChangedEventArgs e)
+    {
+        if (e.Value)
+        {
+            CheckBoxRepair.IsChecked = false;
+        }
+    }
+
+    private void Picker_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        var picker = (Picker)sender;
+
+        if (picker.SelectedIndex == -1)
+            return; 
+
+        string selectedItem = picker.Items[picker.SelectedIndex];
+
+         if (selectedItem == "Report | Maintenace")
+        {
+            ReportDetail.IsVisible = true;
+            MaintenaceDetail.IsVisible = true;
+            DeviceDetail.IsVisible = false;
+        }
+        else if (selectedItem == "Report | Device")
+        {
+            ReportDetail.IsVisible = true;
+            MaintenaceDetail.IsVisible = false;
+            DeviceDetail.IsVisible = true;
+        }
     }
 }
