@@ -323,6 +323,7 @@ public partial class MapPage : ContentPage
             if (finalDevice != null)
                 Provider.MapSites[CurrentSite.site_id].Add(finalDevice);
         }
+        await Provider.SendWsAsync("32", new { });
         ContactPick.ItemsSource = ContactsList.ToList();
         ContactPick.ItemDisplayBinding = new Binding("Value");
         ContactPick.SelectedIndex = 0;

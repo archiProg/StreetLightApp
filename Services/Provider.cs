@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui.Maps;
 using StreetLightApp.Models;
 using System;
 using System.Collections.Generic;
@@ -33,6 +35,8 @@ namespace StreetLightApp.Services
         //public static List<MyDevice> SiteDevices = new List<MyDevice>();
 
         public static Dictionary<int, List<MyDevice>> MapSites = new();
+        public static List<string> GatewayList = new List<string>();
+
 
         public static event EventHandler<UpdateStatusDataParam> UpdateStatusDataHandle;
         public static event EventHandler<UpdateStatusGatewayParam> UpdateStatusGatewayHandle;
@@ -45,7 +49,8 @@ namespace StreetLightApp.Services
 
         public static async Task ConnectWssServer(string _ServerIp)
         {
-            if (_WssClient != null) {
+            if (_WssClient != null)
+            {
                 _WssClient.Dispose();
             }
 
@@ -57,7 +62,7 @@ namespace StreetLightApp.Services
             _WssClient.Logger = WsLogger;
             _WssClient.Start();
 
-            
+
         }
 
         private static async Task SendLoginWssAsync(string token)
@@ -116,10 +121,16 @@ namespace StreetLightApp.Services
                         WsUpdateDevicesMap(updateStatusData);
                         UpdateStatusDataHandle?.Invoke(null, updateStatusData);
                         break;
+
                     case (int)CmdType.UpdateStatusGateWay:
                         var updateStatusGateway = baseMessage.Param.Deserialize<UpdateStatusGatewayParam>();
                         WsUpdateGatewayMap(updateStatusGateway);
                         UpdateStatusGatewayHandle?.Invoke(null, updateStatusGateway);
+                        break;
+
+                    case (int)CmdType.UpdateStatusAllGateway:
+                        var updateStatusAllGateway = baseMessage.Param.Deserialize<UpdateStatusAllGatewayParam>();
+                        WsUpdateAllGateway(updateStatusAllGateway);
                         break;
                 }
 
@@ -130,6 +141,32 @@ namespace StreetLightApp.Services
             }
         }
 
+        static async void WsUpdateAllGateway(UpdateStatusAllGatewayParam updateStatusAllGateway)
+        {
+            foreach (var gatewayWs in updateStatusAllGateway.Member)
+            {
+                if (GatewayList.Contains(gatewayWs.Key))
+                {
+                    continue;
+                }
+                foreach (var gatewayMap in MapSites.Values)
+                {
+
+                    var gateway = gatewayMap.FirstOrDefault(x => x.gateway_id.ToString() == gatewayWs.Key && x.type=="gateway");
+                    if (gateway != null)
+                    {
+                        var lastGateway = gateway as DeviceNode;
+                        if (lastGateway != null)
+                        {
+                            lastGateway.SetOnline(gatewayWs.Value.Status);
+                            GatewayList.Add(lastGateway.gateway_id.ToString());
+                            break;
+                        }
+
+                    }
+                }
+            }
+        }
 
         static async void WsUpdateGatewayMap(UpdateStatusGatewayParam updateStatusGateway)
         {
@@ -148,7 +185,8 @@ namespace StreetLightApp.Services
                         {
                             Console.WriteLine($"SiteId3:: {siteDevicesPair.Key}");
 
-                            try {
+                            try
+                            {
                                 deviceNode.SetOnline(updateStatusGateway.Status);
                             }
                             catch (Exception ex)
@@ -158,7 +196,7 @@ namespace StreetLightApp.Services
 
                             Console.WriteLine($"deviceNode name {deviceNode.gateway_name}");
                         }
-                      
+
                     }
                 }
             }

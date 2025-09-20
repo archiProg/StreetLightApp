@@ -41,10 +41,40 @@ namespace StreetLightApp.Models
         public int Status { get; set; }
     }
 
+
+    public class UpdateStatusAllGatewayParam
+    {
+        [JsonPropertyName("Success")]
+        public bool Success { get; set; }
+
+        [JsonPropertyName("Message")]
+        public string Message { get; set; }
+
+        // Keep string keys for Member
+        [JsonPropertyName("Member")]
+        public Dictionary<string, MemberGateway> Member { get; set; }
+    }
+
+    public class MemberGateway
+    {
+        [JsonPropertyName("Status")]
+        public int Status { get; set; }
+
+        [JsonPropertyName("Img")]
+        public string Img { get; set; }
+
+        [JsonPropertyName("Name")]
+        public string Name { get; set; }
+
+        [JsonPropertyName("DeviceType")]
+        public int DeviceType { get; set; }
+    }
+
     public enum CmdType
     {
         LOGIN = 2,
+        UpdateStatusGateWay = 9, 
         UpdateDevices = 31,
-        UpdateStatusGateWay =9
+        UpdateStatusAllGateway = 34
     }
 }

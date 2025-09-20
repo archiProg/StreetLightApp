@@ -539,12 +539,15 @@ public partial class DeviceSitePage : ContentPage
                 Provider.MapSites[CurrentSite.site_id].Add(finalDevice);
             }
         }
+        await Provider.SendWsAsync("32", new{});
         ContactPick.ItemsSource = ContactsList.ToList();
         ContactPick.ItemDisplayBinding = new Binding("Value");
         ContactPick.SelectedIndex = 0;
         GroupPick.ItemsSource = GroupsList.ToList();
         GroupPick.ItemDisplayBinding = new Binding("Value");
         GroupPick.SelectedIndex = 0;
+
+
         Console.WriteLine("GetAllDevice::::end");
     }
 
@@ -610,7 +613,7 @@ public partial class DeviceSitePage : ContentPage
 
         ContactPick.SelectedIndex = 0;
         GroupPick.SelectedIndex = 0;
-        
+
         _loadedCount = 0;
         LoadMoreItems();
         DeviceSearchTxt.IsEnabled = true;
