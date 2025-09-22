@@ -1,4 +1,4 @@
-namespace StreetLightApp.Pages.TabbedPageKits;
+﻿namespace StreetLightApp.Pages.TabbedPageKits;
 
 public partial class BaseTabbedPage : TabbedPage
 {
@@ -21,9 +21,18 @@ public partial class BaseTabbedPage : TabbedPage
 
     private void TabbedPage_CurrentPageChanged(object sender, EventArgs e)
     {
-        var tab = sender as TabbedPage;
-        Console.WriteLine($"CurrentPageChanged:::{tab.CurrentPage}");
+        if (sender is TabbedPage tab)
+        {
+            Console.WriteLine($"CurrentPageChanged:::{tab.CurrentPage}");
+
+             Dispatcher.Dispatch(() =>
+            {
+                tab.CurrentPage?.ForceLayout();
+                (tab.CurrentPage as ContentPage)?.Content?.InvalidateMeasure();
+            });
+        }
     }
+
 
     private void TabbedPage_PagesChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
@@ -57,29 +66,15 @@ public partial class BaseTabbedPage : TabbedPage
     private void ReportPage_NavigatedTo(object sender, NavigatedToEventArgs e)
     {
         var p = sender as ContentPage;
-        p.IconImageSource = $"calendarview_64.png";
+        p.IconImageSource = $"report_icon64.png";
     }
 
     private void ReportPage_NavigatedFrom(object sender, NavigatedFromEventArgs e)
     {
         var p = sender as ContentPage;
-        p.IconImageSource = $"calendarview_64.png";
+        p.IconImageSource = $"report_icon64.png";
     }
 
-    private void LogPage_NavigatedTo(object sender, NavigatedToEventArgs e)
-    {
-        var p = sender as ContentPage;
-        Console.WriteLine("LogPage_NavigatedTo");
-        p.IconImageSource = $"log_icon.png";
-    }
-
-    private void LogPage_NavigatedFrom(object sender, NavigatedFromEventArgs e)
-    {
-        var p = sender as ContentPage;
-        Console.WriteLine("LogPage_NavigatedFrom");
-
-        p.IconImageSource = $"log_icon.png";
-    }
 
     private void SettingPage_NavigatedTo(object sender, NavigatedToEventArgs e)
     {

@@ -125,9 +125,6 @@
 	  <MauiXaml Update="Pages\TabbedPageKits\HomePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Pages\TabbedPageKits\LogPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
 	  <MauiXaml Update="Pages\TabbedPageKits\MapSitePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

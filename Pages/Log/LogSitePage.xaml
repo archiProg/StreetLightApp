@@ -5,6 +5,132 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="LogSitePage">
     <Grid>
+        <StackLayout Padding="16">
+            <Grid ColumnDefinitions="*,*">
+                <StackLayout Grid.Column="0">
+                    <Label Text="Member" />
+                    <Grid Padding="0,4,8,0">
+                        <Border
+                            InputTransparent="True"
+                            Stroke="#F1F5F9"
+                            StrokeShape="RoundRectangle 8">
+                            <Grid>
+                                <Image
+                                    Margin="0,0,16,0"
+                                    HeightRequest="16"
+                                    HorizontalOptions="End"
+                                    Source="pick_icon.png" />
+                            </Grid>
+                        </Border>
+                        <Picker
+                            x:Name="MemberPick"
+                            Opacity="0.5"
+                            SelectedIndexChanged="MemberPick_SelectedIndexChanged" />
+                    </Grid>
+
+                </StackLayout>
+                <StackLayout Grid.Column="1">
+                    <Label Text="Gateway" />
+                    <Grid Padding="0,4,8,0">
+                        <Border
+                            InputTransparent="True"
+                            Stroke="#F1F5F9"
+                            StrokeShape="RoundRectangle 8">
+                            <Grid>
+                                <Image
+                                    Margin="0,0,16,0"
+                                    HeightRequest="16"
+                                    HorizontalOptions="End"
+                                    Source="pick_icon.png" />
+                            </Grid>
+                        </Border>
+                        <Picker
+                            x:Name="GatewayPick"
+                            Opacity="0.5"
+                            SelectedIndexChanged="GatewayPick_SelectedIndexChanged" />
+                    </Grid>
+                </StackLayout>
+            </Grid>
+            <Grid Padding="0,8,0,0" ColumnDefinitions="*,*">
+                <StackLayout Grid.Column="0">
+                    <Label Text="Device" />
+                    <Grid Padding="0,4,8,0">
+                        <Border
+                            InputTransparent="True"
+                            Stroke="#F1F5F9"
+                            StrokeShape="RoundRectangle 8">
+                            <Grid>
+                                <Image
+                                    Margin="0,0,16,0"
+                                    HeightRequest="16"
+                                    HorizontalOptions="End"
+                                    Source="pick_icon.png" />
+                            </Grid>
+                        </Border>
+                        <Picker
+                            x:Name="DevicePick"
+                            Opacity="0.5"
+                            SelectedIndexChanged="DevicePick_SelectedIndexChanged" />
+                    </Grid>
+
+                </StackLayout>
+                <StackLayout Grid.Column="1">
+                    <Label Text="Type" />
+                    <Grid Padding="0,4,8,0">
+                        <Border
+                            InputTransparent="True"
+                            Stroke="#F1F5F9"
+                            StrokeShape="RoundRectangle 8">
+                            <Grid>
+                                <Image
+                                    Margin="0,0,16,0"
+                                    HeightRequest="16"
+                                    HorizontalOptions="End"
+                                    Source="pick_icon.png" />
+                            </Grid>
+                        </Border>
+                        <Picker
+                            x:Name="TypePick"
+                            Opacity="0.5"
+                            SelectedIndexChanged="TypePick_SelectedIndexChanged" />
+                    </Grid>
+                </StackLayout>
+            </Grid>
+            <Grid Padding="0,8,0,0" ColumnDefinitions="*,*">
+                <StackLayout Grid.Column="0">
+                    <Label Text="From" />
+                    <Grid Padding="0,4,8,0">
+                        <Border
+                            InputTransparent="True"
+                            Stroke="#F1F5F9"
+                            StrokeShape="RoundRectangle 8" />
+                        <Grid>
+                            <DatePicker
+                                x:Name="StartDatePicker"
+                                DateSelected="DateStartPicker_DateSelected"
+                                Format="dd/M/yyyy" />
+                        </Grid>
+                    </Grid>
+
+                </StackLayout>
+                <StackLayout Grid.Column="1">
+                    <Label Text="To" />
+                    <Grid Padding="0,4,8,0">
+                        <Border
+                            InputTransparent="True"
+                            Stroke="#F1F5F9"
+                            StrokeShape="RoundRectangle 8" />
+                        <Grid>
+                            <DatePicker
+                                x:Name="EndDatePicker"
+                                DateSelected="DateEndPicker_DateSelected"
+                                Format="dd/M/yyyy" />
+                        </Grid>
+                    </Grid>
+                </StackLayout>
+            </Grid>
+            <Button Margin="0,16,0,0" Text="Report" />
+        </StackLayout>
         <Grid
             x:Name="indicator"
             BackgroundColor="#60000000"
