@@ -19,8 +19,22 @@
         IconImageSource="list_48_noactive.png"
         NavigatedFrom="DevicePage_NavigatedFrom"
         NavigatedTo="DevicePage_NavigatedTo" />
-    <!--<local:MapPage Title="Map" IconImageSource="{OnPlatform Default=google_64.png, iOS=google_64.png}" />-->
-    <local:ReportPage Title="Report" IconImageSource="{OnPlatform Default=calendarview_64.png, iOS=calendarview_64.png}" />
-    <local:LogPage Title="Logs" IconImageSource="{OnPlatform Default=calendarview_64.png, iOS=calendarview_64.png}" />
-    <local:SettingPage Title="Profile" IconImageSource="{OnPlatform Default=setting_64.png, iOS=setting_64.png}" />
+    <local:ReportPage
+        Title="Report"
+        IconImageSource="{OnPlatform Default=calendarview_64.png,
+                                     iOS=calendarview_64.png}"
+        NavigatedFrom="ReportPage_NavigatedFrom"
+        NavigatedTo="ReportPage_NavigatedTo" />
+    <local:LogPage
+        Title="Logs"
+        IconImageSource="{OnPlatform Default=log_icon.png,
+                                     iOS=log_icon.png}"
+        NavigatedFrom="LogPage_NavigatedFrom"
+        NavigatedTo="LogPage_NavigatedTo" />
+    <local:SettingPage
+        Title="Profile"
+        IconImageSource="{OnPlatform Default=setting_64.png,
+                                     iOS=setting_64.png}"
+        NavigatedFrom="SettingPage_NavigatedFrom"
+        NavigatedTo="SettingPage_NavigatedTo" />
 </TabbedPage>

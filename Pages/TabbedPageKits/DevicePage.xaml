@@ -7,17 +7,6 @@
     Title="Devices List"
     BackgroundColor="#F2F2F2"
     NavigationPage.HasNavigationBar="false">
-    <!--<NavigationPage.TitleView>
-        <Grid Padding="10">
-            <Label
-                FontAttributes="Bold"
-                FontSize="18"
-                HorizontalOptions="Center"
-                Text="My Site"
-                TextColor="DarkSlateBlue"
-                VerticalOptions="Center" />
-        </Grid>
-    </NavigationPage.TitleView>-->
     <Grid RowDefinitions="Auto,*" RowSpacing="16">
         <Border
             Grid.Row="0"

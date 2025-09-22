@@ -73,15 +73,15 @@
             },
             "Microsoft.Extensions.Logging.Debug": {
               "target": "Package",
-              "version": "[9.0.8, )"
+              "version": "[9.0.9, )"
             },
             "Microsoft.Maui.Controls": {
               "target": "Package",
-              "version": "[9.0.100, )"
+              "version": "[9.0.110, )"
             },
             "Microsoft.Maui.Controls.Maps": {
               "target": "Package",
-              "version": "[9.0.90, )"
+              "version": "[9.0.110, )"
             },
             "Microsoft.NET.ILLink.Tasks": {
               "suppressParent": "All",
@@ -95,7 +95,7 @@
             },
             "Newtonsoft.Json": {
               "target": "Package",
-              "version": "[13.0.3, )"
+              "version": "[13.0.4, )"
             },
             "RestSharp": {
               "target": "Package",
@@ -103,7 +103,7 @@
             },
             "WatsonWebsocket": {
               "target": "Package",
-              "version": "[4.1.5, )"
+              "version": "[4.1.6, )"
             }
           },
           "imports": [
@@ -136,15 +136,15 @@
             },
             "Microsoft.Extensions.Logging.Debug": {
               "target": "Package",
-              "version": "[9.0.8, )"
+              "version": "[9.0.9, )"
             },
             "Microsoft.Maui.Controls": {
               "target": "Package",
-              "version": "[9.0.100, )"
+              "version": "[9.0.110, )"
             },
             "Microsoft.Maui.Controls.Maps": {
               "target": "Package",
-              "version": "[9.0.90, )"
+              "version": "[9.0.110, )"
             },
             "Microsoft.NET.ILLink.Tasks": {
               "suppressParent": "All",
@@ -158,7 +158,7 @@
             },
             "Newtonsoft.Json": {
               "target": "Package",
-              "version": "[13.0.3, )"
+              "version": "[13.0.4, )"
             },
             "RestSharp": {
               "target": "Package",
@@ -166,7 +166,7 @@
             },
             "WatsonWebsocket": {
               "target": "Package",
-              "version": "[4.1.5, )"
+              "version": "[4.1.6, )"
             }
           },
           "imports": [
@@ -199,15 +199,15 @@
             },
             "Microsoft.Extensions.Logging.Debug": {
               "target": "Package",
-              "version": "[9.0.8, )"
+              "version": "[9.0.9, )"
             },
             "Microsoft.Maui.Controls": {
               "target": "Package",
-              "version": "[9.0.100, )"
+              "version": "[9.0.110, )"
             },
             "Microsoft.Maui.Controls.Maps": {
               "target": "Package",
-              "version": "[9.0.90, )"
+              "version": "[9.0.110, )"
             },
             "Microsoft.NET.ILLink.Tasks": {
               "suppressParent": "All",
@@ -221,7 +221,7 @@
             },
             "Newtonsoft.Json": {
               "target": "Package",
-              "version": "[13.0.3, )"
+              "version": "[13.0.4, )"
             },
             "RestSharp": {
               "target": "Package",
@@ -229,7 +229,7 @@
             },
             "WatsonWebsocket": {
               "target": "Package",
-              "version": "[4.1.5, )"
+              "version": "[4.1.6, )"
             }
           },
           "imports": [
@@ -263,15 +263,15 @@
             },
             "Microsoft.Extensions.Logging.Debug": {
               "target": "Package",
-              "version": "[9.0.8, )"
+              "version": "[9.0.9, )"
             },
             "Microsoft.Maui.Controls": {
               "target": "Package",
-              "version": "[9.0.100, )"
+              "version": "[9.0.110, )"
             },
             "Microsoft.Maui.Controls.Maps": {
               "target": "Package",
-              "version": "[9.0.90, )"
+              "version": "[9.0.110, )"
             },
             "Mopups": {
               "target": "Package",
@@ -279,7 +279,7 @@
             },
             "Newtonsoft.Json": {
               "target": "Package",
-              "version": "[13.0.3, )"
+              "version": "[13.0.4, )"
             },
             "RestSharp": {
               "target": "Package",
@@ -287,7 +287,7 @@
             },
             "WatsonWebsocket": {
               "target": "Package",
-              "version": "[4.1.5, )"
+              "version": "[4.1.6, )"
             }
           },
           "imports": [
@@ -319,16 +319,19 @@
         }
       },
       "runtimes": {
-        "android-arm": {
-          "#import": []
-        },
         "android-arm64": {
           "#import": []
         },
         "android-x64": {
           "#import": []
         },
-        "android-x86": {
+        "iossimulator-x64": {
+          "#import": []
+        },
+        "maccatalyst-x64": {
+          "#import": []
+        },
+        "win10-x64": {
           "#import": []
         }
       }

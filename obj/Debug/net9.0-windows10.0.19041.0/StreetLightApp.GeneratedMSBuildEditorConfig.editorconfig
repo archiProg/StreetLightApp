@@ -46,6 +46,18 @@ build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.Login
 build_metadata.AdditionalFiles.TargetPath = Pages\LoginPage.xaml
 build_metadata.AdditionalFiles.RelativePath = Pages\LoginPage.xaml
 
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Pages/Log/LogDetailSitePage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.Log.LogDetailSitePage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\Log\LogDetailSitePage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\Log\LogDetailSitePage.xaml
+
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Pages/Log/LogSitePage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.Log.LogSitePage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\Log\LogSitePage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\Log\LogSitePage.xaml
+
 [C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Pages/MaintenancePage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.MaintenancePage.xaml
