@@ -129,7 +129,7 @@
                     </Grid>
                 </StackLayout>
             </Grid>
-            <Button Margin="0,16,0,0" Text="Report" />
+            <Button Margin="0,16,0,0" Text="Report" Clicked="Button_Clicked" />
         </StackLayout>
         <Grid
             x:Name="indicator"

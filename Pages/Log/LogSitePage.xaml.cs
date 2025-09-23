@@ -8,11 +8,11 @@ namespace StreetLightApp.Pages.Log;
 public partial class LogSitePage : ContentPage
 {
     Site CurrentSite = null;
-    List<string> GatewayList = new();
     String SelectGateway = "";
-    Dictionary<int, string> MemberList = new Dictionary<int, string>
-{
-    { 0, "All" } };
+
+    Dictionary<int, string> MemberList = new Dictionary<int, string> { { 0, "All" } };
+    Dictionary<int, string> GatewayList = new Dictionary<int, string> { { 0, "All" } };
+    Dictionary<int, List<MyDevice>> GatewayDeviceList = new();
     List<string> TypeList = ["Usage", "Log"];
 
     private DateTime _selectedStartDate;
@@ -27,35 +27,66 @@ public partial class LogSitePage : ContentPage
         StartDatePicker.MaximumDate = DateTime.Today;
         EndDatePicker.Date = DateTime.Today;
         EndDatePicker.MaximumDate = DateTime.Today;
+        TypePick.ItemsSource = TypeList.ToList();
+        TypePick.SelectedIndex = 0;
 
         Dispatcher.Dispatch(async () =>
         {
             await Indicator(true);
             if (!Provider.MapSites.ContainsKey(CurrentSite.site_id))
             {
-                Console.WriteLine("GetAllDevice::::");
                 await GetAllDevice();
             }
+            else
+            {
+                foreach (var device in Provider.MapSites[CurrentSite.site_id])
+                {
+                    if (device.type == "gateway")
+                    {
+                        GatewayList[device.gateway_id] = device.gateway_name;
+                        if (!GatewayDeviceList.ContainsKey(device.gateway_id))
+                        {
+                            GatewayDeviceList[device.gateway_id] = new List<MyDevice>();
+                        }
+
+                    }
+                    else
+                    {
+                        if (!GatewayDeviceList.ContainsKey(device.gateway_id))
+                        {
+                            GatewayDeviceList[device.gateway_id] = new List<MyDevice>();
+                        }
+                        GatewayDeviceList[device.gateway_id].Add(device);
+
+                    }
+                }
+                GatewayPick.ItemsSource = GatewayList.ToList();
+                GatewayPick.ItemDisplayBinding = new Binding("Value");
+                GatewayPick.SelectedIndex = 0;
+
+ 
+
+            }
+
             if (!Provider.MemberSites.ContainsKey(CurrentSite.site_id))
             {
-                Console.WriteLine("GetAllMember::::");
                 await GetAllMember();
             }
             else
             {
-                int count = 1;
                 foreach (var member in Provider.MemberSites[CurrentSite.site_id])
                 {
-                    MemberList[count] = member.member_name;
-                    count++;
+                    MemberList[member.id] = member.member_name;
+                    Console.WriteLine($"nameMember:::::{member.member_name} {member.id}");
                 }
+                MemberPick.ItemsSource = MemberList.ToList();
+                MemberPick.ItemDisplayBinding = new Binding("Value");
+                MemberPick.SelectedIndex = 0;
             }
             await Indicator(false);
         });
 
-        MemberPick.ItemsSource = MemberList.ToList();
-        MemberPick.ItemDisplayBinding = new Binding("Value");
-        MemberPick.SelectedIndex = 0;
+
 
 
     }
@@ -100,6 +131,9 @@ public partial class LogSitePage : ContentPage
 
             if (device.type == "gateway")
             {
+                GatewayList[device.gateway_id] = device.gateway_name;
+
+
                 finalDevice = new DeviceNode(device)
                 {
                     controls = device.controls,
@@ -108,6 +142,12 @@ public partial class LogSitePage : ContentPage
             }
             else
             {
+                if (!GatewayDeviceList.ContainsKey(device.gateway_id))
+                {
+                    GatewayDeviceList[device.gateway_id] = new List<MyDevice>();
+                }
+                GatewayDeviceList[device.gateway_id].Add(device);
+
                 switch (device.device_style)
                 {
                     case 3: // Dimmer
@@ -168,6 +208,11 @@ public partial class LogSitePage : ContentPage
             if (finalDevice != null)
                 Provider.MapSites[CurrentSite.site_id].Add(finalDevice);
         }
+        GatewayPick.ItemsSource = GatewayList.ToList();
+        GatewayPick.ItemDisplayBinding = new Binding("Value");
+        GatewayPick.SelectedIndex = 0;
+
+ 
         await Provider.SendWsAsync("32", new { });
 
     }
@@ -184,13 +229,15 @@ public partial class LogSitePage : ContentPage
             return;
         }
 
-        Console.WriteLine($"GetAllDevice:::{response.Message}");
+        Console.WriteLine($"GetAllMember:::{response.Message}");
         var deviceList = JsonConvert.DeserializeObject<List<MemberApiResponse>>(response?.Message?.ToString());
         if (deviceList == null || deviceList[0].members.Count == 0)
             return;
 
         if (Provider.MemberSites == null)
+        {
             Provider.MemberSites = new Dictionary<int, List<Member>>();
+        }
 
         if (!Provider.MemberSites.ContainsKey(CurrentSite.site_id))
         {
@@ -198,11 +245,13 @@ public partial class LogSitePage : ContentPage
         }
 
 
-        int count = 1;
-        foreach (var member in Provider.MemberSites[CurrentSite.site_id].ToList())
+
+
+        foreach (var member in deviceList[0].members)
         {
-            MemberList[count] = member.member_name;
-            count++;
+            Provider.MemberSites[CurrentSite.site_id].Add(member);
+            MemberList[member.id] = member.member_name;
+            Console.WriteLine($"nameMember:::::{member.member_name} {member.id}");
         }
         MemberPick.ItemsSource = MemberList.ToList();
         MemberPick.ItemDisplayBinding = new Binding("Value");
@@ -219,23 +268,16 @@ public partial class LogSitePage : ContentPage
 
     private void GatewayPick_SelectedIndexChanged(object sender, EventArgs e)
     {
-        var picker = (Picker)sender;
-        int selectedIndex = picker.SelectedIndex;
-
-        if (selectedIndex != -1)
+        if (GatewayPick.SelectedItem is KeyValuePair<int, string> selectedGateway)
         {
-            if (selectedIndex == 0)
-            {
-                SelectGateway = "All";
+            int gatewayId = selectedGateway.Key;
 
-            }
-            else
+            if (GatewayDeviceList.ContainsKey(gatewayId))
             {
-                string selectedGroupName = picker.Items[selectedIndex];
-                Console.WriteLine($"selectedIndex: {selectedIndex} selectedGroupName {selectedGroupName}");
-                SelectGateway = picker.Items[selectedIndex];
+                DevicePick.ItemsSource = GatewayDeviceList[gatewayId]; 
+                DevicePick.ItemDisplayBinding = new Binding("device_name"); 
+                DevicePick.SelectedIndex = 0;
             }
-
         }
     }
 
@@ -259,5 +301,65 @@ public partial class LogSitePage : ContentPage
     {
         _selectedEndDate = e.NewDate;
         Console.WriteLine($"Selected date: {_selectedEndDate:dd/MM/yyyy}");
+    }
+
+    async Task<List<LogModelData>> GetLogsAsync()
+    {
+        if (CurrentSite == null) return null;
+
+        string memberId = "all";
+        string gatewayId = "all";
+        string deviceId = "all";
+        string type = "usage";
+
+        if (MemberPick.SelectedItem is KeyValuePair<int, string> selectedMember)
+            memberId = selectedMember.Key == 0 ? "all" : selectedMember.Key.ToString();
+
+        if (GatewayPick.SelectedItem is KeyValuePair<int, string> selectedGateway)
+            gatewayId = selectedGateway.Key == 0 ? "all" : selectedGateway.Key.ToString();
+
+        if (DevicePick.SelectedItem is MyDevice selectedDevice)
+            deviceId = "all";
+
+        if (TypePick.SelectedItem is string selectedType)
+            type = selectedType.ToLower();
+
+        string dateStart = _selectedStartDate == default ? DateTime.Today.ToString("yyyy-MM-dd") : _selectedStartDate.ToString("yyyy-MM-dd");
+        string dateEnd = _selectedEndDate == default ? DateTime.Today.ToString("yyyy-MM-dd") : _selectedEndDate.ToString("yyyy-MM-dd");
+
+        string url = $"{Provider.APIHost}/api/get-log/{CurrentSite.site_id}?" +
+                     $"member_id={memberId}&gateway_id={gatewayId}&device_id={deviceId}&type={type}&" +
+                     $"search_data=&date_start={dateStart}&date_end={dateEnd}";
+
+        Console.WriteLine($"Fetching logs: {url}");
+
+        var response = await RequestApi.GetAPIJWT(url);
+
+        if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
+        {
+            await DisplayAlert("Error", $"Failed to get logs: {response.Message}", "OK");
+            return null;
+        }
+
+        // Deserialize into LogModel
+        var logModel = JsonConvert.DeserializeObject<LogModel>(response.Message.ToString());
+        return logModel?.data ?? new List<LogModelData>();
+    }
+
+    private async void Button_Clicked(object sender, EventArgs e)
+    {
+        await Indicator(true); // show loading indicator
+
+        var logs = await GetLogsAsync(); // await your async fetch
+
+        await Indicator(false); // hide loading indicator
+
+        if (logs.Count > 0)
+        {
+            Console.WriteLine($"logs.Count:::::{logs.Count}");
+        }
+        else {
+            DisplayAlert("Log","No data!","ok");
+        }
     }
 }
