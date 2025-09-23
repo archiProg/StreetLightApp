@@ -9,10 +9,18 @@ public partial class LogSitePage : ContentPage
 {
     Site CurrentSite = null;
     String SelectGateway = "";
-
+    string memberId = "all";
+    string gatewayId = "all";
+    string deviceId = "all";
+    string type = "usage";
+    string deviceName = "All Devices";
+    string dateStart;
+    string dateEnd;
     Dictionary<int, string> MemberList = new Dictionary<int, string> { { 0, "All" } };
     Dictionary<int, string> GatewayList = new Dictionary<int, string> { { 0, "All" } };
     Dictionary<int, List<MyDevice>> GatewayDeviceList = new();
+    Dictionary<int, string> DeviceList = new Dictionary<int, string> { { 0, "All" } };
+
     List<string> TypeList = ["Usage", "Log"];
 
     private DateTime _selectedStartDate;
@@ -29,6 +37,9 @@ public partial class LogSitePage : ContentPage
         EndDatePicker.MaximumDate = DateTime.Today;
         TypePick.ItemsSource = TypeList.ToList();
         TypePick.SelectedIndex = 0;
+        DevicePick.ItemsSource = DeviceList.ToList();
+        DevicePick.ItemDisplayBinding = new Binding("Value");
+        DevicePick.SelectedIndex = 0;
 
         Dispatcher.Dispatch(async () =>
         {
@@ -64,7 +75,7 @@ public partial class LogSitePage : ContentPage
                 GatewayPick.ItemDisplayBinding = new Binding("Value");
                 GatewayPick.SelectedIndex = 0;
 
- 
+
 
             }
 
@@ -212,7 +223,7 @@ public partial class LogSitePage : ContentPage
         GatewayPick.ItemDisplayBinding = new Binding("Value");
         GatewayPick.SelectedIndex = 0;
 
- 
+
         await Provider.SendWsAsync("32", new { });
 
     }
@@ -274,8 +285,21 @@ public partial class LogSitePage : ContentPage
 
             if (GatewayDeviceList.ContainsKey(gatewayId))
             {
-                DevicePick.ItemsSource = GatewayDeviceList[gatewayId]; 
-                DevicePick.ItemDisplayBinding = new Binding("device_name"); 
+                DeviceList = new Dictionary<int, string> { { 0, "All" } };
+                foreach (var device in GatewayDeviceList[gatewayId])
+                {
+                    DeviceList[(int)device.device_id] = device.device_name;
+                    Console.WriteLine($"Device:::::{device.device_name} {device.device_id}");
+                }
+                DevicePick.ItemsSource = DeviceList.ToList();
+                DevicePick.ItemDisplayBinding = new Binding("Value");
+                DevicePick.SelectedIndex = 0;
+            }
+            else
+            {
+                DeviceList = new Dictionary<int, string> { { 0, "All" } };
+                DevicePick.ItemsSource = DeviceList.ToList();
+                DevicePick.ItemDisplayBinding = new Binding("Value");
                 DevicePick.SelectedIndex = 0;
             }
         }
@@ -307,10 +331,7 @@ public partial class LogSitePage : ContentPage
     {
         if (CurrentSite == null) return null;
 
-        string memberId = "all";
-        string gatewayId = "all";
-        string deviceId = "all";
-        string type = "usage";
+
 
         if (MemberPick.SelectedItem is KeyValuePair<int, string> selectedMember)
             memberId = selectedMember.Key == 0 ? "all" : selectedMember.Key.ToString();
@@ -318,14 +339,19 @@ public partial class LogSitePage : ContentPage
         if (GatewayPick.SelectedItem is KeyValuePair<int, string> selectedGateway)
             gatewayId = selectedGateway.Key == 0 ? "all" : selectedGateway.Key.ToString();
 
-        if (DevicePick.SelectedItem is MyDevice selectedDevice)
-            deviceId = "all";
+        if (DevicePick.SelectedItem is KeyValuePair<int, string> selectedDevice)
+        {
+            deviceId = selectedDevice.Key == 0 ? "all" : selectedDevice.Key.ToString();
+            deviceName = selectedDevice.Key == 0 ? "All Devices" : selectedDevice.Value.ToString();
+        }
+             
+            
 
         if (TypePick.SelectedItem is string selectedType)
             type = selectedType.ToLower();
 
-        string dateStart = _selectedStartDate == default ? DateTime.Today.ToString("yyyy-MM-dd") : _selectedStartDate.ToString("yyyy-MM-dd");
-        string dateEnd = _selectedEndDate == default ? DateTime.Today.ToString("yyyy-MM-dd") : _selectedEndDate.ToString("yyyy-MM-dd");
+        dateStart = _selectedStartDate == default ? DateTime.Today.ToString("yyyy-MM-dd") : _selectedStartDate.ToString("yyyy-MM-dd");
+        dateEnd = _selectedEndDate == default ? DateTime.Today.ToString("yyyy-MM-dd") : _selectedEndDate.ToString("yyyy-MM-dd");
 
         string url = $"{Provider.APIHost}/api/get-log/{CurrentSite.site_id}?" +
                      $"member_id={memberId}&gateway_id={gatewayId}&device_id={deviceId}&type={type}&" +
@@ -348,18 +374,19 @@ public partial class LogSitePage : ContentPage
 
     private async void Button_Clicked(object sender, EventArgs e)
     {
-        await Indicator(true); // show loading indicator
+        await Indicator(true);
 
-        var logs = await GetLogsAsync(); // await your async fetch
+        var logs = await GetLogsAsync();  
 
-        await Indicator(false); // hide loading indicator
+        await Indicator(false);  
 
         if (logs.Count > 0)
         {
-            Console.WriteLine($"logs.Count:::::{logs.Count}");
+            await Navigation.PushAsync(new LogDetailSitePage(logs, dateStart, dateEnd, TypePick.SelectedItem.ToString(), deviceName));
         }
-        else {
-            DisplayAlert("Log","No data!","ok");
+        else
+        {
+            DisplayAlert("Log", "No data!", "ok");
         }
     }
 }
