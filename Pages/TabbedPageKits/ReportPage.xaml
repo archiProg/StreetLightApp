@@ -5,157 +5,26 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:ctrl="clr-namespace:StreetLightApp.Controls"
     Title="Report"
+    BackgroundColor="#F2F2F2"
     NavigationPage.HasNavigationBar="False">
     <Grid RowDefinitions="Auto,*">
-        <Grid
+        <Border
             Grid.Row="0"
-            Padding="0,8,0,0"
-            HorizontalOptions="Center">
-            <Border
-                Padding="4"
-                BackgroundColor="#F1F5F9"
-                Stroke="#F1F5F9"
-                StrokeShape="RoundRectangle 100"
-                WidthRequest="165">
-                <HorizontalStackLayout Spacing="4">
-                    <Button
-                        x:Name="Select_Report"
-                        BackgroundColor="White"
-                        Clicked="Select_Report_Clicked"
-                        CornerRadius="96"
-                        MaximumHeightRequest="40"
-                        Text="Report"
-                        TextColor="Black"
-                        WidthRequest="75" />
-                    <Button
-                        x:Name="Select_Log"
-                        BackgroundColor="#F1F5F9"
-                        Clicked="Select_Log_Clicked"
-                        CornerRadius="96"
-                        MaximumHeightRequest="40"
-                        Text="Log"
-                        TextColor="#8B9DB2"
-                        WidthRequest="75" />
-                </HorizontalStackLayout>
-            </Border>
-        </Grid>
-
-        <Grid
-            x:Name="AllReportDetail"
-            Grid.Row="1"
-            RowDefinitions="Auto,*">
-            <Grid
-                Grid.Row="0"
-                Padding="16"
-                ColumnDefinitions="*,*"
-                ColumnSpacing="16">
-                <Border
-                    Grid.Column="0"
-                    BackgroundColor="#F6F9FE"
-                    HeightRequest="42"
-                    Stroke="#F6F9FE"
-                    StrokeShape="RoundRectangle 8">
-                    <Grid ColumnDefinitions="Auto, *">
-                        <Image
-                            x:Name="searchIcon"
-                            Grid.Column="0"
-                            Margin="8,0,8,0"
-                            HeightRequest="16"
-                            Source="search_icon.png"
-                            VerticalOptions="Center"
-                            WidthRequest="16" />
-                        <Entry
-                            x:Name="DeviceSearchTxt"
-                            Grid.Column="1"
-                            BackgroundColor="#F1F5F9"
-                            Focused="DeviceSearchTxt_Focused"
-                            Placeholder="Device"
-                            PlaceholderColor="#596577"
-                            Unfocused="DeviceSearchTxt_Unfocused" />
-                    </Grid>
-                </Border>
-                <Grid Grid.Column="1">
-                    <Border
-                        InputTransparent="True"
-                        Stroke="#F1F5F9"
-                        StrokeShape="RoundRectangle 8">
-                        <Grid>
-                            <Image
-                                Margin="0,0,16,0"
-                                HeightRequest="16"
-                                HorizontalOptions="End"
-                                Source="pick_icon.png" />
-                        </Grid>
-                    </Border>
-                    <Picker
-                        x:Name="PickerTypeReport"
-                        Title="Select"
-                        Grid.Column="1"
-                        SelectedIndexChanged="Picker_SelectedIndexChanged">
-                        <Picker.Items>
-                            <x:String>Report | Maintenace</x:String>
-                            <x:String>Report | Device</x:String>
-                        </Picker.Items>
-                    </Picker>
-                </Grid>
-
-            </Grid>
-            <StackLayout
-                x:Name="ReportDetail"
-                Grid.Row="1"
-                IsVisible="false">
-                <StackLayout
-                    x:Name="MaintenaceDetail"
-                    Grid.Column="1"
-                    IsVisible="false">
-                    <Label Padding="16,0" Text="Status" />
-                    <HorizontalStackLayout Padding="8,0" Spacing="8">
-                        <HorizontalStackLayout>
-                            <CheckBox x:Name="CheckBoxPowerInput" CheckedChanged="CheckBoxPowerInput_CheckedChanged" />
-                            <Label Text="Power Input" VerticalOptions="Center" />
-                        </HorizontalStackLayout>
-                        <HorizontalStackLayout>
-                            <CheckBox x:Name="CheckBoxPowerOutput" CheckedChanged="CheckBoxPowerOutput_CheckedChanged" />
-                            <Label Text="Power Output" VerticalOptions="Center" />
-                        </HorizontalStackLayout>
-                        <HorizontalStackLayout>
-                            <CheckBox x:Name="CheckBoxBattery" CheckedChanged="CheckBoxBattery_CheckedChanged" />
-                            <Label Text="Battery" VerticalOptions="Center" />
-                        </HorizontalStackLayout>
-                    </HorizontalStackLayout>
-                </StackLayout>
-                <StackLayout
-                    x:Name="DeviceDetail"
-                    Grid.Column="1"
-                    IsVisible="true">
-                    <HorizontalStackLayout Padding="8,0" Spacing="8">
-                        <HorizontalStackLayout>
-                            <CheckBox x:Name="CheckBoxRepair" CheckedChanged="CheckBoxRepair_CheckedChanged" />
-                            <Label Text="Repair" VerticalOptions="Center" />
-                        </HorizontalStackLayout>
-                        <HorizontalStackLayout>
-                            <CheckBox x:Name="CheckBoxInspection" CheckedChanged="CheckBoxInspection_CheckedChanged" />
-                            <Label Text="Inspection" VerticalOptions="Center" />
-                        </HorizontalStackLayout>
-                    </HorizontalStackLayout>
-                </StackLayout>
-                <Button
-                    Margin="16,8,16,8"
-                    Padding="16,0,16,0"
-                    BackgroundColor="#316BF7"
-                    Clicked="OnSearchButtonClicked"
-                    CornerRadius="8"
-                    FontFamily="PoppinsMedium"
-                    HeightRequest="42"
-                    Text="Search"
-                    TextColor="#FFFFFF" />
-            </StackLayout>
-        </Grid>
-
+            BackgroundColor="#FFFFFF"
+            HeightRequest="56"
+            Stroke="Transparent"
+            StrokeShape="RoundRectangle 0,0,8,8"
+            StrokeThickness="0">
+            <Label
+                Margin="16,0,0,0"
+                FontFamily="PoppinsSemiBold"
+                FontSize="18"
+                Text="Report"
+                VerticalOptions="Center" />
+        </Border>
         <Grid
             x:Name="LogDetail"
             Grid.Row="1"
-            IsVisible="False"
             RowDefinitions="Auto,*"
             RowSpacing="16">
             <ScrollView Grid.Row="1">

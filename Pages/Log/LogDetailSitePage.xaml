@@ -32,6 +32,11 @@
                         Text="Type: Usage"
                         TextColor="#627296" />
                     <Label
+                        x:Name="gatewayName"
+                        FontSize="14"
+                        Text="Gateway: All Gateway"
+                        TextColor="#627296" />
+                    <Label
                         x:Name="TimeSearch"
                         FontSize="14"
                         Text="22-05-2025  to 22-05-2025"
@@ -49,7 +54,7 @@
                                     <Label IsVisible="{Binding member_id, Converter={StaticResource NullToBoolConverter}, ConverterParameter=notnull}" Text="{Binding member_id}" />
                                     <Label IsVisible="{Binding member_id, Converter={StaticResource NullToBoolConverter}, ConverterParameter=null}" Text="{Binding gateway_id}" />
                                 </HorizontalStackLayout>
-                                <Label Text="{Binding created_at, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}" TextColor="#627296" />
+                                <Label Text="{Binding created_at_plus7, StringFormat='{}{0:dd/MM/yyyy HH:mm tt}'}" TextColor="#627296" />
                                 <HorizontalStackLayout>
                                     <Label Text="From" TextColor="#627296" />
                                     <Label Text="[" TextColor="#627296" />

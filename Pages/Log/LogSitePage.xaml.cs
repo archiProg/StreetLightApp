@@ -14,6 +14,7 @@ public partial class LogSitePage : ContentPage
     string deviceId = "all";
     string type = "usage";
     string deviceName = "All Devices";
+    string gatewayName = "All Gateway";
     string dateStart;
     string dateEnd;
     Dictionary<int, string> MemberList = new Dictionary<int, string> { { 0, "All" } };
@@ -21,7 +22,11 @@ public partial class LogSitePage : ContentPage
     Dictionary<int, List<MyDevice>> GatewayDeviceList = new();
     Dictionary<int, string> DeviceList = new Dictionary<int, string> { { 0, "All" } };
 
-    List<string> TypeList = ["Usage", "Log"];
+    Dictionary<int, string> GatewayReportList = new();
+    Dictionary<int, List<MyDevice>> GatewayReportDeviceList = new();
+    Dictionary<int, string> DeviceReportList = new();
+
+    List<string> TypeList = ["Usage", "Log", "Schedule"];
 
     private DateTime _selectedStartDate;
 
@@ -29,7 +34,7 @@ public partial class LogSitePage : ContentPage
     public LogSitePage(Site _site)
     {
         InitializeComponent();
-        Title = "Log " + _site.site_name;
+        Title = _site.site_name;
         CurrentSite = _site;
         StartDatePicker.Date = DateTime.Today;
         StartDatePicker.MaximumDate = DateTime.Today;
@@ -40,6 +45,7 @@ public partial class LogSitePage : ContentPage
         DevicePick.ItemsSource = DeviceList.ToList();
         DevicePick.ItemDisplayBinding = new Binding("Value");
         DevicePick.SelectedIndex = 0;
+
 
         Dispatcher.Dispatch(async () =>
         {
@@ -55,9 +61,11 @@ public partial class LogSitePage : ContentPage
                     if (device.type == "gateway")
                     {
                         GatewayList[device.gateway_id] = device.gateway_name;
+                        GatewayReportList[device.gateway_id] = device.gateway_name;
                         if (!GatewayDeviceList.ContainsKey(device.gateway_id))
                         {
                             GatewayDeviceList[device.gateway_id] = new List<MyDevice>();
+                            GatewayReportDeviceList[device.gateway_id] = new List<MyDevice>();
                         }
 
                     }
@@ -66,8 +74,10 @@ public partial class LogSitePage : ContentPage
                         if (!GatewayDeviceList.ContainsKey(device.gateway_id))
                         {
                             GatewayDeviceList[device.gateway_id] = new List<MyDevice>();
+                            GatewayReportDeviceList[device.gateway_id] = new List<MyDevice>();
                         }
                         GatewayDeviceList[device.gateway_id].Add(device);
+                        GatewayReportDeviceList[device.gateway_id].Add(device);
 
                     }
                 }
@@ -75,6 +85,9 @@ public partial class LogSitePage : ContentPage
                 GatewayPick.ItemDisplayBinding = new Binding("Value");
                 GatewayPick.SelectedIndex = 0;
 
+                GatewayPickReport.ItemsSource = GatewayReportList.ToList();
+                GatewayPickReport.ItemDisplayBinding = new Binding("Value");
+                GatewayPickReport.SelectedIndex = 0;
 
 
             }
@@ -99,7 +112,7 @@ public partial class LogSitePage : ContentPage
 
 
 
-
+        RadioButtonMaintenace.IsChecked = true;
     }
 
     async Task Indicator(bool running)
@@ -143,6 +156,7 @@ public partial class LogSitePage : ContentPage
             if (device.type == "gateway")
             {
                 GatewayList[device.gateway_id] = device.gateway_name;
+                GatewayReportList[device.gateway_id] = device.gateway_name;
 
 
                 finalDevice = new DeviceNode(device)
@@ -156,8 +170,10 @@ public partial class LogSitePage : ContentPage
                 if (!GatewayDeviceList.ContainsKey(device.gateway_id))
                 {
                     GatewayDeviceList[device.gateway_id] = new List<MyDevice>();
+                    GatewayReportDeviceList[device.gateway_id] = new List<MyDevice>();
                 }
                 GatewayDeviceList[device.gateway_id].Add(device);
+                GatewayReportDeviceList[device.gateway_id].Add(device);
 
                 switch (device.device_style)
                 {
@@ -222,6 +238,10 @@ public partial class LogSitePage : ContentPage
         GatewayPick.ItemsSource = GatewayList.ToList();
         GatewayPick.ItemDisplayBinding = new Binding("Value");
         GatewayPick.SelectedIndex = 0;
+
+        GatewayPickReport.ItemsSource = GatewayReportList.ToList();
+        GatewayPickReport.ItemDisplayBinding = new Binding("Value");
+        GatewayPickReport.SelectedIndex = 0;
 
 
         await Provider.SendWsAsync("32", new { });
@@ -337,15 +357,19 @@ public partial class LogSitePage : ContentPage
             memberId = selectedMember.Key == 0 ? "all" : selectedMember.Key.ToString();
 
         if (GatewayPick.SelectedItem is KeyValuePair<int, string> selectedGateway)
+        {
             gatewayId = selectedGateway.Key == 0 ? "all" : selectedGateway.Key.ToString();
+            gatewayName = selectedGateway.Key == 0 ? "All Gateway" : selectedGateway.Value.ToString();
+        }
+
 
         if (DevicePick.SelectedItem is KeyValuePair<int, string> selectedDevice)
         {
             deviceId = selectedDevice.Key == 0 ? "all" : selectedDevice.Key.ToString();
             deviceName = selectedDevice.Key == 0 ? "All Devices" : selectedDevice.Value.ToString();
         }
-             
-            
+
+
 
         if (TypePick.SelectedItem is string selectedType)
             type = selectedType.ToLower();
@@ -376,17 +400,163 @@ public partial class LogSitePage : ContentPage
     {
         await Indicator(true);
 
-        var logs = await GetLogsAsync();  
+        var logs = await GetLogsAsync();
 
-        await Indicator(false);  
+        await Indicator(false);
 
         if (logs.Count > 0)
         {
-            await Navigation.PushAsync(new LogDetailSitePage(logs, dateStart, dateEnd, TypePick.SelectedItem.ToString(), deviceName));
+            await Navigation.PushAsync(new LogDetailSitePage(logs, dateStart, dateEnd, TypePick.SelectedItem.ToString(), deviceName, gatewayName));
         }
         else
         {
             DisplayAlert("Log", "No data!", "ok");
         }
+    }
+
+
+    //private void CheckBoxRepair_CheckedChanged(object sender, CheckedChangedEventArgs e)
+    //{
+    //    if (e.Value)
+    //    {
+    //        CheckBoxInspection.IsChecked = false;
+    //    }
+    //}
+
+    //private void CheckBoxInspection_CheckedChanged(object sender, CheckedChangedEventArgs e)
+    //{
+    //    if (e.Value)
+    //    {
+    //        CheckBoxRepair.IsChecked = false;
+    //    }
+    //}
+
+    private void Select_Report_Clicked(object sender, EventArgs e)
+    {
+        Dispatcher.Dispatch(async () =>
+        {
+            LogDetail.IsVisible = false;
+            AllReportDetail.IsVisible = true;
+            await AllReportDetail.FadeTo(0, 10);
+            await AllReportDetail.FadeTo(1, 10);
+            Select_Report.TextColor = Colors.Black;
+            Select_Report.BackgroundColor = Colors.White;
+            Select_Log.TextColor = Color.FromArgb("#8B9DB2");
+            Select_Log.BackgroundColor = Color.FromArgb("#F1F5F9");
+            await Select_Report.FadeTo(0, 200);
+            await Select_Report.FadeTo(1, 200);
+        });
+    }
+
+    private void Select_Log_Clicked(object sender, EventArgs e)
+    {
+        Dispatcher.Dispatch(async () =>
+        {
+            LogDetail.IsVisible = true;
+            AllReportDetail.IsVisible = false;
+            await LogDetail.FadeTo(0, 10);
+            await LogDetail.FadeTo(1, 10);
+            Select_Report.TextColor = Color.FromArgb("#8B9DB2");
+            Select_Report.BackgroundColor = Color.FromArgb("#F1F5F9");
+            Select_Log.TextColor = Colors.Black;
+            Select_Log.BackgroundColor = Colors.White;
+            await Select_Log.FadeTo(0, 200);
+            await Select_Log.FadeTo(1, 200);
+        });
+
+    }
+
+    //private void CheckBoxPowerInput_CheckedChanged(object sender, CheckedChangedEventArgs e)
+    //{
+    //    if (e.Value)
+    //    {
+    //        CheckBoxPowerOutput.IsChecked = false;
+    //        CheckBoxBattery.IsChecked = false;
+    //    }
+    //}
+
+    //private void CheckBoxPowerOutput_CheckedChanged(object sender, CheckedChangedEventArgs e)
+    //{
+    //    if (e.Value)
+    //    {
+    //        CheckBoxPowerInput.IsChecked = false;
+    //        CheckBoxBattery.IsChecked = false;
+    //    }
+    //}
+
+    //private void CheckBoxBattery_CheckedChanged(object sender, CheckedChangedEventArgs e)
+    //{
+    //    if (e.Value)
+    //    {
+    //        CheckBoxPowerInput.IsChecked = false;
+    //        CheckBoxPowerOutput.IsChecked = false;
+    //    }
+    //}
+
+    private void RadioButtonDevice_CheckedChanged(object sender, CheckedChangedEventArgs e)
+    {
+        RadioButtonMaintenace.CheckedChanged -= RadioButtonMaintenace_CheckedChanged;
+        RadioButtonMaintenace.IsChecked = false;
+        RadioButtonMaintenace.CheckedChanged += RadioButtonMaintenace_CheckedChanged;
+        ReportDetail.IsVisible = true;
+        MaintenaceDetail.IsVisible = false;
+        DeviceDetail.IsVisible = true;
+    }
+
+    private void RadioButtonMaintenace_CheckedChanged(object sender, CheckedChangedEventArgs e)
+    {
+
+        RadioButtonDevice.CheckedChanged -= RadioButtonDevice_CheckedChanged;
+        RadioButtonDevice.IsChecked = false;
+        RadioButtonDevice.CheckedChanged += RadioButtonDevice_CheckedChanged;
+        ReportDetail.IsVisible = true;
+        MaintenaceDetail.IsVisible = true;
+        DeviceDetail.IsVisible = false;
+    }
+
+    private void OnSearchButtonClicked(object sender, EventArgs e)
+    {
+
+    }
+
+    private void GatewayPickReport_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (GatewayPickReport.SelectedItem is KeyValuePair<int, string> selectedGateway)
+        {
+            int gatewayId = selectedGateway.Key;
+            DeviceReportList = new();
+            if (GatewayDeviceList.ContainsKey(gatewayId))
+            {
+                foreach (var device in GatewayDeviceList[gatewayId])
+                {
+                    DeviceReportList[(int)device.device_id] = device.device_name;
+                }
+                DevicePickReport.ItemsSource = DeviceReportList.ToList();
+                DevicePickReport.ItemDisplayBinding = new Binding("Value");
+                DevicePickReport.SelectedIndex = 0;
+            }
+            else
+            {
+                DeviceList = new Dictionary<int, string> { { 0, "All" } };
+                DevicePick.ItemsSource = DeviceList.ToList();
+                DevicePick.ItemDisplayBinding = new Binding("Value");
+                DevicePick.SelectedIndex = 0;
+            }
+        }
+    }
+
+    private void DevicePickReport_SelectedIndexChanged(object sender, EventArgs e)
+    {
+
+    }
+
+    private void DateStartPickerReport_DateSelected(object sender, DateChangedEventArgs e)
+    {
+
+    }
+
+    private void DateEndPickerReport_DateSelected(object sender, DateChangedEventArgs e)
+    {
+
     }
 }

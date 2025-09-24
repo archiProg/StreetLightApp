@@ -17,6 +17,8 @@ namespace StreetLightApp.Models
         public int? member_id { get; set; }
         public string member_name { get; set; }
         public DateTime created_at { get; set; }
+        public DateTime created_at_plus7 => created_at.AddHours(7);
+
     }
 
     public class LogModel
