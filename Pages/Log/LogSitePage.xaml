@@ -112,24 +112,7 @@
                     <StackLayout
                         x:Name="MaintenaceDetail"
                         Grid.Column="1"
-                        IsVisible="false">
-                        <!--<Label Padding="16,0" Text="Status" />
-                        <HorizontalStackLayout Padding="8,0" Spacing="8">
-                            <HorizontalStackLayout>
-                                <CheckBox x:Name="CheckBoxPowerInput" CheckedChanged="CheckBoxPowerInput_CheckedChanged" />
-                                <Label Text="Power Input" VerticalOptions="Center" />
-                            </HorizontalStackLayout>
-                            <HorizontalStackLayout>
-                                <CheckBox x:Name="CheckBoxPowerOutput" CheckedChanged="CheckBoxPowerOutput_CheckedChanged" />
-                                <Label Text="Power Output" VerticalOptions="Center" />
-                            </HorizontalStackLayout>
-                            <HorizontalStackLayout>
-                                <CheckBox x:Name="CheckBoxBattery" CheckedChanged="CheckBoxBattery_CheckedChanged" />
-                                <Label Text="Battery" VerticalOptions="Center" />
-                            </HorizontalStackLayout>
-                        </HorizontalStackLayout>-->
-
-                    </StackLayout>
+                        IsVisible="false" />
                     <StackLayout
                         x:Name="DeviceDetail"
                         Grid.Column="1"
@@ -179,6 +162,7 @@
                         </HorizontalStackLayout>-->
                     </StackLayout>
                     <Button
+                        x:Name="SearchButtonReport"
                         Margin="16,8,16,8"
                         Padding="16,0,16,0"
                         BackgroundColor="#316BF7"

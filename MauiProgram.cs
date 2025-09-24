@@ -2,11 +2,13 @@
 using Android.Content.Res;
 #endif
 using CommunityToolkit.Maui;
-using Microsoft.Extensions.Logging;
+using LiveChartsCore.SkiaSharpView.Maui;
 using Microsoft.Maui.Handlers;
 using Mopups.Hosting;
 using Mopups.Interfaces;
 using Mopups.Services;
+using SkiaSharp.Views.Maui.Controls.Hosting;
+
 #if ANDROID
 using StreetLightApp.Platforms.Android.Handlers;
 #endif
@@ -21,6 +23,8 @@ namespace StreetLightApp
                 .UseMauiApp<App>()
                 .UseMauiCommunityToolkit()
                 .ConfigureMopups()
+                .UseSkiaSharp()
+                .UseLiveCharts()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -34,8 +38,8 @@ namespace StreetLightApp
                 }).UseMauiMaps().ConfigureMauiHandlers(handlers =>
                 {
 #if ANDROID
-            //handlers.AddHandler<Microsoft.Maui.Controls.Maps.Map, StreetLightApp.Platforms.Android.Handlers.CustomMapHandler>();
-            handlers.AddHandler(typeof(StreetLightApp.Controls.MapEx), typeof(StreetLightApp.Platforms.Android.Handlers.CustomMapHandler));
+                    //handlers.AddHandler<Microsoft.Maui.Controls.Maps.Map, StreetLightApp.Platforms.Android.Handlers.CustomMapHandler>();
+                    handlers.AddHandler(typeof(StreetLightApp.Controls.MapEx), typeof(StreetLightApp.Platforms.Android.Handlers.CustomMapHandler));
 
 #endif
                 });
@@ -50,20 +54,20 @@ namespace StreetLightApp
             PickerHandler.Mapper.AppendToMapping(nameof(Picker), (handler, view) =>
             {
 #if ANDROID
-            if (handler.PlatformView != null)
-            {
-                // Remove underline / tint
-                handler.PlatformView.BackgroundTintList = ColorStateList.ValueOf(Android.Graphics.Color.Transparent);
-            }
+                if (handler.PlatformView != null)
+                {
+                    // Remove underline / tint
+                    handler.PlatformView.BackgroundTintList = ColorStateList.ValueOf(Android.Graphics.Color.Transparent);
+                }
 #endif
             });
             TimePickerHandler.Mapper.AppendToMapping(nameof(TimePicker), (handler, view) =>
            {
 #if ANDROID
-            if (handler.PlatformView != null)
-            {
-                handler.PlatformView.BackgroundTintList = ColorStateList.ValueOf(Android.Graphics.Color.Transparent);
-            }
+               if (handler.PlatformView != null)
+               {
+                   handler.PlatformView.BackgroundTintList = ColorStateList.ValueOf(Android.Graphics.Color.Transparent);
+               }
 #endif
            });
 

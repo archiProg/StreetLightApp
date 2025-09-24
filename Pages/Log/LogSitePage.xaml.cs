@@ -31,6 +31,10 @@ public partial class LogSitePage : ContentPage
     private DateTime _selectedStartDate;
 
     private DateTime _selectedEndDate;
+
+    private DateTime _selectedStartDateReport;
+
+    private DateTime _selectedEndDateReport;
     public LogSitePage(Site _site)
     {
         InitializeComponent();
@@ -465,36 +469,9 @@ public partial class LogSitePage : ContentPage
         });
 
     }
-
-    //private void CheckBoxPowerInput_CheckedChanged(object sender, CheckedChangedEventArgs e)
-    //{
-    //    if (e.Value)
-    //    {
-    //        CheckBoxPowerOutput.IsChecked = false;
-    //        CheckBoxBattery.IsChecked = false;
-    //    }
-    //}
-
-    //private void CheckBoxPowerOutput_CheckedChanged(object sender, CheckedChangedEventArgs e)
-    //{
-    //    if (e.Value)
-    //    {
-    //        CheckBoxPowerInput.IsChecked = false;
-    //        CheckBoxBattery.IsChecked = false;
-    //    }
-    //}
-
-    //private void CheckBoxBattery_CheckedChanged(object sender, CheckedChangedEventArgs e)
-    //{
-    //    if (e.Value)
-    //    {
-    //        CheckBoxPowerInput.IsChecked = false;
-    //        CheckBoxPowerOutput.IsChecked = false;
-    //    }
-    //}
-
     private void RadioButtonDevice_CheckedChanged(object sender, CheckedChangedEventArgs e)
     {
+        SearchButtonReport.Text = "Search Device";
         RadioButtonMaintenace.CheckedChanged -= RadioButtonMaintenace_CheckedChanged;
         RadioButtonMaintenace.IsChecked = false;
         RadioButtonMaintenace.CheckedChanged += RadioButtonMaintenace_CheckedChanged;
@@ -505,7 +482,7 @@ public partial class LogSitePage : ContentPage
 
     private void RadioButtonMaintenace_CheckedChanged(object sender, CheckedChangedEventArgs e)
     {
-
+        SearchButtonReport.Text = "Search Maintenace";
         RadioButtonDevice.CheckedChanged -= RadioButtonDevice_CheckedChanged;
         RadioButtonDevice.IsChecked = false;
         RadioButtonDevice.CheckedChanged += RadioButtonDevice_CheckedChanged;
@@ -514,9 +491,78 @@ public partial class LogSitePage : ContentPage
         DeviceDetail.IsVisible = false;
     }
 
-    private void OnSearchButtonClicked(object sender, EventArgs e)
+    private async void OnSearchButtonClicked(object sender, EventArgs e)
     {
+        if (RadioButtonMaintenace.IsChecked)
+        {
+            Console.WriteLine("RadioButtonMaintenace::::::::::::::::::::::::::::::::::::::::::::::::::::");
 
+        }
+        else if (RadioButtonDevice.IsChecked)
+        {
+            await Indicator(true);
+
+
+            var report_device = await GetReportDeviceAsync();
+
+            await Indicator(false);
+
+            if (report_device.Count > 0)
+            {
+                Console.WriteLine($"RadioButtonDevice::::::::::::::::::{report_device.Count}:::::::::::::::::::::::::::::::::");
+                Navigation.PushAsync(new ReportDevicePage(report_device, deviceName, gatewayName));
+
+            }
+            else
+            {
+                DisplayAlert("Log", "No data!", "ok");
+            }
+        }
+    }
+
+    async Task<List<ReportDeviceModel>> GetReportDeviceAsync()
+    {
+        string gatewayId = "all";
+        string deviceId = "all";
+
+
+
+        if (CurrentSite == null) return null;
+
+        if (GatewayPickReport.SelectedItem is KeyValuePair<int, string> selectedGateway)
+        {
+            gatewayId = selectedGateway.Key == 0 ? "all" : selectedGateway.Key.ToString();
+            gatewayName = selectedGateway.Key == 0 ? "All Gateway" : selectedGateway.Value.ToString();
+        }
+
+
+        if (DevicePickReport.SelectedItem is KeyValuePair<int, string> selectedDevice)
+        {
+            deviceId = selectedDevice.Key == 0 ? "all" : selectedDevice.Key.ToString();
+            deviceName = selectedDevice.Key == 0 ? "All Devices" : selectedDevice.Value.ToString();
+        }
+
+
+
+
+        string dateStart = _selectedStartDateReport == default ? DateTime.Today.ToString("yyyy-MM-dd") : _selectedStartDateReport.ToString("yyyy-MM-dd");
+        string dateEnd = _selectedEndDateReport == default ? DateTime.Today.ToString("yyyy-MM-dd") : _selectedEndDateReport.ToString("yyyy-MM-dd");
+
+        string url = $"{Provider.APIHost}/api/get-chart2/{CurrentSite.site_id}?device_id={deviceId}&gateway_id={gatewayId}&date_start={dateStart}&date_end={dateEnd}";
+
+        Console.WriteLine($"Fetching logs: {url}");
+
+        var response = await RequestApi.GetAPIJWT(url);
+
+        if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
+        {
+            await DisplayAlert("Error", $"Failed to get logs: {response.Message}", "OK");
+            return null;
+        }
+
+        // Deserialize into LogModel
+        var reportModel = JsonConvert.DeserializeObject<RootReportDevice>(response.Message.ToString());
+        return reportModel.data ?? new List<ReportDeviceModel>();
     }
 
     private void GatewayPickReport_SelectedIndexChanged(object sender, EventArgs e)
@@ -552,11 +598,14 @@ public partial class LogSitePage : ContentPage
 
     private void DateStartPickerReport_DateSelected(object sender, DateChangedEventArgs e)
     {
-
+        _selectedStartDateReport = e.NewDate;
+        Console.WriteLine($"Selected date: {_selectedStartDateReport:dd/MM/yyyy}");
     }
 
     private void DateEndPickerReport_DateSelected(object sender, DateChangedEventArgs e)
     {
-
+        _selectedEndDateReport = e.NewDate;
+        Console.WriteLine($"Selected date: {_selectedEndDateReport:dd/MM/yyyy}");
     }
+ 
 }

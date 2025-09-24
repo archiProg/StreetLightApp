@@ -20,10 +20,10 @@ public partial class DevicePage : ContentPage
                     Description = site.site_label,
                     Img = "female_avatar.png"
                 };
-                siteBtn.Clicked += async(a, b) =>
+                siteBtn.Clicked += async (a, b) =>
                 {
-                     await Navigation.PushAsync(new DeviceSitePage(site));
-                 };
+                    await Navigation.PushAsync(new DeviceSitePage(site));
+                };
                 sitePanel.Children.Add(siteBtn);
             }
         }

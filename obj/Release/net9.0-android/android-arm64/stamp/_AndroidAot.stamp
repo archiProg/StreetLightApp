@@ -3,6 +3,10 @@ obj\Release\net9.0-android\android-arm64\aot\StreetLightApp.dll.so
 obj\Release\net9.0-android\android-arm64\aot\AsyncAwaitBestPractices.dll.so
 obj\Release\net9.0-android\android-arm64\aot\CommunityToolkit.Maui.dll.so
 obj\Release\net9.0-android\android-arm64\aot\CommunityToolkit.Maui.Core.dll.so
+obj\Release\net9.0-android\android-arm64\aot\HarfBuzzSharp.dll.so
+obj\Release\net9.0-android\android-arm64\aot\LiveChartsCore.dll.so
+obj\Release\net9.0-android\android-arm64\aot\LiveChartsCore.SkiaSharpView.dll.so
+obj\Release\net9.0-android\android-arm64\aot\LiveChartsCore.SkiaSharpView.Maui.dll.so
 obj\Release\net9.0-android\android-arm64\aot\Microsoft.Extensions.Configuration.dll.so
 obj\Release\net9.0-android\android-arm64\aot\Microsoft.Extensions.Configuration.Abstractions.dll.so
 obj\Release\net9.0-android\android-arm64\aot\Microsoft.Extensions.DependencyInjection.dll.so
@@ -21,6 +25,11 @@ obj\Release\net9.0-android\android-arm64\aot\Microsoft.Maui.Maps.dll.so
 obj\Release\net9.0-android\android-arm64\aot\Mopups.dll.so
 obj\Release\net9.0-android\android-arm64\aot\Newtonsoft.Json.dll.so
 obj\Release\net9.0-android\android-arm64\aot\RestSharp.dll.so
+obj\Release\net9.0-android\android-arm64\aot\SkiaSharp.dll.so
+obj\Release\net9.0-android\android-arm64\aot\SkiaSharp.HarfBuzz.dll.so
+obj\Release\net9.0-android\android-arm64\aot\SkiaSharp.Views.Android.dll.so
+obj\Release\net9.0-android\android-arm64\aot\SkiaSharp.Views.Maui.Controls.dll.so
+obj\Release\net9.0-android\android-arm64\aot\SkiaSharp.Views.Maui.Core.dll.so
 obj\Release\net9.0-android\android-arm64\aot\WatsonWebsocket.dll.so
 obj\Release\net9.0-android\android-arm64\aot\Xamarin.AndroidX.Activity.dll.so
 obj\Release\net9.0-android\android-arm64\aot\Xamarin.AndroidX.AppCompat.dll.so

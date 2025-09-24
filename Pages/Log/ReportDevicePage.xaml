@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="StreetLightApp.Pages.Log.ReportDevicePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
+    Title="ReportDevicePage">
+    <VerticalStackLayout>
+        <Label Padding="16,0" Text="Status" />
+        <HorizontalStackLayout Padding="8,0" Spacing="8">
+            <HorizontalStackLayout>
+                <CheckBox x:Name="CheckBoxPowerInput" CheckedChanged="CheckBoxPowerInput_CheckedChanged" />
+                <Label Text="Power Input" VerticalOptions="Center" />
+            </HorizontalStackLayout>
+            <HorizontalStackLayout>
+                <CheckBox x:Name="CheckBoxPowerOutput" CheckedChanged="CheckBoxPowerOutput_CheckedChanged" />
+                <Label Text="Power Output" VerticalOptions="Center" />
+            </HorizontalStackLayout>
+            <HorizontalStackLayout>
+                <CheckBox x:Name="CheckBoxBattery" CheckedChanged="CheckBoxBattery_CheckedChanged" />
+                <Label Text="Battery" VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+        </HorizontalStackLayout>
+        <ScrollView Orientation="Horizontal">
+            <lvc:CartesianChart
+                x:Name="Chart"
+                HeightRequest="350"
+                Series="{Binding Series}"
+                XAxes="{Binding XAxes}"
+                YAxes="{Binding YAxes}"
+                ZoomMode="X" />
+        </ScrollView>
+
+    </VerticalStackLayout>
+</ContentPage>
