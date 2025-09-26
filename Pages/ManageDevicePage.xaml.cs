@@ -34,6 +34,8 @@ public partial class ManageDevicePage : ContentPage
     new ScheduleDetail { id = 6, day_of_week = "Fri", off_time = "", on_time = "" },
     new ScheduleDetail { id = 7, day_of_week = "Sat", off_time = "", on_time = "" }
 };
+
+
     int IndexDaySelect = 0;
     public ManageDevicePage(Site _site, List<MyDevice> selectDevices)
     {
@@ -49,6 +51,13 @@ public partial class ManageDevicePage : ContentPage
             lbSlider.Text = $"50%";
             mySlider.Value = 50;
             statusSwitch.IsToggled = false;
+            foreach (var config in ConfigDevices)
+            {
+
+                config.off_time = new TimeSpan(0, 0, 0).ToString(@"hh\:mm");
+                config.on_time = new TimeSpan(0, 0, 0).ToString(@"hh\:mm");
+
+            }
         }
         else
         {
@@ -76,10 +85,23 @@ public partial class ManageDevicePage : ContentPage
                         ConfigDevices[count].off_time = string.IsNullOrWhiteSpace(config.off_time)
                             ? new TimeSpan(0, 0, 0).ToString(@"hh\:mm")
                             : config.off_time;
+                        if (count == 0)
+                        {
+                            if (TimeSpan.TryParse(OriginalConfigDevices[3].on_time, out var onTime))
+                            {
+                                TimePickerOn.Time = onTime;
+                            }
+                            if (TimeSpan.TryParse(OriginalConfigDevices[3].off_time, out var offTime))
+                            {
+                                TimePickerOff.Time = offTime;
+                            }
+                        }
                     }
+
                     count++;
                     Console.WriteLine($"config:::::::{config.id} | {config.day_of_week} | {config.off_time} | {config.on_time}");
                 }
+
                 lbSlider.Text = $"{(int)dimmer.Dimvalue}%";
                 mySlider.Value = (int)dimmer.Dimvalue;
                 statusSwitch.IsToggled = (int)dimmer.Status == 1;
@@ -769,10 +791,96 @@ public partial class ManageDevicePage : ContentPage
         }
         else
         {
-            BtnSaveConfig.IsEnabled = false; 
+            BtnSaveConfig.IsEnabled = false;
             BtnSaveConfig.BackgroundColor = Colors.DarkGray;
             BtnSaveConfig.TextColor = Colors.White;
             BtnSaveConfig.Opacity = 0.5;
         }
+    }
+
+    private async Task PostScheduleAsync()
+    {
+        try
+        {
+            List<ScheduleConfig> _dataConfig = new();
+
+            foreach (var device in _SelectDevices)
+            {
+                var scheduleConfig = new ScheduleConfig
+                {
+                    gateway_id = device.gateway_id,
+                    device_id = (int)device.device_id,
+                    type = "schedule",
+                    detail = ConfigDevices
+                };
+                _dataConfig.Add(scheduleConfig);
+            }
+
+
+            var request = new ScheduleRequest
+            {
+                dataConfig = _dataConfig
+            };
+
+            string json = JsonConvert.SerializeObject(request);
+
+            Console.WriteLine($"DEBUG JSON:\n{json}");
+
+            string endpoint = $"api/save-schedule/{CurrentSite.site_id}";
+
+            var response = await RequestApi.PostAsyncApiJWT2(endpoint, json);
+
+            if (response != null && response.HttpStatusCode == System.Net.HttpStatusCode.OK)
+            {
+                OriginalConfigDevices = ConfigDevices;
+                if (_SelectDevices != null && Provider.MapSites != null && CurrentSite != null)
+                {
+                    foreach (var device in _SelectDevices)
+                    {
+                        if (!Provider.MapSites.ContainsKey(CurrentSite.site_id))
+                            continue;
+
+                        var siteDevices = Provider.MapSites[CurrentSite.site_id];
+                        var deviceConfig = siteDevices.FirstOrDefault(x => x.device_id == device.device_id && x.gateway_id == device.gateway_id && device.type != "gateway");
+
+                        if (deviceConfig != null && deviceConfig.config != null && deviceConfig.config.Count > 0)
+                        {
+                            deviceConfig.config[0].detail = JsonConvert.SerializeObject(ConfigDevices)?.ToString();
+                        }
+                        else {
+                            Console.WriteLine("lastConfig != null && lastConfig.config != null && lastConfig.config.Count > 0");
+                            Console.WriteLine($"lastConfig.config.Count{deviceConfig.config.Count}");
+                            Console.WriteLine($"lastConfig.config != null {deviceConfig.config != null}");
+                            Console.WriteLine($"lastConfig != null {deviceConfig != null}");
+                        }
+                    }
+                }
+                await DisplayAlert("Success", "Schedule posted successfully!", "OK");
+            }
+            else
+            {
+                await DisplayAlert("Error", response?.Message ?? "Unknown error", "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Exception", ex.Message, "OK");
+        }
+    }
+
+    private async void BtnSaveConfig_Clicked(object sender, EventArgs e)
+    {
+        await IndicatorSenddata(true);
+        await PostScheduleAsync();
+
+        OriginalConfigDevices = ConfigDevices
+           .Select(d => new ScheduleDetail { id = d.id, day_of_week = d.day_of_week, off_time = d.off_time, on_time = d.on_time })
+           .ToList();
+
+        BtnSaveConfig.IsEnabled = false;
+        BtnSaveConfig.BackgroundColor = Colors.DarkGray;
+        BtnSaveConfig.Opacity = 0.5;
+
+        await IndicatorSenddata(false);
     }
 }

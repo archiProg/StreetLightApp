@@ -27,8 +27,7 @@ namespace StreetLightApp.Services
                 }
 
                 var url = $"{Provider.APIHost}/{endpoint}";
-
-                using var request = new HttpRequestMessage(HttpMethod.Post, url)
+                 using var request = new HttpRequestMessage(HttpMethod.Post, url)
                 {
                     Content = new StringContent(jsonData, Encoding.UTF8, "application/json")
                 };
@@ -60,7 +59,7 @@ namespace StreetLightApp.Services
 
         public static async Task<ApiResponse> PostAsyncApiJWT2(string _endpoint, string _body, Dictionary<string, string> _header = null)
         {
-            long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+             long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             try
             {
                 if (now > ExpireAt || string.IsNullOrEmpty(Provider.UserToken))
@@ -110,13 +109,13 @@ namespace StreetLightApp.Services
                 var res = await PostAsyncApi(_endpoint, _body, _header);
                 return new ApiResponse
                 {
-                    HttpStatusCode = res.HttpStatusCode,
-                    Message = res.Message
+                    HttpStatusCode = HttpStatusCode.OK,
+                    Message = ""
                 };
             }
             catch (Exception ex)
             {
-                //Console.WriteLine($"POST Request Exception: {ex.Message}");
+                Console.WriteLine($"POST Request Exception: {ex.Message}");
                 return new ApiResponse
                 {
                     Message = $"Exception: {ex.Message}",

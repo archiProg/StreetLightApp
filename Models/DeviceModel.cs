@@ -123,4 +123,18 @@ namespace StreetLightApp.Models
         public string off_time { get; set; }
         public string on_time { get; set; }
     }
+
+    public class ScheduleConfig
+    {
+        public int gateway_id { get; set; }
+        public int device_id { get; set; }
+        public string type { get; set; } = "schedule";
+        public List<ScheduleDetail> detail { get; set; }
+    }
+
+    public class ScheduleRequest
+    {
+        public List<ScheduleConfig> dataConfig { get; set; }
+    }
+
 }

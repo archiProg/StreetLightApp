@@ -345,7 +345,6 @@
                                             Grid.Column="0"
                                             BackgroundColor="Transparent"
                                             TextColor="Black"
-                                            Time="04:15:26"
                                             TimeSelected="TimePickerOn_TimeSelected" />
                                         <Image
                                             Grid.Column="1"
@@ -364,6 +363,7 @@
                     x:Name="BtnSaveConfig"
                     Margin="0,8,0,24"
                     BackgroundColor="#316BF7"
+                    Clicked="BtnSaveConfig_Clicked"
                     CornerRadius="16"
                     IsEnabled="False"
                     Text="Save Configuration" />
