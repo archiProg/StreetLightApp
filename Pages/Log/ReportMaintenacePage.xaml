@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="StreetLightApp.Pages.Log.ReportMaintenacePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Report Maintenace Page">
+    <Grid Padding="16" RowDefinitions="Auto,*">
+        <HorizontalStackLayout Grid.Row="0" Spacing="16">
+            <RadioButton
+                x:Name="RadioButtonRepair"
+                CheckedChanged="RadioRepair_CheckedChanged"
+                Content="Repair"
+                GroupName="Fruits"
+                Value="Apple" />
+            <RadioButton
+                x:Name="RadioButtonInspection"
+                Grid.Row="1"
+                CheckedChanged="RadioInspection_CheckedChanged"
+                Content="Inspection"
+                GroupName="Fruits"
+                Value="Apple" />
+        </HorizontalStackLayout>
+        <CollectionView
+            x:Name="DataReair"
+            Grid.Row="1"
+            IsVisible="False">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout Padding="8,4,8,4">
+                        <Label FontFamily="PoppinsSemiBold" Text="{Binding device_name}" />
+                        <HorizontalStackLayout>
+                            <Label Text="Description: " />
+                            <Label
+                                HorizontalOptions="Start"
+                                LineBreakMode="TailTruncation"
+                                MaxLines="1"
+                                Text="{Binding description}" />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout>
+                            <Label Text="Type: " />
+                            <Label Text="{Binding maintenance_type}" />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout>
+                            <Label Text="Resolved Date : " />
+                            <Label Text="{Binding maintenance_date}" />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout>
+                            <Label Text="From: " />
+                            <Label Text="{Binding technician_id}" />
+                        </HorizontalStackLayout>
+                        <Border
+                            Margin="0,10,0,0"
+                            HeightRequest="0.5"
+                            Opacity="0.3"
+                            Stroke="DimGray" />
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <CollectionView
+            x:Name="DataInspection"
+            Grid.Row="1"
+            IsVisible="False">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout Padding="8,4,8,4">
+                        <Label FontFamily="PoppinsSemiBold" Text="{Binding device_name}" />
+                        <HorizontalStackLayout>
+                            <Label Text="Description: " />
+                            <Label
+                                HorizontalOptions="Start"
+                                LineBreakMode="TailTruncation"
+                                MaxLines="1"
+                                Text="{Binding description}" />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout>
+                            <Label Text="Type: " />
+                            <Label Text="{Binding maintenance_type}" />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout>
+                            <Label Text="Resolved Date : " />
+                            <Label Text="{Binding maintenance_date}" />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout>
+                            <Label Text="From: " />
+                            <Label Text="{Binding technician_id}" />
+                        </HorizontalStackLayout>
+                        <Border
+                            Margin="0,10,0,0"
+                            HeightRequest="0.5"
+                            Opacity="0.3"
+                            Stroke="DimGray" />
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

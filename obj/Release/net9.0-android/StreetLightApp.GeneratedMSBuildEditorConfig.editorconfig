@@ -60,6 +60,12 @@ build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.Log.R
 build_metadata.AdditionalFiles.TargetPath = Pages\Log\ReportDevicePage.xaml
 build_metadata.AdditionalFiles.RelativePath = Pages\Log\ReportDevicePage.xaml
 
+[C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Pages/Log/ReportMaintenacePage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.Log.ReportMaintenacePage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\Log\ReportMaintenacePage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\Log\ReportMaintenacePage.xaml
+
 [C:/Users/Baramee/source/repos/StreetLightApp/StreetLightApp/Pages/MaintenancePage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = StreetLightApp.Pages.MaintenancePage.xaml

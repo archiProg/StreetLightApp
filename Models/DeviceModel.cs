@@ -115,4 +115,12 @@ namespace StreetLightApp.Models
         public string detail { get; set; }
         public string status { get; set; }
     }
+
+    public class ScheduleDetail
+    {
+        public int id { get; set; }
+        public string day_of_week { get; set; }
+        public string off_time { get; set; }
+        public string on_time { get; set; }
+    }
 }

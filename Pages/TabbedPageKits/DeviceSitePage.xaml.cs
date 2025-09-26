@@ -483,8 +483,8 @@ public partial class DeviceSitePage : ContentPage
                         Dimmer dimmer = new Dimmer(device)
                         {
                             config = device.config
+                            
                         };
-
                         foreach (var control in device.controls)
                         {
                             switch (control.control_id)
@@ -557,36 +557,38 @@ public partial class DeviceSitePage : ContentPage
     {
         bool isChecked = e.Value;
         IsSelectAll = isChecked;
-
-        if (isChecked)
+        if (_allDevices.Count > 0)
         {
-            ControlMenu.IsVisible = true;
-            BVControlMenu.IsVisible = true;
-            foreach (var child in DeviceStack.Children)
+            if (isChecked)
             {
-                if (child is Views.DimmerItem deviceItem)
+                ControlMenu.IsVisible = true;
+                BVControlMenu.IsVisible = true;
+                foreach (var child in DeviceStack.Children)
                 {
+                    if (child is Views.DimmerItem deviceItem)
+                    {
 
-                    deviceItem.SetChecked(true);
+                        deviceItem.SetChecked(true);
+                    }
                 }
+                lbSlider.Text = $"50%";
+                mySlider.DragCompleted -= mySlider_DragCompleted;
+                mySlider.Value = 50;
+                mySlider.DragCompleted += mySlider_DragCompleted;
+                SelectDevices = filteredDevices.Where(x => x.type != "gateway").ToList();
             }
-            lbSlider.Text = $"50%";
-            mySlider.DragCompleted -= mySlider_DragCompleted;
-            mySlider.Value = 50;
-            mySlider.DragCompleted += mySlider_DragCompleted;
-            SelectDevices = filteredDevices.Where(x => x.type != "gateway").ToList();
-        }
-        else
-        {
-            ControlMenu.IsVisible = false;
-            BVControlMenu.IsVisible = false;
-            SelectDevices = new();
-
-            foreach (var child in DeviceStack.Children)
+            else
             {
-                if (child is Views.DimmerItem deviceItem)
+                ControlMenu.IsVisible = false;
+                BVControlMenu.IsVisible = false;
+                SelectDevices = new();
+
+                foreach (var child in DeviceStack.Children)
                 {
-                    deviceItem.SetChecked(false);
+                    if (child is Views.DimmerItem deviceItem)
+                    {
+                        deviceItem.SetChecked(false);
+                    }
                 }
             }
         }

@@ -51,8 +51,8 @@
                                 <HorizontalStackLayout>
                                     <Label Text="{Binding member_name, TargetNullValue=Gateway, FallbackValue=Gateway}" />
                                     <Label Text=" #" />
-                                    <Label IsVisible="{Binding member_id, Converter={StaticResource NullToBoolConverter}, ConverterParameter=notnull}" Text="{Binding member_id}" />
-                                    <Label IsVisible="{Binding member_id, Converter={StaticResource NullToBoolConverter}, ConverterParameter=null}" Text="{Binding gateway_id}" />
+                                    <Label IsVisible="{Binding member_id,   ConverterParameter=notnull}" Text="{Binding member_id}" />
+                                    <Label IsVisible="{Binding member_id,   ConverterParameter=null}" Text="{Binding gateway_id}" />
                                 </HorizontalStackLayout>
                                 <Label Text="{Binding created_at_plus7, StringFormat='{}{0:dd/MM/yyyy HH:mm tt}'}" TextColor="#627296" />
                                 <HorizontalStackLayout>

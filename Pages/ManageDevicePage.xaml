@@ -34,13 +34,13 @@
                             Grid.Column="2"
                             Padding="0"
                             BackgroundColor="#D5E5FF"
+                            Clicked="ButtonIfonmation_Clicked"
                             CornerRadius="12"
                             HeightRequest="24"
                             MinimumHeightRequest="24"
                             MinimumWidthRequest="24"
                             Text="i"
                             TextColor="#FFFFFF"
-                            Clicked="ButtonIfonmation_Clicked"
                             WidthRequest="24" />
                     </Grid>
                     <StackLayout
@@ -296,9 +296,9 @@
                                         <Label
                                             x:Name="LbNameEnableSw"
                                             FontFamily="PoppinsRegular"
-                                            Text="Sunday Enable"
+                                            Text="Enable"
                                             VerticalOptions="Center" />
-                                        <Switch />
+                                        <Switch x:Name="SwStatusCongig" Toggled="SwStatusCongig_Toggled" />
                                     </HorizontalStackLayout>
                                 </Grid>
                                 <Label
@@ -318,7 +318,7 @@
                                             Grid.Column="0"
                                             BackgroundColor="Transparent"
                                             TextColor="Black"
-                                            Time="04:15:26" />
+                                            TimeSelected="TimePickerOff_TimeSelected" />
 
                                         <Image
                                             Grid.Column="1"
@@ -345,8 +345,8 @@
                                             Grid.Column="0"
                                             BackgroundColor="Transparent"
                                             TextColor="Black"
-                                            Time="04:15:26" />
-
+                                            Time="04:15:26"
+                                            TimeSelected="TimePickerOn_TimeSelected" />
                                         <Image
                                             Grid.Column="1"
                                             HeightRequest="20"
@@ -360,6 +360,13 @@
                         </Border>
                     </Grid>
                 </Border>
+                <Button
+                    x:Name="BtnSaveConfig"
+                    Margin="0,8,0,24"
+                    BackgroundColor="#316BF7"
+                    CornerRadius="16"
+                    IsEnabled="False"
+                    Text="Save Configuration" />
             </StackLayout>
 
         </ScrollView>

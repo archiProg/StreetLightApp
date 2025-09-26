@@ -8,6 +8,7 @@ using Mopups.Hosting;
 using Mopups.Interfaces;
 using Mopups.Services;
 using SkiaSharp.Views.Maui.Controls.Hosting;
+using Microsoft.Extensions.Logging;
 
 #if ANDROID
 using StreetLightApp.Platforms.Android.Handlers;

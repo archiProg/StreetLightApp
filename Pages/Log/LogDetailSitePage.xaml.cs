@@ -10,7 +10,7 @@ public partial class LogDetailSitePage : ContentPage
         deviceName.Text = _deviceName;
         gatewayName.Text = $"Gateway: {_gatewayName}";
         TypeName.Text = $"Type: {_type}";
-        TimeSearch.Text = $"{_selectedStartDate} to {_selectedEndDate}";
+        TimeSearch.Text = $"{_selectedStartDate} - {_selectedEndDate}";
         LogListView.ItemsSource = _log;
 
         Console.WriteLine($"device name ::::::{_deviceName}");

@@ -49,8 +49,11 @@ public partial class LogSitePage : ContentPage
         DevicePick.ItemsSource = DeviceList.ToList();
         DevicePick.ItemDisplayBinding = new Binding("Value");
         DevicePick.SelectedIndex = 0;
-
-
+        StartDatePickerReport.Date = DateTime.Today;
+        StartDatePickerReport.MaximumDate = DateTime.Today;
+        EndDatePickerReport.Date = DateTime.Today;
+        EndDatePickerReport.MaximumDate = DateTime.Today;
+ 
         Dispatcher.Dispatch(async () =>
         {
             await Indicator(true);
@@ -348,6 +351,10 @@ public partial class LogSitePage : ContentPage
     private void DateEndPicker_DateSelected(object sender, DateChangedEventArgs e)
     {
         _selectedEndDate = e.NewDate;
+        if (StartDatePicker.Date > e.NewDate)
+        {
+            StartDatePicker.MaximumDate = e.NewDate;
+        }
         Console.WriteLine($"Selected date: {_selectedEndDate:dd/MM/yyyy}");
     }
 
@@ -495,8 +502,23 @@ public partial class LogSitePage : ContentPage
     {
         if (RadioButtonMaintenace.IsChecked)
         {
-            Console.WriteLine("RadioButtonMaintenace::::::::::::::::::::::::::::::::::::::::::::::::::::");
 
+            await Indicator(true);
+
+            var report_maintenace = await GetReportMaintenaceAsync();
+
+            await Indicator(false);
+
+            if (report_maintenace.Count > 0)
+            {
+                Console.WriteLine($"RadioButtonMaintenace::::::::::::::::::{report_maintenace.Count}:::::::::::::::::::::::::::::::::");
+                await Navigation.PushAsync(new ReportMaintenacePage(report_maintenace));
+
+            }
+            else
+            {
+                DisplayAlert("Log", "No data!", "ok");
+            }
         }
         else if (RadioButtonDevice.IsChecked)
         {
@@ -510,7 +532,7 @@ public partial class LogSitePage : ContentPage
             if (report_device.Count > 0)
             {
                 Console.WriteLine($"RadioButtonDevice::::::::::::::::::{report_device.Count}:::::::::::::::::::::::::::::::::");
-                Navigation.PushAsync(new ReportDevicePage(report_device, deviceName, gatewayName));
+                await Navigation.PushAsync(new ReportDevicePage(report_device, deviceName, gatewayName, _selectedStartDateReport.ToString("yyyy-MM-dd"), _selectedEndDateReport.ToString("yyyy-MM-dd")));
 
             }
             else
@@ -565,6 +587,30 @@ public partial class LogSitePage : ContentPage
         return reportModel.data ?? new List<ReportDeviceModel>();
     }
 
+
+    async Task<List<MaintenanceModel>> GetReportMaintenaceAsync()
+    {
+
+        if (CurrentSite == null) return null;
+
+        string url = $"{Provider.APIHost}/api/get-maintenance/{CurrentSite.site_id}";
+
+        Console.WriteLine($"Fetching logs: {url}");
+
+        var response = await RequestApi.GetAPIJWT(url);
+
+        if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
+        {
+            await DisplayAlert("Error", $"Failed to get logs: {response.Message}", "OK");
+            return null;
+        }
+
+        // Deserialize into LogModel
+        var reportModel = JsonConvert.DeserializeObject<List<MaintenanceModel>>(response.Message.ToString());
+        return reportModel ?? new List<MaintenanceModel>();
+    }
+
+
     private void GatewayPickReport_SelectedIndexChanged(object sender, EventArgs e)
     {
         if (GatewayPickReport.SelectedItem is KeyValuePair<int, string> selectedGateway)
@@ -605,7 +651,11 @@ public partial class LogSitePage : ContentPage
     private void DateEndPickerReport_DateSelected(object sender, DateChangedEventArgs e)
     {
         _selectedEndDateReport = e.NewDate;
+        if (StartDatePickerReport.Date > e.NewDate)
+        {
+            StartDatePickerReport.MaximumDate = e.NewDate;
+        }
         Console.WriteLine($"Selected date: {_selectedEndDateReport:dd/MM/yyyy}");
     }
- 
+
 }

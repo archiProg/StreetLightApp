@@ -112,7 +112,9 @@
                     <StackLayout
                         x:Name="MaintenaceDetail"
                         Grid.Column="1"
-                        IsVisible="false" />
+                        IsVisible="false">
+                        <Label />
+                    </StackLayout>
                     <StackLayout
                         x:Name="DeviceDetail"
                         Grid.Column="1"

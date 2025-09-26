@@ -1,4 +1,5 @@
 using Microsoft.Maui.Controls;
+using Newtonsoft.Json;
 using StreetLightApp.Models;
 using StreetLightApp.Services;
 using System.Collections.Generic;
@@ -11,8 +12,29 @@ public partial class ManageDevicePage : ContentPage
     private List<MyDevice> _SelectDevices;
     Site CurrentSite = null;
 
+    String StatusConfig = "inactive";
+    List<ScheduleDetail> OriginalConfigDevices = new()
+{
+    new ScheduleDetail { id = 1, day_of_week = "Sun", off_time = "", on_time = "" },
+    new ScheduleDetail { id = 2, day_of_week = "Mon", off_time = "", on_time = "" },
+    new ScheduleDetail { id = 3, day_of_week = "Tue", off_time = "", on_time = "" },
+    new ScheduleDetail { id = 4, day_of_week = "Wed", off_time = "", on_time = "" },
+    new ScheduleDetail { id = 5, day_of_week = "Thu", off_time = "", on_time = "" },
+    new ScheduleDetail { id = 6, day_of_week = "Fri", off_time = "", on_time = "" },
+    new ScheduleDetail { id = 7, day_of_week = "Sat", off_time = "", on_time = "" }
+};
 
-
+    List<ScheduleDetail> ConfigDevices = new()
+{
+    new ScheduleDetail { id = 1, day_of_week = "Sun", off_time = "", on_time = "" },
+    new ScheduleDetail { id = 2, day_of_week = "Mon", off_time = "", on_time = "" },
+    new ScheduleDetail { id = 3, day_of_week = "Tue", off_time = "", on_time = "" },
+    new ScheduleDetail { id = 4, day_of_week = "Wed", off_time = "", on_time = "" },
+    new ScheduleDetail { id = 5, day_of_week = "Thu", off_time = "", on_time = "" },
+    new ScheduleDetail { id = 6, day_of_week = "Fri", off_time = "", on_time = "" },
+    new ScheduleDetail { id = 7, day_of_week = "Sat", off_time = "", on_time = "" }
+};
+    int IndexDaySelect = 0;
     public ManageDevicePage(Site _site, List<MyDevice> selectDevices)
     {
         InitializeComponent();
@@ -31,8 +53,33 @@ public partial class ManageDevicePage : ContentPage
         else
         {
             DetailOneDevice.IsVisible = true;
+
             if (_SelectDevices[0] is Dimmer dimmer)
             {
+                var _ConfigDevices = JsonConvert.DeserializeObject<List<ScheduleDetail>>(dimmer.config[0].detail);
+                StatusConfig = dimmer.config[0].status;
+                SetStatusConfig(StatusConfig);
+                int count = 0;
+                foreach (var config in _ConfigDevices)
+                {
+                    if (OriginalConfigDevices[count].id == config.id)
+                    {
+                        OriginalConfigDevices[count].on_time = string.IsNullOrWhiteSpace(config.on_time)
+                            ? new TimeSpan(0, 0, 0).ToString(@"hh\:mm")
+                            : config.on_time;
+                        OriginalConfigDevices[count].off_time = string.IsNullOrWhiteSpace(config.off_time)
+                            ? new TimeSpan(0, 0, 0).ToString(@"hh\:mm")
+                            : config.off_time;
+                        ConfigDevices[count].on_time = string.IsNullOrWhiteSpace(config.on_time)
+                            ? new TimeSpan(0, 0, 0).ToString(@"hh\:mm")
+                            : config.on_time;
+                        ConfigDevices[count].off_time = string.IsNullOrWhiteSpace(config.off_time)
+                            ? new TimeSpan(0, 0, 0).ToString(@"hh\:mm")
+                            : config.off_time;
+                    }
+                    count++;
+                    Console.WriteLine($"config:::::::{config.id} | {config.day_of_week} | {config.off_time} | {config.on_time}");
+                }
                 lbSlider.Text = $"{(int)dimmer.Dimvalue}%";
                 mySlider.Value = (int)dimmer.Dimvalue;
                 statusSwitch.IsToggled = (int)dimmer.Status == 1;
@@ -72,6 +119,8 @@ public partial class ManageDevicePage : ContentPage
         titleLbl.Text = $"{tit}";
         itemCountLbl.Text = $"{selectDevices.Count} Items";
     }
+
+
 
     private void SetCharge(int charge)
     {
@@ -359,7 +408,24 @@ public partial class ManageDevicePage : ContentPage
 
     private void BtnSun_Clicked(object sender, EventArgs e)
     {
-        LbNameEnableSw.Text = "Sunday Enable";
+        //LbNameEnableSw.Text = "Sunday Enable";
+        IndexDaySelect = 0;
+        if (TimeSpan.TryParse(OriginalConfigDevices[0].off_time, out var offTime))
+        {
+            TimePickerOff.Time = offTime;
+        }
+        else
+        {
+            TimePickerOff.Time = new TimeSpan(0, 0, 0);
+        }
+        if (TimeSpan.TryParse(OriginalConfigDevices[0].on_time, out var onTime))
+        {
+            TimePickerOn.Time = onTime;
+        }
+        else
+        {
+            TimePickerOn.Time = new TimeSpan(0, 0, 0);
+        }
         BtnSun.BackgroundColor = Color.FromArgb("#C5E8FF");
         BtnSun.TextColor = Color.FromArgb("#000000");
         BtnMon.BackgroundColor = Colors.Transparent;
@@ -378,7 +444,24 @@ public partial class ManageDevicePage : ContentPage
 
     private void BtnMon_Clicked(object sender, EventArgs e)
     {
-        LbNameEnableSw.Text = "Monday Enable";
+        //LbNameEnableSw.Text = "Monday Enable";
+        IndexDaySelect = 1;
+        if (TimeSpan.TryParse(OriginalConfigDevices[1].off_time, out var offTime))
+        {
+            TimePickerOff.Time = offTime;
+        }
+        else
+        {
+            TimePickerOff.Time = new TimeSpan(0, 0, 0);
+        }
+        if (TimeSpan.TryParse(OriginalConfigDevices[1].on_time, out var onTime))
+        {
+            TimePickerOn.Time = onTime;
+        }
+        else
+        {
+            TimePickerOn.Time = new TimeSpan(0, 0, 0);
+        }
         BtnSun.BackgroundColor = Colors.Transparent;
         BtnSun.TextColor = Color.FromArgb("#8FA1AD");
         BtnMon.BackgroundColor = Color.FromArgb("#C5E8FF");
@@ -397,7 +480,24 @@ public partial class ManageDevicePage : ContentPage
 
     private void BtnTue_Clicked(object sender, EventArgs e)
     {
-        LbNameEnableSw.Text = "Tueday Enable";
+        //LbNameEnableSw.Text = "Tueday Enable";
+        IndexDaySelect = 2;
+        if (TimeSpan.TryParse(OriginalConfigDevices[2].off_time, out var offTime))
+        {
+            TimePickerOff.Time = offTime;
+        }
+        else
+        {
+            TimePickerOff.Time = new TimeSpan(0, 0, 0);
+        }
+        if (TimeSpan.TryParse(OriginalConfigDevices[2].on_time, out var onTime))
+        {
+            TimePickerOn.Time = onTime;
+        }
+        else
+        {
+            TimePickerOn.Time = new TimeSpan(0, 0, 0);
+        }
         BtnSun.BackgroundColor = Colors.Transparent;
         BtnSun.TextColor = Color.FromArgb("#8FA1AD");
         BtnMon.BackgroundColor = Colors.Transparent;
@@ -416,7 +516,24 @@ public partial class ManageDevicePage : ContentPage
 
     private void BtnWed_Clicked(object sender, EventArgs e)
     {
-        LbNameEnableSw.Text = "Wedesday Enable";
+        //LbNameEnableSw.Text = "Wedesday Enable";
+        IndexDaySelect = 3;
+        if (TimeSpan.TryParse(OriginalConfigDevices[3].off_time, out var offTime))
+        {
+            TimePickerOff.Time = offTime;
+        }
+        else
+        {
+            TimePickerOff.Time = new TimeSpan(0, 0, 0);
+        }
+        if (TimeSpan.TryParse(OriginalConfigDevices[3].on_time, out var onTime))
+        {
+            TimePickerOn.Time = onTime;
+        }
+        else
+        {
+            TimePickerOn.Time = new TimeSpan(0, 0, 0);
+        }
         BtnSun.BackgroundColor = Colors.Transparent;
         BtnSun.TextColor = Color.FromArgb("#8FA1AD");
         BtnMon.BackgroundColor = Colors.Transparent;
@@ -435,7 +552,24 @@ public partial class ManageDevicePage : ContentPage
 
     private void BtnThu_Clicked(object sender, EventArgs e)
     {
-        LbNameEnableSw.Text = "Thurday Enable";
+        //LbNameEnableSw.Text = "Thurday Enable";
+        IndexDaySelect = 4;
+        if (TimeSpan.TryParse(OriginalConfigDevices[4].off_time, out var offTime))
+        {
+            TimePickerOff.Time = offTime;
+        }
+        else
+        {
+            TimePickerOff.Time = new TimeSpan(0, 0, 0);
+        }
+        if (TimeSpan.TryParse(OriginalConfigDevices[4].on_time, out var onTime))
+        {
+            TimePickerOn.Time = onTime;
+        }
+        else
+        {
+            TimePickerOn.Time = new TimeSpan(0, 0, 0);
+        }
         BtnSun.BackgroundColor = Colors.Transparent;
         BtnSun.TextColor = Color.FromArgb("#8FA1AD");
         BtnMon.BackgroundColor = Colors.Transparent;
@@ -454,7 +588,24 @@ public partial class ManageDevicePage : ContentPage
 
     private void BtnFri_Clicked(object sender, EventArgs e)
     {
-        LbNameEnableSw.Text = "Friday Enable";
+        //LbNameEnableSw.Text = "Friday Enable";
+        IndexDaySelect = 5;
+        if (TimeSpan.TryParse(OriginalConfigDevices[5].off_time, out var offTime))
+        {
+            TimePickerOff.Time = offTime;
+        }
+        else
+        {
+            TimePickerOff.Time = new TimeSpan(0, 0, 0);
+        }
+        if (TimeSpan.TryParse(OriginalConfigDevices[5].on_time, out var onTime))
+        {
+            TimePickerOn.Time = onTime;
+        }
+        else
+        {
+            TimePickerOn.Time = new TimeSpan(0, 0, 0);
+        }
         BtnSun.BackgroundColor = Colors.Transparent;
         BtnSun.TextColor = Color.FromArgb("#8FA1AD");
         BtnMon.BackgroundColor = Colors.Transparent;
@@ -473,7 +624,24 @@ public partial class ManageDevicePage : ContentPage
 
     private void BtnSat_Clicked(object sender, EventArgs e)
     {
-        LbNameEnableSw.Text = "Saturday Enable";
+        //LbNameEnableSw.Text = "Saturday Enable";
+        IndexDaySelect = 6;
+        if (TimeSpan.TryParse(OriginalConfigDevices[6].off_time, out var offTime))
+        {
+            TimePickerOff.Time = offTime;
+        }
+        else
+        {
+            TimePickerOff.Time = new TimeSpan(0, 0, 0);
+        }
+        if (TimeSpan.TryParse(OriginalConfigDevices[6].on_time, out var onTime))
+        {
+            TimePickerOn.Time = onTime;
+        }
+        else
+        {
+            TimePickerOn.Time = new TimeSpan(0, 0, 0);
+        }
         BtnSun.BackgroundColor = Colors.Transparent;
         BtnSun.TextColor = Color.FromArgb("#8FA1AD");
         BtnMon.BackgroundColor = Colors.Transparent;
@@ -502,5 +670,109 @@ public partial class ManageDevicePage : ContentPage
             count++;
         }
         DisplayAlert("Selected Devices", ListSelected, "Close");
+    }
+
+    private void SetStatusConfig(string status)
+    {
+        Dispatcher.Dispatch(() =>
+        {
+            statusSwitch.Toggled -= SwStatusCongig_Toggled;
+
+            if (status == "active")
+            {
+                SwStatusCongig.IsToggled = true;
+            }
+            else
+            {
+                SwStatusCongig.IsToggled = false;
+            }
+
+            statusSwitch.Toggled += SwStatusCongig_Toggled;
+        });
+    }
+
+    private bool CheckCompareConfigs()
+    {
+        for (int i = 0; i < OriginalConfigDevices.Count; i++)
+        {
+            if (SwStatusCongig.IsToggled != (StatusConfig == "active"))
+            {
+                return true;
+            }
+            if (OriginalConfigDevices[i].on_time != ConfigDevices[i].on_time || OriginalConfigDevices[i].off_time != ConfigDevices[i].off_time)
+            {
+                return true;
+
+            }
+        }
+        return false;
+
+    }
+
+
+    private void SwStatusCongig_Toggled(object sender, ToggledEventArgs e)
+    {
+        var compair = CheckCompareConfigs();
+        if (compair)
+        {
+            BtnSaveConfig.IsEnabled = true;
+            BtnSaveConfig.BackgroundColor = Color.FromArgb("#316BF7");
+            BtnSaveConfig.Opacity = 1;
+        }
+        else
+        {
+            BtnSaveConfig.IsEnabled = false;
+            BtnSaveConfig.BackgroundColor = Colors.DarkGray;
+            BtnSaveConfig.TextColor = Colors.White;
+            BtnSaveConfig.Opacity = 0.5;
+        }
+    }
+
+    private void TimePickerOff_TimeSelected(object sender, TimeChangedEventArgs e)
+    {
+        TimeSpan newTime = e.NewTime;
+
+        string newTimeString = newTime.ToString(@"hh\:mm");
+
+        ConfigDevices[IndexDaySelect].off_time = newTimeString;
+
+        var compair = CheckCompareConfigs();
+        if (compair)
+        {
+            BtnSaveConfig.IsEnabled = true;
+            BtnSaveConfig.BackgroundColor = Color.FromArgb("#316BF7");
+            BtnSaveConfig.Opacity = 1;
+        }
+        else
+        {
+            BtnSaveConfig.IsEnabled = false;
+            BtnSaveConfig.BackgroundColor = Colors.DarkGray;
+            BtnSaveConfig.TextColor = Colors.White;
+            BtnSaveConfig.Opacity = 0.5;
+        }
+    }
+
+    private void TimePickerOn_TimeSelected(object sender, TimeChangedEventArgs e)
+    {
+        TimeSpan newTime = e.NewTime;
+
+        string newTimeString = newTime.ToString(@"hh\:mm");
+
+        ConfigDevices[IndexDaySelect].on_time = newTimeString;
+
+        var compair = CheckCompareConfigs();
+        if (compair)
+        {
+            BtnSaveConfig.IsEnabled = true;
+            BtnSaveConfig.BackgroundColor = Color.FromArgb("#316BF7");
+            BtnSaveConfig.Opacity = 1;
+        }
+        else
+        {
+            BtnSaveConfig.IsEnabled = false; 
+            BtnSaveConfig.BackgroundColor = Colors.DarkGray;
+            BtnSaveConfig.TextColor = Colors.White;
+            BtnSaveConfig.Opacity = 0.5;
+        }
     }
 }

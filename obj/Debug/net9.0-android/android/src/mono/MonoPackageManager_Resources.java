@@ -11,7 +11,6 @@ public class MonoPackageManager_Resources {
 		"LiveChartsCore.dll",
 		"LiveChartsCore.SkiaSharpView.dll",
 		"LiveChartsCore.SkiaSharpView.Maui.dll",
-		"Microcharts.Maui.dll",
 		"Microsoft.Extensions.Configuration.dll",
 		"Microsoft.Extensions.Configuration.Abstractions.dll",
 		"Microsoft.Extensions.DependencyInjection.dll",

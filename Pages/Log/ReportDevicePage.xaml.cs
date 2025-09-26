@@ -48,11 +48,14 @@ public partial class ReportDevicePage : ContentPage, INotifyPropertyChanged
 
     List<ReportDeviceModel> ReportDevices = new();
 
-    public ReportDevicePage(List<ReportDeviceModel> _reportDevices, string deviceName, string gatewayName)
+    public ReportDevicePage(List<ReportDeviceModel> _reportDevices, string _deviceName, string _gatewayName, string _selectedStartDate, string _selectedEndDate)
     {
         InitializeComponent();
         ReportDevices = _reportDevices;
         CheckBoxPowerInput.IsChecked = true;
+        deviceName.Text = _deviceName;
+        gatewayName.Text = $"Gateway: {_gatewayName}";
+        TimeSearch.Text = $"{_selectedStartDate} to {_selectedEndDate}";
     }
 
     private void CheckBoxPowerInput_CheckedChanged(object sender, CheckedChangedEventArgs e)
