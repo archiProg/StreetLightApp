@@ -154,7 +154,7 @@
                                         HorizontalOptions="Fill"
                                         LineBreakMode="WordWrap"
                                         MaxLines="2"
-                                        Text="StreetLightApp Online"
+                                        Text="Lamp Online"
                                         TextColor="#0995DE"
                                         VerticalOptions="Start" />
                                 </Grid>
@@ -205,7 +205,7 @@
                                         HorizontalOptions="Fill"
                                         LineBreakMode="WordWrap"
                                         MaxLines="2"
-                                        Text="StreetLightApp Offline"
+                                        Text="Lamp Offline"
                                         TextColor="#FF556E"
                                         VerticalOptions="Start" />
                                 </Grid>
@@ -451,7 +451,7 @@
                         Description="Site information" />
 
                     <local:MenuItem
-                        Title="Member and Role"
+                        Title="Member &amp; Role"
                         Grid.Row="0"
                         Grid.Column="1"
                         BadgeType="None"

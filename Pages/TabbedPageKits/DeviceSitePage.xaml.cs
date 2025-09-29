@@ -480,11 +480,8 @@ public partial class DeviceSitePage : ContentPage
                 switch (device.device_style)
                 {
                     case 3: // Dimmer
-                        Dimmer dimmer = new Dimmer(device)
-                        {
-                            config = device.config
-                            
-                        };
+                        Dimmer dimmer = new Dimmer(device);
+
                         foreach (var control in device.controls)
                         {
                             switch (control.control_id)

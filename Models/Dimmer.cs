@@ -203,9 +203,9 @@ namespace StreetLightApp.Models
             group_id = _myDevice.group_id;
             group_name = _myDevice.group_name;
             description = _myDevice.description;
+            config = _myDevice.config;
         }
 
-        public List<Config> config { get; set; }
 
         public void SetName(string name)
         {

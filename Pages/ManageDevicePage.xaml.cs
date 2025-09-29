@@ -87,19 +87,19 @@ public partial class ManageDevicePage : ContentPage
                             : config.off_time;
                         if (count == 0)
                         {
-                            if (TimeSpan.TryParse(OriginalConfigDevices[3].on_time, out var onTime))
+                            if (TimeSpan.TryParse(config.on_time, out var onTime))
                             {
                                 TimePickerOn.Time = onTime;
                             }
-                            if (TimeSpan.TryParse(OriginalConfigDevices[3].off_time, out var offTime))
+                            if (TimeSpan.TryParse(config.off_time, out var offTime))
                             {
                                 TimePickerOff.Time = offTime;
                             }
+
                         }
                     }
 
                     count++;
-                    Console.WriteLine($"config:::::::{config.id} | {config.day_of_week} | {config.off_time} | {config.on_time}");
                 }
 
                 lbSlider.Text = $"{(int)dimmer.Dimvalue}%";
@@ -835,23 +835,21 @@ public partial class ManageDevicePage : ContentPage
                 OriginalConfigDevices = ConfigDevices;
                 if (_SelectDevices != null && Provider.MapSites != null && CurrentSite != null)
                 {
+                    var siteDevices = Provider.MapSites[CurrentSite.site_id];
+
                     foreach (var device in _SelectDevices)
                     {
-                        if (!Provider.MapSites.ContainsKey(CurrentSite.site_id))
-                            continue;
 
-                        var siteDevices = Provider.MapSites[CurrentSite.site_id];
-                        var deviceConfig = siteDevices.FirstOrDefault(x => x.device_id == device.device_id && x.gateway_id == device.gateway_id && device.type != "gateway");
-
-                        if (deviceConfig != null && deviceConfig.config != null && deviceConfig.config.Count > 0)
+                        if (device != null && device.config != null && device.config.Count > 0)
                         {
-                            deviceConfig.config[0].detail = JsonConvert.SerializeObject(ConfigDevices)?.ToString();
+                            device.config[0].detail = JsonConvert.SerializeObject(ConfigDevices)?.ToString();
                         }
-                        else {
+                        else
+                        {
                             Console.WriteLine("lastConfig != null && lastConfig.config != null && lastConfig.config.Count > 0");
-                            Console.WriteLine($"lastConfig.config.Count{deviceConfig.config.Count}");
-                            Console.WriteLine($"lastConfig.config != null {deviceConfig.config != null}");
-                            Console.WriteLine($"lastConfig != null {deviceConfig != null}");
+                            Console.WriteLine($"lastConfig.config.Count{device.config.Count}");
+                            Console.WriteLine($"lastConfig.config != null {device.config != null}");
+                            Console.WriteLine($"lastConfig != null {device != null}");
                         }
                     }
                 }

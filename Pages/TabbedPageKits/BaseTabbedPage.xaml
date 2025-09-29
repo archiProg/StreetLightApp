@@ -27,7 +27,7 @@
         NavigatedTo="ReportPage_NavigatedTo" />
 
     <local:SettingPage
-        Title="Profile"
+        Title="Setting"
         IconImageSource="{OnPlatform Default=setting_64.png,
                                      iOS=setting_64.png}"
         NavigatedFrom="SettingPage_NavigatedFrom"
