@@ -2,6 +2,7 @@
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Maps;
 using StreetLightApp.Models;
+using StreetLightApp.Pages;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -154,7 +155,7 @@ namespace StreetLightApp.Services
                 foreach (var gatewayMap in MapSites.Values)
                 {
 
-                    var gateway = gatewayMap.FirstOrDefault(x => x.gateway_id.ToString() == gatewayWs.Key && x.type=="gateway");
+                    var gateway = gatewayMap.FirstOrDefault(x => x.gateway_id.ToString() == gatewayWs.Key && x.type == "gateway");
                     if (gateway != null)
                     {
                         var lastGateway = gateway as DeviceNode;
@@ -252,53 +253,6 @@ namespace StreetLightApp.Services
         }
 
 
-        //static async void WsUpdateDevices(UpdateStatusDataParam updateStatusData)
-        //{
-        //    var device = SiteDevices.FirstOrDefault(g => g.gateway_id == updateStatusData.Member && g.device_id == updateStatusData.Device);
-        //    if (device != null)
-        //    {
-        //        Console.WriteLine($"device.device_style::::::::::{device.device_style}");
-        //        switch (device.device_style)
-        //        {
-        //            case 3: // Dimmer
-        //                if (device is Dimmer dimmer)
-        //                {
-
-        //                    switch (updateStatusData.Ctrl)
-        //                    {
-        //                        case 0: dimmer.SetOnline(updateStatusData.V); break;
-        //                        case 1: dimmer.SetDim(updateStatusData.V); break;
-        //                        case 2: dimmer.SetStatus(updateStatusData.V); break;
-        //                        case 10: dimmer.SetPercentage(updateStatusData.V); break;
-        //                        case 11: dimmer.SetTemp(updateStatusData.V); break;
-        //                        case 12: dimmer.SetCharge(updateStatusData.V); break;
-        //                        case 13: dimmer.SetPowerVolt(updateStatusData.V); break;
-        //                        case 14: dimmer.SetPowerCurrent(updateStatusData.V); break;
-        //                        case 15: dimmer.SetPowerOutVolt(updateStatusData.V); break;
-        //                        case 16: dimmer.SetPowerOutCurrent(updateStatusData.V); break;
-        //                        case 17: dimmer.SetBattVolt(updateStatusData.V); break;
-        //                        case 18: dimmer.SetCapacity(updateStatusData.V); break;
-        //                        case 19: dimmer.SetBattHealth(updateStatusData.V); break;
-        //                        case 20: dimmer.SetCycleCount(updateStatusData.V); break;
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    Console.WriteLine($"Device {device.device_id} expected to be Dimmer but is {device.GetType().Name}");
-        //                }
-        //                break;
-
-        //            default:
-        //                Console.WriteLine($"Unknown device type {device.device_style} for device {device.device_id}");
-        //                break;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine($"Device {updateStatusData.Device} not found in gateway {updateStatusData.Member}");
-        //    }
-        //}
-
         public static async Task SendWsAsync(string cmd, object _param)
         {
             if (_WssClient != null && _WssClient.Connected)
@@ -319,6 +273,42 @@ namespace StreetLightApp.Services
                 Console.WriteLine("WebSocket is not connected.");
             }
         }
+        public static async Task LogoutWsAsync()
+        {
+            try
+            {
+                ProfileName = "User";
+                Username = "@Username";
+                UserImage = "";
+                UserEmail = "";
+                UserToken = "";
+                UserRole = UserRole.None;
+                SiteList.Clear();
+                MapSites.Clear();
+                MemberSites.Clear();
+                GatewayList.Clear();
+
+                if (_WssClient != null)
+                {
+                    _WssClient.Stop();
+                    _WssClient.Dispose();
+                    _WssClient = null;
+                }
+
+                AppPreferences.Email = "";
+                AppPreferences.Password = "";
+
+                Application.Current.MainPage = new NavigationPage(new StartUpPage());
+
+                Console.WriteLine("Logout completed. WebSocket disconnected.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] LogoutWsAsync failed: {ex.Message}");
+            }
+        }
+
+
 
         static void WsLogger(string msg)
         {

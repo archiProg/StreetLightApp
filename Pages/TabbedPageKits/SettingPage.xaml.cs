@@ -12,4 +12,14 @@ public partial class SettingPage : ContentPage
         profileNameLbl.Text = Provider.ProfileName;
         profileUsernameLbl.Text = $"@{Provider.Username}";
     }
+
+    private void Button_Clicked(object sender, EventArgs e)
+    {
+
+    }
+
+    private async void ButtonLogout_Clicked(object sender, EventArgs e)
+    {
+        await Provider.LogoutWsAsync();
+    }
 }

@@ -46,7 +46,14 @@
             </Grid>
         </Grid>
         <Label Padding="16,0" Text="Status" />
-        <HorizontalStackLayout Padding="8,0" Spacing="8">
+        <FlexLayout
+            Margin="8,0"
+            Padding="8,0"
+            AlignContent="Start"
+            AlignItems="Center"
+            Direction="Row"
+            JustifyContent="Start"
+            Wrap="Wrap">
             <HorizontalStackLayout>
                 <RadioButton x:Name="CheckBoxPowerInput" CheckedChanged="CheckBoxPowerInput_CheckedChanged" />
                 <Label Text="Power Input" VerticalOptions="Center" />
@@ -60,7 +67,7 @@
                 <Label Text="Battery" VerticalOptions="Center" />
             </HorizontalStackLayout>
 
-        </HorizontalStackLayout>
+        </FlexLayout>
         <ScrollView Orientation="Horizontal">
             <lvc:CartesianChart
                 x:Name="Chart"

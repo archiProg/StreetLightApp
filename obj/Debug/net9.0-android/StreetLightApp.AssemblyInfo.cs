@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("StreetLightApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+cf3874bb5ac20d66116656b2df577c3e80b86386")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+107bebcad93216bcca0ff5dcdf9533072cc3f8d3")]
 [assembly: System.Reflection.AssemblyProductAttribute("StreetLightApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("StreetLightApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

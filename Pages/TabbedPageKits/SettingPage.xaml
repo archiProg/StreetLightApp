@@ -102,6 +102,7 @@
                     <Grid Margin="0,24" HeightRequest="56">
                         <Button
                             BackgroundColor="#F4F6FA"
+                            Clicked="ButtonLogout_Clicked"
                             CornerRadius="8"
                             HeightRequest="56" />
                         <Border

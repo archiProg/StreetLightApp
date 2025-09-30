@@ -15,8 +15,6 @@ public partial class LogSitePage : ContentPage
     string type = "usage";
     string deviceName = "All Devices";
     string gatewayName = "All Gateway";
-    string dateStart;
-    string dateEnd;
     Dictionary<int, string> MemberList = new Dictionary<int, string> { { 0, "All" } };
     Dictionary<int, string> GatewayList = new Dictionary<int, string> { { 0, "All" } };
     Dictionary<int, List<MyDevice>> GatewayDeviceList = new();
@@ -28,13 +26,13 @@ public partial class LogSitePage : ContentPage
 
     List<string> TypeList = ["Usage", "Log", "Schedule"];
 
-    private DateTime _selectedStartDate;
+    //private DateTime _selectedStartDate;
 
-    private DateTime _selectedEndDate;
+    //private DateTime _selectedEndDate;
 
-    private DateTime _selectedStartDateReport;
+    //private DateTime _selectedStartDateReport;
 
-    private DateTime _selectedEndDateReport;
+    //private DateTime _selectedEndDateReport;
     public LogSitePage(Site _site)
     {
         InitializeComponent();
@@ -344,18 +342,16 @@ public partial class LogSitePage : ContentPage
 
     private void DateStartPicker_DateSelected(object sender, DateChangedEventArgs e)
     {
-        _selectedStartDate = e.NewDate;
-        Console.WriteLine($"Selected date: {_selectedStartDate:dd/MM/yyyy}");
+         Console.WriteLine($"Selected date: {e.NewDate:dd/MM/yyyy}");
     }
 
     private void DateEndPicker_DateSelected(object sender, DateChangedEventArgs e)
     {
-        _selectedEndDate = e.NewDate;
-        if (StartDatePicker.Date > e.NewDate)
+         if (StartDatePicker.Date > e.NewDate)
         {
             StartDatePicker.MaximumDate = e.NewDate;
         }
-        Console.WriteLine($"Selected date: {_selectedEndDate:dd/MM/yyyy}");
+        Console.WriteLine($"Selected date: {e.NewDate:dd/MM/yyyy}");
     }
 
     async Task<List<LogModelData>> GetLogsAsync()
@@ -385,12 +381,9 @@ public partial class LogSitePage : ContentPage
         if (TypePick.SelectedItem is string selectedType)
             type = selectedType.ToLower();
 
-        dateStart = _selectedStartDate == default ? DateTime.Today.ToString("yyyy-MM-dd") : _selectedStartDate.ToString("yyyy-MM-dd");
-        dateEnd = _selectedEndDate == default ? DateTime.Today.ToString("yyyy-MM-dd") : _selectedEndDate.ToString("yyyy-MM-dd");
-
         string url = $"{Provider.APIHost}/api/get-log/{CurrentSite.site_id}?" +
                      $"member_id={memberId}&gateway_id={gatewayId}&device_id={deviceId}&type={type}&" +
-                     $"search_data=&date_start={dateStart}&date_end={dateEnd}";
+                     $"search_data=&date_start={StartDatePicker.Date.ToString("yyyy-MM-dd")}&date_end={EndDatePicker.Date.ToString("yyyy-MM-dd")}";
 
         Console.WriteLine($"Fetching logs: {url}");
 
@@ -417,7 +410,7 @@ public partial class LogSitePage : ContentPage
 
         if (logs.Count > 0)
         {
-            await Navigation.PushAsync(new LogDetailSitePage(logs, dateStart, dateEnd, TypePick.SelectedItem.ToString(), deviceName, gatewayName));
+            await Navigation.PushAsync(new LogDetailSitePage(logs, StartDatePicker.Date.ToString("dd-MM-yyyy"), EndDatePicker.Date.ToString("dd-MM-yyyy"), TypePick.SelectedItem.ToString(), deviceName, gatewayName));
         }
         else
         {
@@ -532,7 +525,7 @@ public partial class LogSitePage : ContentPage
             if (report_device.Count > 0)
             {
                 Console.WriteLine($"RadioButtonDevice::::::::::::::::::{report_device.Count}:::::::::::::::::::::::::::::::::");
-                await Navigation.PushAsync(new ReportDevicePage(report_device, deviceName, gatewayName, _selectedStartDateReport.ToString("yyyy-MM-dd"), _selectedEndDateReport.ToString("yyyy-MM-dd")));
+                await Navigation.PushAsync(new ReportDevicePage(report_device, deviceName, gatewayName, StartDatePickerReport.Date.ToString("dd-MM-yyyy"), EndDatePickerReport.Date.ToString("dd-MM-yyyy")));
 
             }
             else
@@ -565,12 +558,8 @@ public partial class LogSitePage : ContentPage
         }
 
 
-
-
-        string dateStart = _selectedStartDateReport == default ? DateTime.Today.ToString("yyyy-MM-dd") : _selectedStartDateReport.ToString("yyyy-MM-dd");
-        string dateEnd = _selectedEndDateReport == default ? DateTime.Today.ToString("yyyy-MM-dd") : _selectedEndDateReport.ToString("yyyy-MM-dd");
-
-        string url = $"{Provider.APIHost}/api/get-chart2/{CurrentSite.site_id}?device_id={deviceId}&gateway_id={gatewayId}&date_start={dateStart}&date_end={dateEnd}";
+        string url = $"{Provider.APIHost}/api/get-chart2/{CurrentSite.site_id}?device_id={deviceId}&gateway_id={gatewayId}&date_start={StartDatePickerReport.Date.ToString("yyyy-MM-dd")}&date_end={EndDatePickerReport.Date.ToString("yyyy-MM-dd")}";
+        Console.WriteLine($"url::::::::::::::::::{url}:::::::::::::::::::::::::::::::::");
 
         Console.WriteLine($"Fetching logs: {url}");
 
@@ -644,18 +633,15 @@ public partial class LogSitePage : ContentPage
 
     private void DateStartPickerReport_DateSelected(object sender, DateChangedEventArgs e)
     {
-        _selectedStartDateReport = e.NewDate;
-        Console.WriteLine($"Selected date: {_selectedStartDateReport:dd/MM/yyyy}");
+         Console.WriteLine($"Selected date: {e.NewDate:dd/MM/yyyy}");
     }
 
     private void DateEndPickerReport_DateSelected(object sender, DateChangedEventArgs e)
     {
-        _selectedEndDateReport = e.NewDate;
-        if (StartDatePickerReport.Date > e.NewDate)
+         if (StartDatePickerReport.Date > e.NewDate)
         {
             StartDatePickerReport.MaximumDate = e.NewDate;
         }
-        Console.WriteLine($"Selected date: {_selectedEndDateReport:dd/MM/yyyy}");
-    }
+     }
 
 }
