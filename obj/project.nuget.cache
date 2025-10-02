@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "JhtUtV9D5bk=",
+  "dgSpecHash": "6KNvByMs2OE=",
   "success": true,
   "projectFilePath": "C:\\Users\\Baramee\\source\\repos\\StreetLightApp\\StreetLightApp\\StreetLightApp.csproj",
   "expectedPackageFiles": [
@@ -154,12 +154,7 @@
     "C:\\Users\\Baramee\\.nuget\\packages\\xamarin.kotlinx.serialization.core.jvm\\1.7.3.4\\xamarin.kotlinx.serialization.core.jvm.1.7.3.4.nupkg.sha512",
     "C:\\Users\\Baramee\\.nuget\\packages\\microsoft.netcore.app.ref\\9.0.9\\microsoft.netcore.app.ref.9.0.9.nupkg.sha512",
     "C:\\Users\\Baramee\\.nuget\\packages\\microsoft.netcore.app.ref\\9.0.9\\microsoft.netcore.app.ref.9.0.9.nupkg.sha512",
-    "C:\\Users\\Baramee\\.nuget\\packages\\microsoft.netcore.app.ref\\9.0.9\\microsoft.netcore.app.ref.9.0.9.nupkg.sha512",
-    "C:\\Users\\Baramee\\.nuget\\packages\\microsoft.netcore.app.crossgen2.win-x64\\9.0.8\\microsoft.netcore.app.crossgen2.win-x64.9.0.8.nupkg.sha512",
-    "C:\\Users\\Baramee\\.nuget\\packages\\microsoft.windows.sdk.net.ref\\10.0.19041.57\\microsoft.windows.sdk.net.ref.10.0.19041.57.nupkg.sha512",
-    "C:\\Users\\Baramee\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\9.0.8\\microsoft.aspnetcore.app.runtime.win-x64.9.0.8.nupkg.sha512",
-    "C:\\Users\\Baramee\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\9.0.8\\microsoft.windowsdesktop.app.runtime.win-x64.9.0.8.nupkg.sha512",
-    "C:\\Users\\Baramee\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\9.0.8\\microsoft.netcore.app.runtime.win-x64.9.0.8.nupkg.sha512"
+    "C:\\Users\\Baramee\\.nuget\\packages\\microsoft.netcore.app.ref\\9.0.9\\microsoft.netcore.app.ref.9.0.9.nupkg.sha512"
   ],
   "logs": []
 }

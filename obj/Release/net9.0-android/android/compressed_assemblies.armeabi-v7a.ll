@@ -516,7 +516,7 @@ target triple = "armv7-unknown-linux-android21"
 		ptr @__compressedAssemblyData_98; uint8_t* data
 	}, ; 98: Xamarin.KotlinX.Serialization.Core.Jvm
 	%struct.CompressedAssemblyDescriptor {
-		i32 455680, ; uint32_t uncompressed_file_size
+		i32 456704, ; uint32_t uncompressed_file_size
 		i1 false, ; bool loaded
 		ptr @__compressedAssemblyData_99; uint8_t* data
 	}, ; 99: StreetLightApp
@@ -971,7 +971,7 @@ target triple = "armv7-unknown-linux-android21"
 @__compressedAssemblyData_96 = internal dso_local global [86016 x i8] zeroinitializer, align 1
 @__compressedAssemblyData_97 = internal dso_local global [18432 x i8] zeroinitializer, align 1
 @__compressedAssemblyData_98 = internal dso_local global [89600 x i8] zeroinitializer, align 1
-@__compressedAssemblyData_99 = internal dso_local global [455680 x i8] zeroinitializer, align 1
+@__compressedAssemblyData_99 = internal dso_local global [456704 x i8] zeroinitializer, align 1
 @__compressedAssemblyData_100 = internal dso_local global [227328 x i8] zeroinitializer, align 1
 @__compressedAssemblyData_101 = internal dso_local global [28160 x i8] zeroinitializer, align 1
 @__compressedAssemblyData_102 = internal dso_local global [23552 x i8] zeroinitializer, align 1

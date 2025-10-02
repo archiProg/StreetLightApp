@@ -56,52 +56,6 @@
             </Grid>
 
         </Border>
-        <!--  Important Notification  -->
-        <Border
-            Grid.Row="1"
-            Margin="8,0,8,0"
-            BackgroundColor="#FFEFC5"
-            HeightRequest="24"
-            Stroke="Transparent"
-            StrokeShape="RoundRectangle 4"
-            StrokeThickness="0">
-            <Grid ColumnDefinitions="*,Auto">
-                <StackLayout Padding="4,0,0,4" Orientation="Horizontal">
-                    <Label
-                        FontFamily="PoppinsBold"
-                        FontSize="14"
-                        Text="Important!"
-                        TextColor="Black" />
-                    <Label
-                        FontFamily="PoppinsRegular"
-                        FontSize="14"
-                        Text="Server update on 01.00AM - 25..."
-                        TextColor="Black" />
-                </StackLayout>
-                <StackLayout
-                    Grid.Column="1"
-                    Margin="0,0,8,0"
-                    Opacity=".5"
-                    Orientation="Horizontal"
-                    Spacing="2">
-                    <BoxView
-                        BackgroundColor="#0F172A"
-                        CornerRadius="3"
-                        HeightRequest="6"
-                        WidthRequest="6" />
-                    <BoxView
-                        BackgroundColor="#0F172A"
-                        CornerRadius="3"
-                        HeightRequest="6"
-                        WidthRequest="6" />
-                    <BoxView
-                        BackgroundColor="#0F172A"
-                        CornerRadius="3"
-                        HeightRequest="6"
-                        WidthRequest="6" />
-                </StackLayout>
-            </Grid>
-        </Border>
         <!--  Main Content  -->
         <ScrollView Grid.Row="2">
             <StackLayout Margin="0,8,0,34" Spacing="8">
@@ -112,16 +66,6 @@
                         Text="Overall"
                         TextColor="Black"
                         VerticalOptions="Center" />
-                    <ImageButton
-                        Grid.Column="1"
-                        Padding="12"
-                        BackgroundColor="White"
-                        CornerRadius="24"
-                        HeightRequest="48"
-                        HorizontalOptions="End"
-                        Source="bell_64.png"
-                        VerticalOptions="Center"
-                        WidthRequest="48" />
                 </Grid>
                 <Grid
                     Margin="8,0,8,0"
@@ -165,12 +109,14 @@
                                     Spacing="4"
                                     VerticalOptions="End">
                                     <Label
+                                        x:Name="LbCoutLampOnline"
                                         FontFamily="PoppinsRegular"
                                         FontSize="18"
                                         Text="1964"
                                         TextColor="Black"
                                         VerticalOptions="Center" />
                                     <Label
+                                        x:Name="LbTotalDevice1"
                                         FontFamily="PoppinsRegular"
                                         FontSize="12"
                                         Text="of 2000"
@@ -216,12 +162,67 @@
                                     Spacing="4"
                                     VerticalOptions="End">
                                     <Label
+                                        x:Name="LbCoutLampOffline"
                                         FontFamily="PoppinsRegular"
                                         FontSize="18"
                                         Text="1964"
                                         TextColor="Black"
                                         VerticalOptions="Center" />
                                     <Label
+                                        x:Name="LbTotalDevice2"
+                                        FontFamily="PoppinsRegular"
+                                        FontSize="12"
+                                        Text="of 2000"
+                                        TextColor="Black"
+                                        VerticalOptions="Center" />
+                                </StackLayout>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    <!--  Gateway Online  -->
+                    <Border
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        Margin="0,0,0,0"
+                        BackgroundColor="#507551FF"
+                        HorizontalOptions="Fill"
+                        Stroke="Transparent"
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="0">
+                        <Grid>
+                            <Grid Padding="8,8,8,0" RowDefinitions="Auto,*">
+                                <Grid ColumnDefinitions="Auto, *" ColumnSpacing="4">
+                                    <BoxView
+                                        BackgroundColor="#7551FF"
+                                        CornerRadius="2"
+                                        HeightRequest="24"
+                                        WidthRequest="24" />
+                                    <Label
+                                        Grid.Column="1"
+                                        FontFamily="PoppinsBold"
+                                        FontSize="12"
+                                        HorizontalOptions="Fill"
+                                        LineBreakMode="WordWrap"
+                                        MaxLines="2"
+                                        Text="Gateway Online"
+                                        TextColor="#7551FF"
+                                        VerticalOptions="Start" />
+                                </Grid>
+                                <StackLayout
+                                    Grid.Row="1"
+                                    HorizontalOptions="End"
+                                    Orientation="Horizontal"
+                                    Spacing="4"
+                                    VerticalOptions="End">
+                                    <Label
+                                        x:Name="LbCoutGatewayOnline"
+                                        FontFamily="PoppinsRegular"
+                                        FontSize="18"
+                                        Text="1964"
+                                        TextColor="Black"
+                                        VerticalOptions="Center" />
+                                    <Label
+                                        x:Name="LbTotalGateway1"
                                         FontFamily="PoppinsRegular"
                                         FontSize="12"
                                         Text="of 2000"
@@ -233,8 +234,8 @@
                     </Border>
                     <!--  Gateway Offline  -->
                     <Border
-                        Grid.Row="0"
-                        Grid.Column="2"
+                        Grid.Row="1"
+                        Grid.Column="0"
                         Margin="0,0,0,0"
                         BackgroundColor="#50FF519F"
                         HorizontalOptions="Fill"
@@ -267,12 +268,14 @@
                                     Spacing="4"
                                     VerticalOptions="End">
                                     <Label
+                                        x:Name="LbCoutGatewayOffline"
                                         FontFamily="PoppinsRegular"
                                         FontSize="18"
                                         Text="1964"
                                         TextColor="Black"
                                         VerticalOptions="Center" />
                                     <Label
+                                        x:Name="LbTotalGateway2"
                                         FontFamily="PoppinsRegular"
                                         FontSize="12"
                                         Text="of 2000"
@@ -282,59 +285,9 @@
                             </Grid>
                         </Grid>
                     </Border>
-                    <!--  Need To Check  -->
-                    <Border
-                        Grid.Row="1"
-                        Grid.Column="0"
-                        Margin="0,0,0,0"
-                        BackgroundColor="#507551FF"
-                        HorizontalOptions="Fill"
-                        Stroke="Transparent"
-                        StrokeShape="RoundRectangle 8"
-                        StrokeThickness="0">
-                        <Grid>
-                            <Grid Padding="8,8,8,0" RowDefinitions="Auto,*">
-                                <Grid ColumnDefinitions="Auto, *" ColumnSpacing="4">
-                                    <BoxView
-                                        BackgroundColor="#7551FF"
-                                        CornerRadius="2"
-                                        HeightRequest="24"
-                                        WidthRequest="24" />
-                                    <Label
-                                        Grid.Column="1"
-                                        FontFamily="PoppinsBold"
-                                        FontSize="12"
-                                        HorizontalOptions="Fill"
-                                        LineBreakMode="WordWrap"
-                                        MaxLines="2"
-                                        Text="Need To Check"
-                                        TextColor="#7551FF"
-                                        VerticalOptions="Start" />
-                                </Grid>
-                                <StackLayout
-                                    Grid.Row="1"
-                                    HorizontalOptions="End"
-                                    Orientation="Horizontal"
-                                    Spacing="4"
-                                    VerticalOptions="End">
-                                    <Label
-                                        FontFamily="PoppinsRegular"
-                                        FontSize="18"
-                                        Text="1964"
-                                        TextColor="Black"
-                                        VerticalOptions="Center" />
-                                    <Label
-                                        FontFamily="PoppinsRegular"
-                                        FontSize="12"
-                                        Text="of 2000"
-                                        TextColor="Black"
-                                        VerticalOptions="Center" />
-                                </StackLayout>
-                            </Grid>
-                        </Grid>
-                    </Border>
+
                     <!--  In Repair  -->
-                    <Border
+                    <!--<Border
                         Grid.Row="1"
                         Grid.Column="1"
                         Margin="0,0,0,0"
@@ -384,7 +337,9 @@
                             </Grid>
                         </Grid>
                     </Border>
+                    -->
                     <!--  Battery Never Full  -->
+                    <!--
                     <Border
                         Grid.Row="1"
                         Grid.Column="2"
@@ -425,7 +380,7 @@
                                     VerticalOptions="Center" />
                             </StackLayout>
                         </Grid>
-                    </Border>
+                    </Border>-->
                 </Grid>
                 <!--  Content Section  -->
                 <Label
@@ -442,7 +397,7 @@
                     ColumnSpacing="8"
                     RowDefinitions="Auto,Auto"
                     RowSpacing="8">
-                    <local:MenuItem
+                    <!--<local:MenuItem
                         Title="Site manager"
                         Grid.Row="0"
                         Grid.Column="0"
@@ -455,20 +410,36 @@
                         Grid.Row="0"
                         Grid.Column="1"
                         BadgeType="None"
-                        Description="Member and role permission" />
+                        Description="Member and role permission" />-->
 
                     <local:MenuItem
                         x:Name="MapMenuItem"
                         Title="Map"
-                        Grid.Row="1"
+                        Grid.Row="0"
                         Grid.Column="0"
                         BadgeType="None"
                         Description="Manage device by Map" />
 
+                    <local:MenuItem
+                        x:Name="DevicesItem"
+                        Title="Devices"
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        BadgeType="None"
+                        Description="Show device list" />
+
+                    <local:MenuItem
+                        x:Name="ReportsItem"
+                        Title="Report &amp; Log"
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        BadgeType="None"
+                        Description="Show report and log list" />
+
                 </Grid>
 
                 <!--  Manager Tools  -->
-                <Label
+                <!--<Label
                     Margin="8,8,0,0"
                     FontFamily="PoppinsSemiBold"
                     FontSize="16"
@@ -510,7 +481,7 @@
                         BadgeType="None"
                         Description="Technician and permission" />
 
-                </Grid>
+                </Grid>-->
 
 
             </StackLayout>

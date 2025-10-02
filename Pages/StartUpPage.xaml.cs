@@ -121,6 +121,7 @@ public partial class StartUpPage : ContentPage
                 Provider.UserToken = loginres.token;
                 Provider.UserImage = loginres.user?.img?.ToString();
                 Provider.SiteList = loginres.user?.sites;
+                Provider.MemberId = loginres.user.id;
 
                 if (Enum.TryParse(loginres.user?.role, out UserRole role))
                 {

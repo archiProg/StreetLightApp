@@ -21,6 +21,7 @@ namespace StreetLightApp.Services
         public static string APIHost = "https://cloudbatt.com";
         public static string ProfileName = "User";
         public static string Username = "@Username";
+        public static int MemberId = 0;
         //public static string HostImage = "http://100.76.74.10:5000/images/profile/";
         //public static string HostImage = "http://192.168.1.66:5000/images/profile/";
         public static string HostImage = "https://cloudbatt.com/images/profile/";
@@ -40,9 +41,11 @@ namespace StreetLightApp.Services
 
         public static List<string> GatewayList = new List<string>();
 
+        public static InitDashboard DataDashboard = new InitDashboard();
 
         public static event EventHandler<UpdateStatusDataParam> UpdateStatusDataHandle;
         public static event EventHandler<UpdateStatusGatewayParam> UpdateStatusGatewayHandle;
+        public static event EventHandler<InitDashboard> InitDashboardHandle;
 
         public async static void Initialize()
         {
@@ -96,6 +99,10 @@ namespace StreetLightApp.Services
             await SendLoginWssAsync(token);
             Console.WriteLine("Client connected: " + _WssClient.Connected);
             Console.WriteLine("WsServer connected::::::::::::::");
+            var param = new
+            { lamp_member_id = MemberId };
+
+
         }
 
         static void WsServerDisconnected(object sender, EventArgs args)
@@ -117,6 +124,21 @@ namespace StreetLightApp.Services
 
                 switch (baseMessage.Cmd)
                 {
+                    case (int)CmdType.LOGIN:
+                        var loginStatus = baseMessage.Param.Deserialize<LoginParam>();
+                        if (loginStatus.Success)
+                        {
+                            var param = new
+                            {
+                                lamp_member_id = MemberId
+                            }
+                        ;
+                            MainThread.BeginInvokeOnMainThread(async () => {
+                                await SendWsAsync("999", param);
+                            });
+                        }
+                        break;
+
                     case (int)CmdType.UpdateDevices:
                         var updateStatusData = baseMessage.Param.Deserialize<UpdateStatusDataParam>();
 
@@ -134,6 +156,43 @@ namespace StreetLightApp.Services
                     case (int)CmdType.UpdateStatusAllGateway:
                         var updateStatusAllGateway = baseMessage.Param.Deserialize<UpdateStatusAllGatewayParam>();
                         WsUpdateAllGateway(updateStatusAllGateway);
+                        break;
+
+                    case (int)CmdType.UpdateDashboard:
+                        var updateDashboard = baseMessage.Param.Deserialize<UpdateDashboard>();
+                        if (updateDashboard.Type == "Gateway")
+                        {
+                            if (updateDashboard.Status == 1)
+                            {
+                                DataDashboard.onlineGateway++;
+                                DataDashboard.offlineGateway--;
+                            }
+                            else
+                            {
+                                DataDashboard.onlineGateway--;
+                                DataDashboard.offlineGateway++;
+                            }
+                        }
+                        else if (updateDashboard.Type == "Device")
+                        {
+                            if (updateDashboard.Status == 1)
+                            {
+                                DataDashboard.onlineDevice++;
+                                DataDashboard.offlineDevice--;
+                            }
+                            else
+                            {
+                                DataDashboard.onlineDevice--;
+                                DataDashboard.offlineDevice++;
+                            }
+                        }
+                        InitDashboardHandle?.Invoke(null, DataDashboard);
+                        break;
+
+                    case (int)CmdType.InitDashboard:
+                        var initDashboard = baseMessage.Param.Deserialize<InitDashboard>();
+                        DataDashboard = initDashboard;
+                        InitDashboardHandle?.Invoke(null, initDashboard);
                         break;
                 }
 
@@ -282,6 +341,7 @@ namespace StreetLightApp.Services
                 UserImage = "";
                 UserEmail = "";
                 UserToken = "";
+                MemberId = 0;
                 UserRole = UserRole.None;
                 SiteList.Clear();
                 MapSites.Clear();

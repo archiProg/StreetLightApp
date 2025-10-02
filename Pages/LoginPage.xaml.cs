@@ -83,6 +83,7 @@ public partial class LoginPage : ContentPage
             Provider.UserToken = res.token;
             Provider.UserImage = res.user?.img?.ToString();
             Provider.SiteList = res.user?.sites;
+            Provider.MemberId = res.user.id;
             return new LoginResult
             {
                 Success = true,
