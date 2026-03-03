@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Baramee Panyafuaen\\source\\repos\\StreetLightApp\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{331D4167-6303-465E-B4EE-B70F0CEBA292}|StreetLightApp\\StreetLightApp.csproj|c:\\users\\baramee panyafuaen\\source\\repos\\streetlightapp\\streetlightapp\\streetlightapp.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{331D4167-6303-465E-B4EE-B70F0CEBA292}|StreetLightApp\\StreetLightApp.csproj|solutionrelative:streetlightapp\\streetlightapp.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "StreetLightApp",
+              "DocumentMoniker": "C:\\Users\\Baramee Panyafuaen\\source\\repos\\StreetLightApp\\StreetLightApp\\StreetLightApp.csproj",
+              "RelativeDocumentMoniker": "StreetLightApp\\StreetLightApp.csproj",
+              "ToolTip": "C:\\Users\\Baramee Panyafuaen\\source\\repos\\StreetLightApp\\StreetLightApp\\StreetLightApp.csproj",
+              "RelativeToolTip": "StreetLightApp\\StreetLightApp.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAACOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-03-03T17:35:18.85Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
